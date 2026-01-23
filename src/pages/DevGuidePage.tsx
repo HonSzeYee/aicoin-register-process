@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,12 @@ import gitlabMrImg from "@/assets/gitlab-mr.png";
 import gitlabCommitRulesImg from "@/assets/gitlab-commit-rules.png";
 import gitlabCreateImg from "@/assets/gitlab-create.png";
 import gitlabCreateBranchImg from "@/assets/gitlab-create-branch.png";
+
+// 全局图查看回调占位，用于顶部静态内容触发弹窗
+let lightboxSetter: ((src: string | null) => void) | null = null;
+const openImage = (src: string) => {
+  if (lightboxSetter) lightboxSetter(src);
+};
 
 // 定义数据结构
 type Platform = "PC" | "iOS" | "Android";
@@ -81,7 +87,11 @@ const flowContent = (
       <ol className="mt-2 space-y-2 text-sm text-muted-foreground list-decimal list-inside">
         <li>以 <span className="font-medium text-foreground">develop</span> 作为 source branch 拉取一条自己的开发分支。
           <div className="mt-2 grid gap-3 sm:grid-cols-2">
-            <div className="flex justify-center">
+            <button
+              type="button"
+              className="flex justify-center"
+              onClick={() => openImage(gitlabCreateImg)}
+            >
               <img
                 src={gitlabCreateImg}
                 alt="GitLab 创建开发分支示意"
@@ -89,8 +99,12 @@ const flowContent = (
                 loading="lazy"
                 decoding="async"
               />
-            </div>
-            <div className="flex justify-center">
+            </button>
+            <button
+              type="button"
+              className="flex justify-center"
+              onClick={() => openImage(gitlabCreateBranchImg)}
+            >
               <img
                 src={gitlabCreateBranchImg}
                 alt="GitLab 选择 source/target 分支示意"
@@ -98,7 +112,7 @@ const flowContent = (
                 loading="lazy"
                 decoding="async"
               />
-            </div>
+            </button>
           </div>
         </li>
         <li>分支命名遵循 <code className="rounded bg-muted px-1">fix-xxx-xxx</code> 格式（以 fix 为前缀）。</li>
@@ -121,11 +135,20 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
         </p>
         <div className="space-y-4">
           <div>
-            <img 
-              src={pcTutorialImg} 
-              alt="PC 端开发环境搭建教程" 
-              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
-            />
+            <button
+              type="button"
+              className="w-full flex justify-center"
+              onClick={() => openImage(pcTutorialImg)}
+              aria-label="放大 PC 端开发环境搭建教程"
+            >
+              <img 
+                src={pcTutorialImg} 
+                alt="PC 端开发环境搭建教程" 
+                className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
           </div>
         </div>
       </div>
@@ -139,13 +162,20 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
           <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(聊天室): 增加一个滑动条</span>（括号与冒号均为英文符号）
         </div>
         <div className="flex justify-center">
-          <img
-            src={gitlabCommitRulesImg}
-            alt="GitLab Commit 规范示例"
-            className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
-            loading="lazy"
-            decoding="async"
-          />
+          <button
+            type="button"
+            onClick={() => openImage(gitlabCommitRulesImg)}
+            aria-label="放大 GitLab Commit 规范示例"
+            className="w-full flex justify-center"
+          >
+            <img
+              src={gitlabCommitRulesImg}
+              alt="GitLab Commit 规范示例"
+              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm transition-transform duration-200 hover:scale-[1.01]"
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
         </div>
       </div>
     ),
@@ -158,11 +188,20 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
         </p>
         <div className="space-y-4">
           <div>
-            <img 
-              src={iOSTutorialImg} 
-              alt="iOS 开发环境搭建教程" 
-              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
-            />
+            <button
+              type="button"
+              className="w-full flex justify-center"
+              onClick={() => openImage(iOSTutorialImg)}
+              aria-label="放大 iOS 开发环境搭建教程"
+            >
+              <img 
+                src={iOSTutorialImg} 
+                alt="iOS 开发环境搭建教程" 
+                className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
           </div>
         </div>
       </div>
@@ -176,13 +215,20 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
           <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(聊天室): 增加一个滑动条</span>（括号与冒号均为英文符号）
         </div>
         <div className="flex justify-center">
-          <img
-            src={gitlabCommitRulesImg}
-            alt="GitLab Commit 规范示例"
-            className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
-            loading="lazy"
-            decoding="async"
-          />
+          <button
+            type="button"
+            onClick={() => openImage(gitlabCommitRulesImg)}
+            aria-label="放大 GitLab Commit 规范示例"
+            className="w-full flex justify-center"
+          >
+            <img
+              src={gitlabCommitRulesImg}
+              alt="GitLab Commit 规范示例"
+              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm transition-transform duration-200 hover:scale-[1.01]"
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
         </div>
       </div>
     ),
@@ -195,11 +241,20 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
         </p>
         <div className="space-y-4">
           <div>
-            <img 
-              src={androidTutorialImg} 
-              alt="Android 开发环境搭建教程" 
-              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
-            />
+            <button
+              type="button"
+              className="w-full flex justify-center"
+              onClick={() => openImage(androidTutorialImg)}
+              aria-label="放大 Android 开发环境搭建教程"
+            >
+              <img 
+                src={androidTutorialImg} 
+                alt="Android 开发环境搭建教程" 
+                className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
           </div>
         </div>
       </div>
@@ -213,13 +268,20 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
           <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(聊天室): 增加一个滑动条</span>（括号与冒号均为英文符号）
         </div>
         <div className="flex justify-center">
-          <img
-            src={gitlabCommitRulesImg}
-            alt="GitLab Commit 规范示例"
-            className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
-            loading="lazy"
-            decoding="async"
-          />
+          <button
+            type="button"
+            onClick={() => openImage(gitlabCommitRulesImg)}
+            aria-label="放大 GitLab Commit 规范示例"
+            className="w-full flex justify-center"
+          >
+            <img
+              src={gitlabCommitRulesImg}
+              alt="GitLab Commit 规范示例"
+                className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
         </div>
       </div>
     ),
@@ -237,6 +299,7 @@ export default function DevGuidePage({
 }) {
   const [platform, setPlatform] = useState<Platform>("PC");
   const [activeSection, setActiveSection] = useState("env");
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [readSections, setReadSections] = useState<Record<string, boolean>>(() => {
     if (typeof window === "undefined") return { env: false, flow: false, branch: false, commit: false };
     try {
@@ -268,6 +331,14 @@ export default function DevGuidePage({
   const readCount = READABLE_SECTIONS.filter((id) => readSections[id]).length;
   const totalReadable = READABLE_SECTIONS.length;
   const activeRead = readSections[activeSection];
+
+  // 供顶层静态内容使用的弹窗 setter
+  useEffect(() => {
+    lightboxSetter = setLightboxImage;
+    return () => {
+      if (lightboxSetter === setLightboxImage) lightboxSetter = null;
+    };
+  }, []);
 
   // 同步已读状态到 localStorage + 父组件
   useEffect(() => {
@@ -388,6 +459,31 @@ export default function DevGuidePage({
           </CardContent>
         </Card>
       </main>
+
+      {lightboxImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+          onClick={() => setLightboxImage(null)}
+          role="presentation"
+        >
+          <div
+            className="relative max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute right-3 top-3 rounded-full bg-background/90 px-3 py-1 text-xs font-medium text-muted-foreground transition hover:bg-background"
+              onClick={() => setLightboxImage(null)}
+            >
+              关闭
+            </button>
+            <img
+              src={lightboxImage}
+              alt="放大图"
+              className="h-full w-full object-contain"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
