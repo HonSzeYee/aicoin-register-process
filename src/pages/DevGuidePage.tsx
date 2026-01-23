@@ -390,6 +390,12 @@ export default function DevGuidePage({
 
   const READABLE_SECTIONS = ["env", "flow", "branch", "commit"] as const;
 
+  const goNextSection = () => {
+    const idx = SECTIONS.findIndex((s) => s.id === activeSection);
+    const next = SECTIONS[(idx + 1) % SECTIONS.length];
+    setActiveSection(next.id);
+  };
+
   const markActiveRead = () => {
     setReadSections((prev) => ({
       ...prev,
@@ -524,6 +530,11 @@ export default function DevGuidePage({
               {READABLE_SECTIONS.includes(activeSection as any) && (
                 <div className="flex flex-wrap items-center justify-center gap-3 pt-2" />
               )}
+              <div className="pt-4 flex justify-center">
+                <Button className="rounded-full px-5" variant="outline" onClick={goNextSection}>
+                  切到下一项
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

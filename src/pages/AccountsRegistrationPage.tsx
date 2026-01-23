@@ -617,14 +617,6 @@ export default function AccountsRegistrationPage({
               })}
             </div>
 
-            <Separator />
-
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <Button className="rounded-2xl" onClick={goNextUnfinished}>
-                去做下一项 <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-
           </CardContent>
         </Card>
       </div>
