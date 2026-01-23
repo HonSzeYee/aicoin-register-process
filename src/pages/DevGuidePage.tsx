@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,10 @@ import gitlabMrImg from "@/assets/gitlab-mr.png";
 import gitlabCommitRulesImg from "@/assets/gitlab-commit-rules.png";
 import gitlabCreateImg from "@/assets/gitlab-create.png";
 import gitlabCreateBranchImg from "@/assets/gitlab-create-branch.png";
+import pullCodeImg from "@/assets/pull-code.png";
+import gitlabMrCreateImg from "@/assets/gitlab-mr-create.png";
+import gitlabMrCreateXImg from "@/assets/gitlab-mr-create-x.png";
+import itaskNodeImg from "@/assets/itask-node.png";
 
 // 全局图查看回调占位，用于顶部静态内容触发弹窗
 let lightboxSetter: ((src: string | null) => void) | null = null;
@@ -116,10 +120,75 @@ const flowContent = (
           </div>
         </li>
         <li>分支命名遵循 <code className="rounded bg-muted px-1">fix-xxx-xxx</code> 格式（以 fix 为前缀）。</li>
-        <li>在 IDE 拉取最新代码并切到自己的开发分支。</li>
+        <li>在 IDE 拉取最新代码并切到自己的开发分支。
+          <div className="mt-2">
+            <button
+              type="button"
+              onClick={() => openImage(pullCodeImg)}
+              className="inline-flex"
+              aria-label="放大 IDE 拉取并切换分支示意"
+            >
+              <img
+                src={pullCodeImg}
+                alt="IDE 拉取并切换分支示意"
+                className="w-full max-w-lg rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+          </div>
+        </li>
         <li>进行代码修改。</li>
-        <li>创建 MR：需要主管评审 → target 选 <span className="font-medium text-foreground">demo</span>；否则选 <span className="font-medium text-foreground">develop</span>。</li>
-        <li>合并成功后，在 iTask 将任务改为「待测试」。测试会自动分配，产品经理需跟进；若有 bug，继续在该分支修复；测试通过且已合入 develop 后等待正式版发布。</li>
+        <li>创建 MR：需要主管评审 → target 选 <span className="font-medium text-foreground">demo</span>；否则选 <span className="font-medium text-foreground">develop</span>。
+          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+            <button
+              type="button"
+              className="inline-flex"
+              onClick={() => openImage(gitlabMrCreateImg)}
+              aria-label="放大 MR 创建示例"
+            >
+              <img
+                src={gitlabMrCreateImg}
+                alt="MR 创建示例"
+                className="w-full max-w-xl rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+            <button
+              type="button"
+              className="inline-flex"
+              onClick={() => openImage(gitlabMrCreateXImg)}
+              aria-label="放大 MR 创建示例2"
+            >
+              <img
+                src={gitlabMrCreateXImg}
+                alt="MR 创建示例 2"
+                className="w-full max-w-xl rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+          </div>
+        </li>
+        <li>合并成功后，在 iTask 将任务改为「待测试」。测试会自动分配，产品经理需跟进；若有 bug，继续在该分支修复；测试通过且已合入 develop 后等待正式版发布。
+          <div className="mt-2">
+            <button
+              type="button"
+              className="inline-flex"
+              onClick={() => openImage(itaskNodeImg)}
+              aria-label="放大 iTask 节点示意"
+            >
+              <img
+                src={itaskNodeImg}
+                alt="iTask 节点示意"
+                className="w-full max-w-xl rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+          </div>
+        </li>
       </ol>
     </div>
   </div>
@@ -171,7 +240,7 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
             <img
               src={gitlabCommitRulesImg}
               alt="GitLab Commit 规范示例"
-              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm transition-transform duration-200 hover:scale-[1.01]"
+              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
               loading="lazy"
               decoding="async"
             />
@@ -224,7 +293,7 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
             <img
               src={gitlabCommitRulesImg}
               alt="GitLab Commit 规范示例"
-              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm transition-transform duration-200 hover:scale-[1.01]"
+              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
               loading="lazy"
               decoding="async"
             />
