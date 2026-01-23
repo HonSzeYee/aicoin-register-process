@@ -1,21 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  ArrowLeft, 
-  Monitor, 
-  Smartphone, 
-  Tablet, 
-  Terminal, 
-  GitBranch, 
-  GitCommit, 
-  FolderTree,
-  ChevronRight
+import { Progress } from "@/components/ui/progress";
+import {
+  ArrowLeft,
+  Monitor,
+  Smartphone,
+  Tablet,
+  Terminal,
+  GitBranch,
+  GitCommit,
+  CheckCircle2,
+  GitPullRequest,
 } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 import iOSTutorialImg from "@/assets/iOS-tutorial.png";
 import androidTutorialImg from "@/assets/android-tutorial.png";
 import pcTutorialImg from "@/assets/pc-tutorial.png";
+import gitlabMrImg from "@/assets/gitlab-mr.png";
+import gitlabCommitRulesImg from "@/assets/gitlab-commit-rules.png";
+import gitlabCreateImg from "@/assets/gitlab-create.png";
+import gitlabCreateBranchImg from "@/assets/gitlab-create-branch.png";
 
 // 定义数据结构
 type Platform = "PC" | "iOS" | "Android";
@@ -28,10 +34,82 @@ const PLATFORMS: { id: Platform; label: string; icon: React.ElementType }[] = [
 
 const SECTIONS = [
   { id: "env", title: "开发环境搭建", icon: Terminal },
+  { id: "flow", title: "整体流程", icon: GitPullRequest },
   { id: "branch", title: "GitLab 分支规范", icon: GitBranch },
   { id: "commit", title: "Commit 规范", icon: GitCommit },
-  { id: "structure", title: "项目结构", icon: FolderTree },
 ];
+
+const branchContent = (
+  <div className="space-y-4">
+    <div className="rounded-2xl border bg-muted/30 px-4 py-3">
+      <div className="text-sm font-semibold text-foreground">分支策略（3 主线）</div>
+      <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
+        <li><span className="font-medium text-foreground">master</span>：正式版本分支，用于发布正式版本。</li>
+        <li><span className="font-medium text-foreground">demo</span>：Demo 版本分支，用于主管评审（新板块设计 / 功能改动审核）。</li>
+        <li><span className="font-medium text-foreground">develop</span>：开发测试分支，日常开发与测试主干。</li>
+      </ul>
+    </div>
+
+    <div className="rounded-2xl border px-4 py-3">
+      <div className="text-sm font-semibold text-foreground">操作步骤（新任务）</div>
+      <ol className="mt-2 space-y-2 text-sm text-muted-foreground list-decimal list-inside">
+        <li>从 <span className="font-medium text-foreground">develop</span> 拉取最新代码。</li>
+        <li>以 <span className="font-medium text-foreground">develop</span> 为 source branch 创建个人开发分支（例如 <code className="rounded bg-muted px-1">fix-task-key</code>）。</li>
+        <li>在个人分支完成开发与自测，按规范提交。</li>
+        <li>创建 MR：需要主管评审 → target 选 <span className="font-medium text-foreground">demo</span>；否则选 <span className="font-medium text-foreground">develop</span>。</li>
+        <li className="list-none">
+          <div className="mt-3 flex justify-center">
+            <img
+              src={gitlabMrImg}
+              alt="GitLab MR 目标分支示例"
+              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </li>
+      </ol>
+    </div>
+
+  </div>
+);
+
+const flowContent = (
+  <div className="space-y-4">
+    <div className="rounded-2xl border px-4 py-3">
+      <div className="text-sm font-semibold text-foreground">从需求到合并的整体流程</div>
+      <ol className="mt-2 space-y-2 text-sm text-muted-foreground list-decimal list-inside">
+        <li>以 <span className="font-medium text-foreground">develop</span> 作为 source branch 拉取一条自己的开发分支。
+          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+            <div className="flex justify-center">
+              <img
+                src={gitlabCreateImg}
+                alt="GitLab 创建开发分支示意"
+                className="w-full max-w-xl rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div className="flex justify-center">
+              <img
+                src={gitlabCreateBranchImg}
+                alt="GitLab 选择 source/target 分支示意"
+                className="w-full max-w-xl rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
+        </li>
+        <li>分支命名遵循 <code className="rounded bg-muted px-1">fix-xxx-xxx</code> 格式（以 fix 为前缀）。</li>
+        <li>在 IDE 拉取最新代码并切到自己的开发分支。</li>
+        <li>进行代码修改。</li>
+        <li>创建 MR：需要主管评审 → target 选 <span className="font-medium text-foreground">demo</span>；否则选 <span className="font-medium text-foreground">develop</span>。</li>
+        <li>合并成功后，在 iTask 将任务改为「待测试」。测试会自动分配，产品经理需跟进；若有 bug，继续在该分支修复；测试通过且已合入 develop 后等待正式版发布。</li>
+      </ol>
+    </div>
+  </div>
+);
 
 // 模拟文档内容
 const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
@@ -46,15 +124,31 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
             <img 
               src={pcTutorialImg} 
               alt="PC 端开发环境搭建教程" 
-              className="w-full rounded-xl border shadow-sm"
+              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
             />
           </div>
         </div>
       </div>
     ),
-    branch: <div>PC 端分支管理规范内容...</div>,
-    commit: <div>PC 端 Commit 提交规范内容...</div>,
-    structure: <div>PC 端项目目录结构说明...</div>,
+    flow: flowContent,
+    branch: branchContent,
+    commit: (
+      <div className="space-y-4">
+        <div className="rounded-2xl border px-4 py-3 text-sm text-foreground/80">
+          约定：尽量使用 <span className="font-semibold">fix</span> 作为分支名与 commit 的前缀，并标明作用域。示例：
+          <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(聊天室): 增加一个滑动条</span>（括号与冒号均为英文符号）
+        </div>
+        <div className="flex justify-center">
+          <img
+            src={gitlabCommitRulesImg}
+            alt="GitLab Commit 规范示例"
+            className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+    ),
   },
   iOS: {
     env: (
@@ -67,15 +161,31 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
             <img 
               src={iOSTutorialImg} 
               alt="iOS 开发环境搭建教程" 
-              className="w-full rounded-xl border shadow-sm"
+              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
             />
           </div>
         </div>
       </div>
     ),
-    branch: <div>iOS 分支管理规范...</div>,
-    commit: <div>iOS Commit 规范...</div>,
-    structure: <div>iOS 项目结构...</div>,
+    flow: flowContent,
+    branch: branchContent,
+    commit: (
+      <div className="space-y-4">
+        <div className="rounded-2xl border px-4 py-3 text-sm text-foreground/80">
+          约定：尽量使用 <span className="font-semibold">fix</span> 作为分支名与 commit 的前缀，并标明作用域。示例：
+          <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(聊天室): 增加一个滑动条</span>（括号与冒号均为英文符号）
+        </div>
+        <div className="flex justify-center">
+          <img
+            src={gitlabCommitRulesImg}
+            alt="GitLab Commit 规范示例"
+            className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+    ),
   },
   Android: {
     env: (
@@ -88,21 +198,90 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
             <img 
               src={androidTutorialImg} 
               alt="Android 开发环境搭建教程" 
-              className="w-full rounded-xl border shadow-sm"
+              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
             />
           </div>
         </div>
       </div>
     ),
-    branch: <div>Android 分支管理规范...</div>,
-    commit: <div>Android Commit 规范...</div>,
-    structure: <div>Android 项目结构...</div>,
+    flow: flowContent,
+    branch: branchContent,
+    commit: (
+      <div className="space-y-4">
+        <div className="rounded-2xl border px-4 py-3 text-sm text-foreground/80">
+          约定：尽量使用 <span className="font-semibold">fix</span> 作为分支名与 commit 的前缀，并标明作用域。示例：
+          <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(聊天室): 增加一个滑动条</span>（括号与冒号均为英文符号）
+        </div>
+        <div className="flex justify-center">
+          <img
+            src={gitlabCommitRulesImg}
+            alt="GitLab Commit 规范示例"
+            className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+    ),
   },
 };
 
-export default function DevGuidePage({ onBack }: { onBack: () => void }) {
+const devGuideStorageKey = "dev-guide-read";
+
+export default function DevGuidePage({
+  onBack,
+  onDevReadChange,
+}: {
+  onBack: () => void;
+  onDevReadChange?: (readMap: Record<string, boolean>) => void;
+}) {
   const [platform, setPlatform] = useState<Platform>("PC");
   const [activeSection, setActiveSection] = useState("env");
+  const [readSections, setReadSections] = useState<Record<string, boolean>>(() => {
+    if (typeof window === "undefined") return { env: false, flow: false, branch: false, commit: false };
+    try {
+      const stored = window.localStorage.getItem(devGuideStorageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored) as Record<string, boolean>;
+        return {
+          env: !!parsed.env,
+          flow: !!parsed.flow,
+          branch: !!parsed.branch,
+          commit: !!parsed.commit,
+        };
+      }
+    } catch {
+      /* ignore */
+    }
+    return { env: false, flow: false, branch: false, commit: false };
+  });
+
+  const READABLE_SECTIONS = ["env", "flow", "branch", "commit"] as const;
+
+  const markActiveRead = () => {
+    setReadSections((prev) => ({
+      ...prev,
+      [activeSection]: true,
+    }));
+  };
+
+  const readCount = READABLE_SECTIONS.filter((id) => readSections[id]).length;
+  const totalReadable = READABLE_SECTIONS.length;
+  const activeRead = readSections[activeSection];
+
+  // 同步已读状态到 localStorage + 父组件
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.setItem(devGuideStorageKey, JSON.stringify(readSections));
+      } catch {
+        /* ignore */
+      }
+    }
+    onDevReadChange?.(readSections);
+  }, [readSections, onDevReadChange]);
+
+  const currentPlatform = PLATFORMS.find(p => p.id === platform);
 
   return (
     <div className="min-h-screen bg-background">
@@ -118,82 +297,97 @@ export default function DevGuidePage({ onBack }: { onBack: () => void }) {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 py-6">
-        {/* Platform Switcher */}
-        <div className="mb-8 flex justify-center">
-          <div className="inline-flex rounded-2xl border bg-muted/30 p-1">
-            {PLATFORMS.map((p) => {
-              const Icon = p.icon;
-              const isActive = platform === p.id;
-              return (
-                <button
-                  key={p.id}
-                  onClick={() => setPlatform(p.id)}
-                  className={`flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-medium transition-all ${
-                    isActive
-                      ? "bg-background text-primary shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {p.label}
-                </button>
-              );
-            })}
+      <main className="mx-auto max-w-7xl px-4 py-6 space-y-4">
+        {/* 顶部平台切换 */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="space-y-1" />
+          <div className="flex items-center gap-2 rounded-full border px-2 py-1 bg-card shadow-sm">
+            {PLATFORMS.map((p) => (
+              <Button
+                key={p.id}
+                variant={platform === p.id ? "default" : "ghost"}
+                size="sm"
+                className={`rounded-full px-3 ${
+                  platform === p.id ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+                }`}
+                onClick={() => setPlatform(p.id)}
+              >
+                <p.icon className="mr-1 h-4 w-4" />
+                {p.label}
+              </Button>
+            ))}
           </div>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[200px_1fr]">
-          {/* Sidebar Navigation */}
-          <Card className="h-fit rounded-2xl border-none shadow-none lg:border lg:shadow-sm">
-            <CardContent className="p-2">
-              <div className="space-y-1">
+        {/* 导航 + 正文合并为单卡片 */}
+        <Card className="rounded-3xl shadow-sm">
+          <CardContent className="space-y-4 p-4 sm:p-6">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap gap-2">
                 {SECTIONS.map((section) => {
-                  const Icon = section.icon;
-                  const isActive = activeSection === section.id;
-                  return (
-                    <button
-                      key={section.id}
-                      onClick={() => setActiveSection(section.id)}
-                      className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm transition-colors ${
-                        isActive
-                          ? "bg-primary/10 text-primary font-medium"
-                          : "text-muted-foreground hover:bg-muted/50"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Icon className={`h-4 w-4 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
-                        {section.title}
-                      </div>
-                      {isActive && <ChevronRight className="h-4 w-4 opacity-50" />}
-                    </button>
-                  );
+                const Icon = section.icon;
+                const isActive = activeSection === section.id;
+                const isRead = readSections[section.id];
+                return (
+                  <Button
+                    key={section.id}
+                    variant={isActive ? "secondary" : "outline"}
+                    size="sm"
+                    onClick={() => setActiveSection(section.id)}
+                    className={`group rounded-full px-3 shadow-none ${
+                      isActive ? "border-primary/50 text-primary bg-primary/10" : ""
+                    }`}
+                  >
+                    <span className="mr-1 flex items-center gap-1">
+                      <Icon className="h-4 w-4" />
+                      {section.title}
+                    </span>
+                    {isRead && (
+                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    )}
+                  </Button>
+                );
                 })}
               </div>
-            </CardContent>
-          </Card>
+              {READABLE_SECTIONS.includes(activeSection as any) && (
+                <div className="ml-auto flex items-center gap-3">
+                  <div className="hidden sm:flex items-center gap-2 rounded-full border px-3 py-1 text-xs text-muted-foreground">
+                    <span>已读 {readCount} / {totalReadable}</span>
+                    <Progress value={(readCount / totalReadable) * 100} className="h-1 w-16" />
+                  </div>
+                  <Button
+                    variant="default"
+                    className="rounded-full px-5"
+                    onClick={markActiveRead}
+                    disabled={!!activeRead}
+                  >
+                    {activeRead ? "已阅读" : "标记为已阅读"}
+                  </Button>
+                </div>
+              )}
+            </div>
 
-          {/* Content Area */}
-          <Card className="min-h-[500px] rounded-2xl shadow-sm">
-            <CardHeader className="border-b pb-4">
+            <Separator />
+
+            <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="rounded-lg">
-                  {PLATFORMS.find(p => p.id === platform)?.label}
+                <Badge variant="secondary" className="rounded-full bg-muted text-xs font-semibold">
+                  {currentPlatform?.label}
                 </Badge>
-                <CardTitle className="text-xl">
+                <CardTitle className="text-2xl">
                   {SECTIONS.find(s => s.id === activeSection)?.title}
                 </CardTitle>
               </div>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="prose prose-sm max-w-none dark:prose-invert">
+              <div className="prose prose-sm max-w-none leading-relaxed text-foreground/80">
                 {GUIDE_CONTENT[platform][activeSection]}
               </div>
-            </CardContent>
-          </Card>
-        </div>
+              {READABLE_SECTIONS.includes(activeSection as any) && (
+                <div className="flex flex-wrap items-center justify-center gap-3 pt-2" />
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </main>
     </div>
   );
 }
-

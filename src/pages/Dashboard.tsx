@@ -26,6 +26,8 @@ import {
   Lock,
   CalendarClock,
   Sparkles,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 type Role = "PC" | "iOS" | "Android" | "PM" | "QA";
@@ -79,6 +81,8 @@ function pickNextAction(sections: Section[]) {
   return null;
 }
 
+const devGuideStorageKey = "dev-guide-read";
+
 const NAV = [
   { id: "dashboard", label: "入职总览", icon: LayoutDashboard },
   { id: "accounts", label: "账号注册", icon: KeyRound },
@@ -121,6 +125,19 @@ export default function AICoinOnboardingDashboard() {
   }, []);
 
   const [sections, setSections] = useState<Section[]>(() => {
+    const loadDevRead = () => {
+      if (typeof window === "undefined") return {};
+      try {
+        const stored = window.localStorage.getItem(devGuideStorageKey);
+        if (!stored) return {};
+        return JSON.parse(stored) as Record<string, boolean>;
+      } catch {
+        return {};
+      }
+    };
+
+    const devReadMap = loadDevRead();
+
     const savedChecklist = (() => {
       if (typeof window === "undefined") return null;
       try {
@@ -191,6 +208,10 @@ export default function AICoinOnboardingDashboard() {
         title: "开发指南",
         icon: <Code2 className="h-4 w-4" />,
         items: [
+          { id: "env-read", title: "开发环境搭建", etaMinutes: 8, done: !!devReadMap["env"] },
+          { id: "flow-read", title: "整体流程", etaMinutes: 6, done: !!devReadMap["flow"] },
+          { id: "branch-read", title: "GitLab 分支规范", etaMinutes: 6, done: !!devReadMap["branch"] },
+          { id: "commit-read", title: "Commit 规范", etaMinutes: 5, done: !!devReadMap["commit"] },
           { id: "common", title: "通用开发规范（分支 / MR / Review）", etaMinutes: 10, done: false },
           { id: "android-setup", title: "Android 环境搭建", etaMinutes: 20, done: false, locked: false },
           { id: "android-run", title: "Android 项目启动与运行", etaMinutes: 15, done: false, locked: false },
@@ -219,6 +240,24 @@ export default function AICoinOnboardingDashboard() {
     ];
   });
 
+  const applyDevRead = (readMap: Record<string, boolean>) => {
+    setSections((prev) =>
+      prev.map((s) => {
+        if (s.id !== "dev") return s;
+        return {
+          ...s,
+          items: s.items.map((it) => {
+            if (it.id === "env-read") return { ...it, done: !!readMap.env };
+            if (it.id === "flow-read") return { ...it, done: !!readMap.flow };
+            if (it.id === "branch-read") return { ...it, done: !!readMap.branch };
+            if (it.id === "commit-read") return { ...it, done: !!readMap.commit };
+            return it;
+          }),
+        };
+      })
+    );
+  };
+
   const [updates] = useState<UpdateItem[]>([
     { id: "u1", date: "2026-01-18", title: "更新：Android 环境搭建说明（Gradle 镜像）", tag: "开发" },
     { id: "u2", date: "2026-01-15", title: "新增：Demo 版本工作流程说明", tag: "流程" },
@@ -239,6 +278,7 @@ export default function AICoinOnboardingDashboard() {
   const [query, setQuery] = useState("");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [roleDialogOpen, setRoleDialogOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   // 检查是否是第一次访问（没有设置名字）
   const [showWelcome, setShowWelcome] = useState(() => {
@@ -279,6 +319,38 @@ export default function AICoinOnboardingDashboard() {
       // ignore storage errors
     }
   }, [sections]);
+
+  // 当从子页面返回 dashboard 时，重新读取 localStorage 更新状态，确保数据同步
+  useEffect(() => {
+    if (activeNav === "dashboard" && typeof window !== "undefined") {
+      try {
+        const stored = window.localStorage.getItem("accounts-registration-checklist");
+        if (stored) {
+          const parsed = JSON.parse(stored) as ChecklistItem[];
+          const accountDoneMap = Object.fromEntries(parsed.map((it) => [it.id, it.done]));
+          
+          setSections((prev) =>
+            prev.map((s) => {
+              if (s.id !== "accounts") return s;
+              // 只有当状态真的改变时才更新，避免不必要的渲染（虽然 React 会处理）
+              const hasChanges = s.items.some(it => (accountDoneMap[it.id] ?? it.done) !== it.done);
+              if (!hasChanges) return s;
+
+              return {
+                ...s,
+                items: s.items.map((it) => ({
+                  ...it,
+                  done: accountDoneMap[it.id] ?? it.done,
+                })),
+              };
+            })
+          );
+        }
+      } catch {
+        // ignore
+      }
+    }
+  }, [activeNav]);
 
   const filteredSections = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -332,55 +404,106 @@ export default function AICoinOnboardingDashboard() {
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 py-6 md:grid-cols-[220px_1fr]">
-        <aside className="md:sticky md:top-20 md:h-[calc(100vh-5rem)]">
-          <Card className="rounded-2xl shadow-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">导航</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              {NAV.map((n) => {
-                const Icon = n.icon;
-                const active = activeNav === n.id;
-                return (
-                  <button
-                    key={n.id}
-                    onClick={() => setActiveNav(n.id)}
-                    className={`flex w-full items-center gap-2 rounded-2xl px-3 py-2 text-sm transition ${
-                      active ? "bg-accent text-accent-foreground" : "hover:bg-accent/60"
-                    }`}
-                  >
-                    <Icon className="h-4 w-4" />
-                    <span className="flex-1 text-left">{n.label}</span>
-                    {n.id !== "dashboard" && <span className="text-xs text-muted-foreground">→</span>}
-                  </button>
-                );
-              })}
-            </CardContent>
-          </Card>
-
-          <div className="mt-4">
-            <Card className="rounded-2xl shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">总进度</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="text-sm text-muted-foreground">已完成</div>
-                  <div className="text-sm font-medium">
-                    {overall.done} / {overall.total}
+      <div
+        className={`mx-auto flex max-w-7xl px-4 py-6 transition-[gap] duration-200 ${
+          sidebarCollapsed ? "gap-2 md:gap-3" : "gap-4"
+        }`}
+      >
+        <aside
+          className={`md:sticky md:top-20 md:h-[calc(100vh-5rem)] transition-all duration-300 ease-in-out will-change-[width] ${
+            sidebarCollapsed ? "w-[52px]" : "w-[220px]"
+          } shrink-0`}
+        >
+          {sidebarCollapsed ? (
+            <div className="flex h-full flex-col items-center pt-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 rounded-lg"
+                onClick={() => setSidebarCollapsed(false)}
+                title="展开侧边栏"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Card className="rounded-2xl shadow-sm">
+                <CardHeader className="pb-3 transition-all duration-300">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base transition-opacity duration-300">
+                      导航
+                    </CardTitle>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 shrink-0 rounded-lg"
+                      onClick={() => setSidebarCollapsed(true)}
+                      title="收起侧边栏"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
                   </div>
-                </div>
-                <Progress value={clamp(overall.pct, 0, 100)} />
-                <div className="text-xs text-muted-foreground">完成度 {overall.pct}%</div>
-              </CardContent>
-            </Card>
-          </div>
+                </CardHeader>
+                <CardContent className="space-y-1 transition-all duration-300">
+                  {NAV.map((n) => {
+                    const Icon = n.icon;
+                    const active = activeNav === n.id;
+                    return (
+                      <button
+                        key={n.id}
+                        onClick={() => setActiveNav(n.id)}
+                        className={`flex w-full items-center gap-2 rounded-2xl px-3 py-2 text-sm transition-colors ${
+                          active ? "bg-accent text-accent-foreground" : "hover:bg-accent/60"
+                        }`}
+                      >
+                        <Icon className="h-4 w-4 shrink-0" />
+                        <span
+                          className={`flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis transition-opacity duration-500 ${
+                            sidebarCollapsed ? "opacity-0 pointer-events-none select-none" : "opacity-100"
+                          }`}
+                        >
+                          {n.label}
+                        </span>
+                        <span
+                          className={`text-xs text-muted-foreground transition-opacity duration-500 ${
+                            sidebarCollapsed || n.id === "dashboard"
+                              ? "opacity-0 pointer-events-none select-none"
+                              : "opacity-100"
+                          }`}
+                        >
+                          →
+                        </span>
+                      </button>
+                    );
+                  })}
+                </CardContent>
+              </Card>
+
+              <div className="mt-4 transition-all duration-300">
+                <Card className="rounded-2xl shadow-sm">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">总进度</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm text-muted-foreground">已完成</div>
+                      <div className="text-sm font-medium">
+                        {overall.done} / {overall.total}
+                      </div>
+                    </div>
+                    <Progress value={clamp(overall.pct, 0, 100)} />
+                    <div className="text-xs text-muted-foreground">完成度 {overall.pct}%</div>
+                  </CardContent>
+                </Card>
+              </div>
+            </>
+          )}
         </aside>
 
-        {/* Main */}
+        <main className="flex-1 min-w-0">
         {activeNav === "dashboard" && (
-          <main className="space-y-4">
+          <div className="space-y-4">
             <Card className="rounded-2xl shadow-sm">
               <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -600,18 +723,25 @@ export default function AICoinOnboardingDashboard() {
             </div>
 
             <div className="pb-6 text-center text-xs text-muted-foreground">
-              建议把“步骤详情页”做成可维护的模块：目的说明 / 操作步骤 / 常见坑 / 负责人。
+              建议把"步骤详情页"做成可维护的模块：目的说明 / 操作步骤 / 常见坑 / 负责人。
             </div>
-          </main>
+          </div>
         )}
 
         {activeNav === "accounts" && (
-          <AccountsRegistrationPage onBack={() => setActiveNav("dashboard")} />
+          <AccountsRegistrationPage
+            onBack={() => setActiveNav("dashboard")}
+            onAllDone={() => setActiveNav("dev")}
+          />
         )}
 
         {activeNav === "dev" && (
-          <DevGuidePage onBack={() => setActiveNav("dashboard")} />
+          <DevGuidePage
+            onBack={() => setActiveNav("dashboard")}
+            onDevReadChange={applyDevRead}
+          />
         )}
+        </main>
       </div>
 
       <div className="md:hidden px-4 pb-6">

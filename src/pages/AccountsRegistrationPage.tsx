@@ -117,10 +117,13 @@ const defaultChecklistItems: ChecklistItem[] = [
 
 export default function AccountsRegistrationPage({
   onBack,
+  onAllDone,
 }: {
   onBack?: () => void;
+  onAllDone?: () => void;
 }) {
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const [lightboxLoaded, setLightboxLoaded] = useState(false); // 控制放大图的淡入时机，避免卡顿
   const [wechatChecklist, setWechatChecklist] = useState<boolean[]>([]);
   const handleCloseLightbox = () => setLightboxImage(null);
 
@@ -311,6 +314,45 @@ export default function AccountsRegistrationPage({
     });
   };
 
+  // 预解码放大图，避免首次淡入时出现明显卡顿
+  useEffect(() => {
+    if (!lightboxImage) {
+      setLightboxLoaded(false);
+      return;
+    }
+    let cancelled = false;
+    const img = new Image();
+    img.src = lightboxImage;
+    const done = () => {
+      if (!cancelled) setLightboxLoaded(true);
+    };
+    if (img.decode) {
+      img.decode().then(done).catch(done);
+    } else {
+      img.onload = done;
+      img.onerror = done;
+    }
+    return () => {
+      cancelled = true;
+    };
+  }, [lightboxImage]);
+
+  // 预加载所有大图，进入放大时更快
+  useEffect(() => {
+    const urls = items.flatMap((it) =>
+      (details[it.id]?.steps ?? []).map((_, idx) => stepImageFor(it.id, idx))
+    );
+    urls.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, [items, details]);
+
+  const openLightbox = (src: string) => {
+    setLightboxLoaded(false);
+    setLightboxImage(src);
+  };
+
   function toggleDone(id: string) {
     setItems((prev) =>
       prev.map((it) => {
@@ -322,8 +364,12 @@ export default function AccountsRegistrationPage({
   }
 
   function goNextUnfinished() {
-    const next = items.find((i) => !i.done && !i.locked);
-    if (next) setSelectedId(next.id);
+    const unfinished = items.find((i) => !i.done && !i.locked);
+    if (!unfinished) {
+      onAllDone?.();
+      return;
+    }
+    setSelectedId(unfinished.id);
   }
 
   return (
@@ -444,16 +490,16 @@ export default function AccountsRegistrationPage({
                         <img
                           src={stepImageFor(selectedItem?.id ?? "", idx)}
                           alt={`步骤 ${idx + 1}`}
-                          className="h-24 w-40 rounded-xl border object-cover"
-                          onClick={() =>
-                            setLightboxImage(stepImageFor(selectedItem?.id ?? "", idx))
-                          }
+                          loading="lazy"
+                          decoding="async"
+                          className="h-24 w-40 rounded-xl border object-cover transition-transform duration-200 hover:scale-[1.02]"
+                          onClick={() => openLightbox(stepImageFor(selectedItem?.id ?? "", idx))}
                           role="button"
                           aria-label={`放大步骤 ${idx + 1} 图片`}
                           tabIndex={0}
                           onKeyDown={(e) => {
                             if (e.key === "Enter" || e.key === " ") {
-                              setLightboxImage(stepImageFor(selectedItem?.id ?? "", idx));
+                              openLightbox(stepImageFor(selectedItem?.id ?? "", idx));
                             }
                           }}
                         />
@@ -585,24 +631,33 @@ export default function AccountsRegistrationPage({
 
       {lightboxImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 transition-opacity duration-200 will-change-opacity"
           onClick={handleCloseLightbox}
           role="presentation"
         >
           <div
-            className="relative max-h-[90vh] w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
+            className="relative aspect-[16/9] max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-2xl border border-border bg-card shadow-2xl transform-gpu"
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="absolute right-3 top-3 rounded-full bg-background/80 backdrop-blur-sm px-3 py-1 text-xs font-medium text-muted-foreground transition hover:bg-background"
+              className="absolute right-3 top-3 rounded-full bg-background/90 px-3 py-1 text-xs font-medium text-muted-foreground transition hover:bg-background"
               onClick={handleCloseLightbox}
             >
               关闭
             </button>
+            {!lightboxLoaded && (
+              <div className="absolute inset-0 grid place-items-center bg-card/40 backdrop-blur-sm">
+                <div className="h-10 w-10 animate-spin rounded-full border-2 border-muted-foreground/30 border-t-primary" />
+              </div>
+            )}
             <img
               src={lightboxImage}
               alt="放大图"
-              className="h-full w-full object-contain"
+              decoding="async"
+              fetchpriority="high"
+              className={`h-full w-full object-contain transform-gpu motion-safe:transition-opacity motion-safe:duration-200 motion-reduce:transition-none ${
+                lightboxLoaded ? "opacity-100" : "opacity-0"
+              }`}
             />
           </div>
         </div>
