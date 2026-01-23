@@ -6,6 +6,11 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import AccountsRegistrationPage from "./AccountsRegistrationPage";
+import DevGuidePage from "./DevGuidePage";
+import SettingsPanel from "@/components/SettingsPanel";
+import WelcomeDialog from "@/components/WelcomeDialog";
+import RoleDescriptionDialog from "@/components/RoleDescriptionDialog";
+import { detectDeviceType, DeviceRole } from "@/lib/deviceDetection";
 import {
   LayoutDashboard,
   KeyRound,
@@ -13,7 +18,7 @@ import {
   Wrench,
   GitPullRequest,
   HelpCircle,
-  Bell,
+  Settings,
   Search,
   ArrowRight,
   CheckCircle2,
@@ -84,10 +89,36 @@ const NAV = [
 ] as const;
 
 export default function AICoinOnboardingDashboard() {
-  const [user] = useState({
-    name: "Han Si Yi",
-    role: "Android" as Role,
+  const [user, setUser] = useState(() => {
+    const detectedDevice = detectDeviceType(); // PC | iOS | Android
+    // 从 localStorage 读取保存的名字，如果没有则使用默认值
+    const savedName =
+      typeof window !== "undefined" ? localStorage.getItem("userName") : null;
+    return {
+      name: savedName || "新用户",
+      role: "PM" as Role, // 固定为产品经理
+      deviceType: detectedDevice, // 设备类型：PC | iOS | Android
+    };
   });
+
+  // 监听 localStorage 变化，更新用户名
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleStorageChange = () => {
+      const savedName = localStorage.getItem("userName");
+      if (savedName) {
+        setUser((prev) => ({ ...prev, name: savedName }));
+      }
+    };
+    // 监听 storage 事件（跨标签页同步）
+    window.addEventListener("storage", handleStorageChange);
+    // 定期检查（同标签页更新）
+    const interval = setInterval(handleStorageChange, 500);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
 
   const [sections, setSections] = useState<Section[]>(() => {
     const savedChecklist = (() => {
@@ -206,6 +237,15 @@ export default function AICoinOnboardingDashboard() {
 
   const [activeNav, setActiveNav] = useState<(typeof NAV)[number]["id"]>("dashboard");
   const [query, setQuery] = useState("");
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [roleDialogOpen, setRoleDialogOpen] = useState(false);
+  
+  // 检查是否是第一次访问（没有设置名字）
+  const [showWelcome, setShowWelcome] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const savedName = localStorage.getItem("userName");
+    return !savedName;
+  });
 
   function toggleItem(sectionId: string, itemId: string) {
     setSections((prev) =>
@@ -275,23 +315,24 @@ export default function AICoinOnboardingDashboard() {
                 className="h-7 w-[260px] border-0 p-0 shadow-none focus-visible:ring-0"
               />
             </div>
-            <Button variant="outline" size="icon" className="rounded-2xl">
-              <Bell className="h-4 w-4" />
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-2xl"
+              onClick={() => setSettingsOpen(true)}
+            >
+              <Settings className="h-4 w-4" />
             </Button>
             <div className="flex items-center gap-2 rounded-2xl border px-3 py-2 shadow-sm">
               <div className="hidden sm:block">
                 <div className="text-sm font-medium leading-tight">{user.name}</div>
-                <div className="text-xs text-muted-foreground leading-tight">{ROLE_BADGE[user.role]}</div>
               </div>
-              <Badge className="rounded-xl" variant="secondary">
-                {ROLE_BADGE[user.role]}
-              </Badge>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 py-6 md:grid-cols-[260px_1fr]">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 py-6 md:grid-cols-[220px_1fr]">
         <aside className="md:sticky md:top-20 md:h-[calc(100vh-5rem)]">
           <Card className="rounded-2xl shadow-sm">
             <CardHeader className="pb-3">
@@ -346,15 +387,16 @@ export default function AICoinOnboardingDashboard() {
                   <div className="text-sm text-muted-foreground">👋 欢迎你</div>
                   <div className="text-2xl font-semibold tracking-tight">{user.name}</div>
                   <div className="mt-1 text-sm text-muted-foreground">
-                    你当前的角色是 <span className="font-medium text-foreground">{ROLE_BADGE[user.role]}</span>。
+                    你当前的角色是 <span className="font-medium text-foreground">产品经理</span>。
                     下面是你的入职进度与下一步建议。
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge className="rounded-xl" variant="secondary">
-                    {ROLE_BADGE[user.role]}
-                  </Badge>
-                  <Button className="rounded-2xl" variant="outline">
+                  <Button 
+                    className="rounded-2xl" 
+                    variant="outline"
+                    onClick={() => setRoleDialogOpen(true)}
+                  >
                     查看角色说明
                   </Button>
                 </div>
@@ -411,10 +453,10 @@ export default function AICoinOnboardingDashboard() {
                 {sections.map((s) => {
                   const p = sectionProgress(s);
                   return (
-                    <Card key={s.id} className="rounded-2xl border shadow-none">
+                    <Card key={s.id} className="rounded-2xl">
                       <CardContent className="p-4">
                         <div className="flex items-center gap-2">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-secondary text-secondary-content shadow-glow">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
                             {s.icon}
                           </div>
                           <div className="flex-1">
@@ -470,27 +512,34 @@ export default function AICoinOnboardingDashboard() {
                       </div>
                     </div>
 
-                    <div className="rounded-2xl border p-2">
+                    <div className="space-y-2">
                       {s.items.slice(0, 6).map((it) => (
                         <button
                           key={it.id}
                           onClick={() => toggleItem(s.id, it.id)}
-                          className="flex w-full items-center gap-2 rounded-2xl px-3 py-2 text-left text-sm hover:bg-accent/60"
+                          className="flex w-full items-center gap-2 rounded-2xl border bg-card px-3 py-2 text-left text-sm transition active:shadow-none"
                           title={it.locked ? "该步骤当前被锁定" : "点击切换完成状态"}
                         >
                           {it.locked ? (
                             <Lock className="h-4 w-4 text-muted-foreground" />
                           ) : it.done ? (
-                            <CheckCircle2 className="h-4 w-4" />
+                            <CheckCircle2 className="h-4 w-4 text-green-600" />
                           ) : (
                             <Circle className="h-4 w-4 text-muted-foreground" />
                           )}
-                          <span className={`flex-1 ${it.done ? "line-through text-muted-foreground" : ""}`}>
-                            {it.title}
-                          </span>
-                          {typeof it.etaMinutes === "number" && (
-                            <span className="text-xs text-muted-foreground">{it.etaMinutes} 分钟</span>
-                          )}
+                          <div className="flex-1">
+                            <div className={`font-medium ${it.done ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                              {it.title}
+                            </div>
+                            <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
+                              {typeof it.etaMinutes === "number" && (
+                                <span>预计 {it.etaMinutes} 分钟</span>
+                              )}
+                              {it.done && <span>已完成</span>}
+                              {!it.done && !it.locked && <span>未完成</span>}
+                              {it.locked && <span>已锁定</span>}
+                            </div>
+                          </div>
                         </button>
                       ))}
 
@@ -559,6 +608,10 @@ export default function AICoinOnboardingDashboard() {
         {activeNav === "accounts" && (
           <AccountsRegistrationPage onBack={() => setActiveNav("dashboard")} />
         )}
+
+        {activeNav === "dev" && (
+          <DevGuidePage onBack={() => setActiveNav("dashboard")} />
+        )}
       </div>
 
       <div className="md:hidden px-4 pb-6">
@@ -576,6 +629,30 @@ export default function AICoinOnboardingDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      <SettingsPanel
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        onNameChange={() => {
+          const savedName = localStorage.getItem("userName");
+          if (savedName) {
+            setUser((prev) => ({ ...prev, name: savedName }));
+          }
+        }}
+      />
+
+      <WelcomeDialog
+        open={showWelcome}
+        onComplete={(name) => {
+          setUser((prev) => ({ ...prev, name }));
+          setShowWelcome(false);
+        }}
+      />
+
+      <RoleDescriptionDialog
+        open={roleDialogOpen}
+        onClose={() => setRoleDialogOpen(false)}
+      />
     </div>
   );
 }

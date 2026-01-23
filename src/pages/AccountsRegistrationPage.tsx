@@ -49,13 +49,14 @@ type StepDetail = {
 };
 
 const stepThumb = (index: number) => {
-  const palettes = [
-    ["#FDE68A", "#F97316"],
-    ["#BFDBFE", "#3B82F6"],
-    ["#C7D2FE", "#6366F1"],
-    ["#FBCFE8", "#EC4899"],
+  // 使用中性灰色调
+  const grays = [
+    ["#E5E7EB", "#9CA3AF"],
+    ["#D1D5DB", "#6B7280"],
+    ["#F3F4F6", "#4B5563"],
+    ["#E5E7EB", "#374151"],
   ];
-  const [from, to] = palettes[index % palettes.length];
+  const [from, to] = grays[index % grays.length];
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="112" height="84" viewBox="0 0 112 84">
   <defs>
     <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
@@ -247,7 +248,7 @@ export default function AccountsRegistrationPage({
         purpose: "加入以下企业微信群，阅读群公告。",
         steps: [
           "部门群：产品经理敢问敢答",
-          "开发群：产品打通安卓开发咨询 + 产品打通 iOS 开发咨询",
+          "开发群：产品打通安卓开发咨询 + 产品打通 iOS 开发咨询。",
           "发版群：PC 新功能弹窗及发版日志",
           "对接群：移动端对接群 + 测试需求对接群",
           "审核群：PRD、原型、设计图终稿评审",
@@ -397,7 +398,7 @@ export default function AccountsRegistrationPage({
                             href={s.linkHref}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1 rounded-full border border-input px-3 py-1 text-xs font-medium text-foreground transition hover:border-emerald-400 hover:text-emerald-600"
+                            className="inline-flex items-center gap-1 rounded-full border border-input px-3 py-1 text-xs font-medium text-foreground transition hover:border-primary hover:text-primary"
                           >
                             {s.linkLabel} <ExternalLink className="h-3 w-3" />
                           </a>
@@ -418,11 +419,11 @@ export default function AccountsRegistrationPage({
                           >
                             <span
                               className={`mt-0.5 flex h-5 w-5 items-center justify-center rounded-full border ${
-                                checked ? "border-emerald-400" : "border-muted-foreground/60"
+                                checked ? "border-primary" : "border-muted-foreground/60"
                               }`}
                             >
                               {checked ? (
-                                <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                                <CheckCircle2 className="h-3 w-3 text-green-600" />
                               ) : (
                                 <Circle className="h-3 w-3 text-muted-foreground/60" />
                               )}
@@ -532,7 +533,7 @@ export default function AccountsRegistrationPage({
                     <div className="flex items-center gap-2 p-2">
                       <button
                         onClick={() => toggleDone(it.id)}
-                        className="flex items-center justify-center rounded-xl p-2 hover:bg-accent"
+                        className="flex items-center justify-center rounded-xl p-2"
                         title={
                           it.locked
                             ? "该步骤当前被锁定"
@@ -544,7 +545,7 @@ export default function AccountsRegistrationPage({
                         {it.locked ? (
                           <Lock className="h-4 w-4 text-muted-foreground" />
                         ) : it.done ? (
-                          <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                          <CheckCircle2 className="h-4 w-4 text-green-600" />
                         ) : (
                           <Circle className="h-4 w-4 text-muted-foreground" />
                         )}
@@ -552,11 +553,9 @@ export default function AccountsRegistrationPage({
 
                       <button
                         onClick={() => setSelectedId(it.id)}
-                        className={`flex-1 rounded-xl px-2 py-2 text-left text-sm transition hover:bg-accent ${
-                          active ? "bg-accent" : ""
-                        }`}
+                        className="flex-1 rounded-xl px-2 py-2 text-left text-sm transition"
                       >
-                      <div className={`font-medium ${it.done ? "text-muted-foreground/70" : ""}`}>
+                      <div className={`font-medium ${it.done ? "line-through text-muted-foreground/70" : "text-foreground"}`}>
                           {it.title}
                         </div>
                         <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
@@ -578,14 +577,8 @@ export default function AccountsRegistrationPage({
               <Button className="rounded-2xl" onClick={goNextUnfinished}>
                 去做下一项 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
-              <Button variant="outline" className="rounded-2xl">
-                导出清单
-              </Button>
             </div>
 
-            <div className="text-xs text-muted-foreground">
-              提示：左侧圆圈用于标记完成；点击条目查看右侧详细指引。
-            </div>
           </CardContent>
         </Card>
       </div>
@@ -597,11 +590,11 @@ export default function AccountsRegistrationPage({
           role="presentation"
         >
           <div
-            className="relative max-h-[90vh] w-full max-w-3xl overflow-hidden rounded-2xl border border-white/30 bg-white/90 shadow-2xl"
+            className="relative max-h-[90vh] w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="absolute right-3 top-3 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-muted-foreground transition hover:bg-white"
+              className="absolute right-3 top-3 rounded-full bg-background/80 backdrop-blur-sm px-3 py-1 text-xs font-medium text-muted-foreground transition hover:bg-background"
               onClick={handleCloseLightbox}
             >
               关闭
