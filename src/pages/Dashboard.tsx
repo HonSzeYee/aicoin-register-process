@@ -100,9 +100,11 @@ export default function AICoinOnboardingDashboard() {
         return null;
       }
     })();
+
     const accountDoneMap = savedChecklist
       ? Object.fromEntries(savedChecklist.map((it) => [it.id, it.done]))
       : {};
+
     return [
       {
         id: "accounts",
@@ -153,38 +155,38 @@ export default function AICoinOnboardingDashboard() {
           },
         ],
       },
-    {
-      id: "dev",
-      title: "开发指南",
-      icon: <Code2 className="h-4 w-4" />,
-      items: [
-        { id: "common", title: "通用开发规范（分支 / MR / Review）", etaMinutes: 10, done: false },
-        { id: "android-setup", title: "Android 环境搭建", etaMinutes: 20, done: false, locked: false },
-        { id: "android-run", title: "Android 项目启动与运行", etaMinutes: 15, done: false, locked: false },
-        { id: "android-faq", title: "Android 常见问题", etaMinutes: 8, done: false, locked: false },
-      ],
-    },
-    {
-      id: "tools",
-      title: "软件使用",
-      icon: <Wrench className="h-4 w-4" />,
-      items: [
-        { id: "figma-use", title: "Figma：看稿、标注、切图规则", etaMinutes: 12, done: false },
-        { id: "itask-use", title: "iTask：任务状态流转与协作", etaMinutes: 10, done: false },
-        { id: "gitlab-use", title: "GitLab：提 MR 与 Code Review", etaMinutes: 12, done: false },
-      ],
-    },
-    {
-      id: "workflow",
-      title: "工作流程",
-      icon: <GitPullRequest className="h-4 w-4" />,
-      items: [
-        { id: "demo-flow", title: "Demo 版本工作流程", etaMinutes: 10, done: false },
-        { id: "classic-flow", title: "传统版本工作流程", etaMinutes: 12, done: false },
-      ],
-    },
-  ];
-});
+      {
+        id: "dev",
+        title: "开发指南",
+        icon: <Code2 className="h-4 w-4" />,
+        items: [
+          { id: "common", title: "通用开发规范（分支 / MR / Review）", etaMinutes: 10, done: false },
+          { id: "android-setup", title: "Android 环境搭建", etaMinutes: 20, done: false, locked: false },
+          { id: "android-run", title: "Android 项目启动与运行", etaMinutes: 15, done: false, locked: false },
+          { id: "android-faq", title: "Android 常见问题", etaMinutes: 8, done: false, locked: false },
+        ],
+      },
+      {
+        id: "tools",
+        title: "软件使用",
+        icon: <Wrench className="h-4 w-4" />,
+        items: [
+          { id: "figma-use", title: "Figma：看稿、标注、切图规则", etaMinutes: 12, done: false },
+          { id: "itask-use", title: "iTask：任务状态流转与协作", etaMinutes: 10, done: false },
+          { id: "gitlab-use", title: "GitLab：提 MR 与 Code Review", etaMinutes: 12, done: false },
+        ],
+      },
+      {
+        id: "workflow",
+        title: "工作流程",
+        icon: <GitPullRequest className="h-4 w-4" />,
+        items: [
+          { id: "demo-flow", title: "Demo 版本工作流程", etaMinutes: 10, done: false },
+          { id: "classic-flow", title: "传统版本工作流程", etaMinutes: 12, done: false },
+        ],
+      },
+    ];
+  });
 
   const [updates] = useState<UpdateItem[]>([
     { id: "u1", date: "2026-01-18", title: "更新：Android 环境搭建说明（Gradle 镜像）", tag: "开发" },
