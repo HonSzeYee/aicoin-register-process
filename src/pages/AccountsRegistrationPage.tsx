@@ -102,6 +102,18 @@ function calcProgress(items: ChecklistItem[]) {
   return { total, done, pct };
 }
 
+const checklistStorageKey = "accounts-registration-checklist";
+
+const defaultChecklistItems: ChecklistItem[] = [
+  { id: "corp-email", title: "查找企业邮箱 & 版本日志推送", etaMinutes: 1, done: false },
+  { id: "vpn", title: "安装翻墙软件", etaMinutes: 8, done: false },
+  { id: "aicoin", title: "安装 AICoin 软件", etaMinutes: 5, done: false },
+  { id: "itask", title: "注册 iTask 账号", etaMinutes: 5, done: false },
+  { id: "gitlab", title: "注册 GitLab 账号", etaMinutes: 5, done: false },
+  { id: "figma", title: "注册 Figma 账号", etaMinutes: 4, done: false },
+  { id: "wechat", title: "加入企业微信群", etaMinutes: 6, done: false },
+];
+
 export default function AccountsRegistrationPage({
   onBack,
 }: {
@@ -111,15 +123,21 @@ export default function AccountsRegistrationPage({
   const [wechatChecklist, setWechatChecklist] = useState<boolean[]>([]);
   const handleCloseLightbox = () => setLightboxImage(null);
 
-  const [items, setItems] = useState<ChecklistItem[]>([
-    { id: "corp-email", title: "查找企业邮箱 & 版本日志推送", etaMinutes: 1, done: false },
-    { id: "vpn", title: "安装翻墙软件", etaMinutes: 8, done: false },
-    { id: "aicoin", title: "安装 AICoin 软件", etaMinutes: 5, done: false },
-    { id: "itask", title: "注册 iTask 账号", etaMinutes: 5, done: false },
-    { id: "gitlab", title: "注册 GitLab 账号", etaMinutes: 5, done: false },
-    { id: "figma", title: "注册 Figma 账号", etaMinutes: 4, done: false },
-    { id: "wechat", title: "加入企业微信群", etaMinutes: 6, done: false },
-  ]);
+  const [items, setItems] = useState<ChecklistItem[]>(() => {
+    if (typeof window === "undefined") return defaultChecklistItems;
+    try {
+      const stored = window.localStorage.getItem(checklistStorageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored) as ChecklistItem[];
+        if (Array.isArray(parsed) && parsed.length) {
+          return parsed;
+        }
+      }
+    } catch {
+      // ignore parse errors
+    }
+    return defaultChecklistItems;
+  });
 
   const details = useMemo<Record<string, StepDetail>>(
     () => ({
@@ -262,12 +280,27 @@ export default function AccountsRegistrationPage({
     [details, selectedItem]
   );
   const isWechatChecklist = selectedItem?.id === "wechat";
+  const checklistProgress = useMemo(() => {
+    const total = items.length;
+    const done = items.filter((i) => i.done).length;
+    const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+    return { total, done, pct };
+  }, [items]);
 
   useEffect(() => {
     if (selectedItem?.id === "wechat" && selectedDetail) {
       setWechatChecklist(new Array(selectedDetail.steps.length).fill(false));
     }
   }, [selectedDetail, selectedItem?.id]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(checklistStorageKey, JSON.stringify(items));
+    } catch {
+      // ignore storage failures
+    }
+  }, [items]);
 
   const handleWechatToggle = (idx: number) => {
     setWechatChecklist((prev) => {
@@ -463,12 +496,17 @@ export default function AccountsRegistrationPage({
             <CardTitle className="text-base">步骤清单</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">完成度</span>
-                <span className="font-medium">{progress.pct}%</span>
+            <div className="rounded-2xl border p-4">
+              <div className="flex items-center justify-between text-sm font-medium">
+                <span>完成度</span>
+                <span className="font-semibold">{checklistProgress.pct}%</span>
               </div>
-              <Progress value={clamp(progress.pct, 0, 100)} />
+              <div className="mt-2">
+                <Progress
+                  className="h-3 bg-muted/60"
+                  value={clamp(checklistProgress.pct, 0, 100)}
+                />
+              </div>
             </div>
 
             <div className="flex items-center gap-2 rounded-2xl border px-3 py-2">

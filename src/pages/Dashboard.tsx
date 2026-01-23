@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -89,22 +89,70 @@ export default function AICoinOnboardingDashboard() {
     role: "Android" as Role,
   });
 
-  const [sections, setSections] = useState<Section[]>([
-    {
-      id: "accounts",
-      title: "账号注册",
-      icon: <KeyRound className="h-4 w-4" />,
-      items: [
-        { id: "corp-email", title: "查找企业邮箱", etaMinutes: 3, done: true },
-        { id: "vpn", title: "安装翻墙软件", etaMinutes: 8, done: false },
-        { id: "aicoin", title: "安装 AICoin 软件", etaMinutes: 5, done: false },
-        { id: "itask", title: "注册 iTask 账号", etaMinutes: 5, done: false },
-        { id: "gitlab", title: "注册 GitLab 账号", etaMinutes: 5, done: false },
-        { id: "figma", title: "注册 Figma 账号", etaMinutes: 4, done: false },
-        { id: "changelog", title: "接收版本日志推送", etaMinutes: 2, done: false },
-        { id: "wechat", title: "加入企业微信群", etaMinutes: 6, done: false },
-      ],
-    },
+  const [sections, setSections] = useState<Section[]>(() => {
+    const savedChecklist = (() => {
+      if (typeof window === "undefined") return null;
+      try {
+        const stored = window.localStorage.getItem("accounts-registration-checklist");
+        if (!stored) return null;
+        return JSON.parse(stored) as ChecklistItem[];
+      } catch {
+        return null;
+      }
+    })();
+    const accountDoneMap = savedChecklist
+      ? Object.fromEntries(savedChecklist.map((it) => [it.id, it.done]))
+      : {};
+    return [
+      {
+        id: "accounts",
+        title: "账号注册",
+        icon: <KeyRound className="h-4 w-4" />,
+        items: [
+          {
+            id: "corp-email",
+            title: "查找企业邮箱",
+            etaMinutes: 3,
+            done: accountDoneMap["corp-email"] ?? true,
+          },
+          {
+            id: "vpn",
+            title: "安装翻墙软件",
+            etaMinutes: 8,
+            done: accountDoneMap["vpn"] ?? false,
+          },
+          {
+            id: "aicoin",
+            title: "安装 AICoin 软件",
+            etaMinutes: 5,
+            done: accountDoneMap["aicoin"] ?? false,
+          },
+          {
+            id: "itask",
+            title: "注册 iTask 账号",
+            etaMinutes: 5,
+            done: accountDoneMap["itask"] ?? false,
+          },
+          {
+            id: "gitlab",
+            title: "注册 GitLab 账号",
+            etaMinutes: 5,
+            done: accountDoneMap["gitlab"] ?? false,
+          },
+          {
+            id: "figma",
+            title: "注册 Figma 账号",
+            etaMinutes: 4,
+            done: accountDoneMap["figma"] ?? false,
+          },
+          {
+            id: "wechat",
+            title: "加入企业微信群",
+            etaMinutes: 6,
+            done: accountDoneMap["wechat"] ?? false,
+          },
+        ],
+      },
     {
       id: "dev",
       title: "开发指南",
@@ -135,7 +183,8 @@ export default function AICoinOnboardingDashboard() {
         { id: "classic-flow", title: "传统版本工作流程", etaMinutes: 12, done: false },
       ],
     },
-  ]);
+  ];
+});
 
   const [updates] = useState<UpdateItem[]>([
     { id: "u1", date: "2026-01-18", title: "更新：Android 环境搭建说明（Gradle 镜像）", tag: "开发" },
@@ -171,6 +220,23 @@ export default function AICoinOnboardingDashboard() {
       })
     );
   }
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const accounts = sections.find((s) => s.id === "accounts");
+    if (!accounts) return;
+    const payload = accounts.items.map(({ id, title, etaMinutes, done }) => ({
+      id,
+      title,
+      etaMinutes,
+      done,
+    }));
+    try {
+      window.localStorage.setItem("accounts-registration-checklist", JSON.stringify(payload));
+    } catch {
+      // ignore storage errors
+    }
+  }, [sections]);
 
   const filteredSections = useMemo(() => {
     const q = query.trim().toLowerCase();
