@@ -414,7 +414,7 @@ export default function AICoinOnboardingDashboard() {
                     <Card key={s.id} className="rounded-2xl border shadow-none">
                       <CardContent className="p-4">
                         <div className="flex items-center gap-2">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-accent">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-secondary text-secondary-content shadow-glow">
                             {s.icon}
                           </div>
                           <div className="flex-1">
