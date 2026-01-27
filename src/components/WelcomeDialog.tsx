@@ -27,9 +27,6 @@ export default function WelcomeDialog({ open, onComplete }: WelcomeDialogProps) 
       return;
     }
 
-    if (typeof window !== "undefined") {
-      localStorage.setItem("userName", trimmedName);
-    }
     onComplete(trimmedName);
   };
 
@@ -99,4 +96,3 @@ export default function WelcomeDialog({ open, onComplete }: WelcomeDialogProps) 
     </>
   );
 }
-

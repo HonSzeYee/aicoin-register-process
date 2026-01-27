@@ -1,12 +1,29 @@
-import AICoinOnboardingDashboard from "./pages/Dashboard";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ScrollTakeoverProvider } from "@/context/ScrollTakeoverContext";
+import { AppStateProvider } from "@/context/AppStateContext";
+import AppLayout from "@/layouts/AppLayout";
+import AICoinOnboardingDashboard from "@/pages/Dashboard";
+import AccountsRegistrationPage from "@/pages/AccountsRegistrationPage";
+import DevGuidePage from "@/pages/DevGuidePage";
+import PlaceholderPage from "@/pages/PlaceholderPage";
 
 export default function App() {
   return (
-    <ScrollTakeoverProvider threshold={56} hysteresis={12} exitDelayMs={120} stopDelayMs={120}>
-      <div className="min-h-screen">
-        <AICoinOnboardingDashboard />
-      </div>
-    </ScrollTakeoverProvider>
+    <AppStateProvider>
+      <ScrollTakeoverProvider threshold={56} hysteresis={12} exitDelayMs={120} stopDelayMs={120}>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<AppLayout />}>
+              <Route index element={<AICoinOnboardingDashboard />} />
+              <Route path="accounts" element={<AccountsRegistrationPage />} />
+              <Route path="dev" element={<DevGuidePage />} />
+              <Route path="tools" element={<PlaceholderPage title="软件使用" />} />
+              <Route path="workflow" element={<PlaceholderPage title="工作流程" />} />
+              <Route path="faq" element={<PlaceholderPage title="常见问题" />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </ScrollTakeoverProvider>
+    </AppStateProvider>
   );
 }

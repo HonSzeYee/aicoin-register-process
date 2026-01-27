@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppState } from "@/context/AppStateContext";
 import { useScrollTakeoverContext } from "@/context/ScrollTakeoverContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -400,15 +402,9 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
   },
 };
 
-const devGuideStorageKey = "dev-guide-read";
-
-export default function DevGuidePage({
-  onBack,
-  onDevReadChange,
-}: {
-  onBack: () => void;
-  onDevReadChange?: (readMap: Record<string, boolean>) => void;
-}) {
+export default function DevGuidePage() {
+  const navigate = useNavigate();
+  const { devReadMap, setDevReadMap } = useAppState();
   const { takenOver, isScrolling } = useScrollTakeoverContext();
   const headerRef = useRef<HTMLElement | null>(null);
   const [subHeaderHeight, setSubHeaderHeight] = useState(0);
@@ -424,24 +420,7 @@ export default function DevGuidePage({
     left: 0,
     width: 0,
   });
-  const [readSections, setReadSections] = useState<Record<string, boolean>>(() => {
-    if (typeof window === "undefined") return { env: false, flow: false, branch: false, commit: false };
-    try {
-      const stored = window.localStorage.getItem(devGuideStorageKey);
-      if (stored) {
-        const parsed = JSON.parse(stored) as Record<string, boolean>;
-        return {
-          env: !!parsed.env,
-          flow: !!parsed.flow,
-          branch: !!parsed.branch,
-          commit: !!parsed.commit,
-        };
-      }
-    } catch {
-      /* ignore */
-    }
-    return { env: false, flow: false, branch: false, commit: false };
-  });
+  const readSections = devReadMap;
 
   const READABLE_SECTIONS = ["env", "flow", "branch", "commit"] as const;
 
@@ -452,7 +431,7 @@ export default function DevGuidePage({
   };
 
   const markActiveRead = () => {
-    setReadSections((prev) => ({
+    setDevReadMap((prev) => ({
       ...prev,
       [activeSection]: true,
     }));
@@ -470,17 +449,10 @@ export default function DevGuidePage({
     };
   }, []);
 
-  // 同步已读状态到 localStorage + 父组件
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      try {
-        window.localStorage.setItem(devGuideStorageKey, JSON.stringify(readSections));
-      } catch {
-        /* ignore */
-      }
-    }
-    onDevReadChange?.(readSections);
-  }, [readSections, onDevReadChange]);
+  // 返回上一级
+  const handleBack = useCallback(() => {
+    navigate("/");
+  }, [navigate]);
 
   // 更新平台 Tab 背景滑块位置
   useEffect(() => {
@@ -520,7 +492,7 @@ export default function DevGuidePage({
         ref={headerRef}
         takenOver={takeoverHeader}
         isScrolling={isScrolling}
-        onBack={onBack}
+        onBack={handleBack}
       />
       {takeoverHeader && <div aria-hidden="true" style={{ height: subHeaderHeight }} />}
 

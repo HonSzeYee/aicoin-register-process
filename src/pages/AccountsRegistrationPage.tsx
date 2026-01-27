@@ -1,4 +1,6 @@
-import React, { useMemo, useState, useEffect, useRef } from "react";
+import React, { useMemo, useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppState } from "@/context/AppStateContext";
 import { useScrollTakeoverContext } from "@/context/ScrollTakeoverContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -169,25 +171,9 @@ function calcProgress(items: ChecklistItem[]) {
   return { total, done, pct };
 }
 
-const checklistStorageKey = "accounts-registration-checklist";
-
-const defaultChecklistItems: ChecklistItem[] = [
-  { id: "corp-email", title: "查找企业邮箱 & 版本日志推送", etaMinutes: 1, done: false },
-  { id: "vpn", title: "安装翻墙软件", etaMinutes: 8, done: false },
-  { id: "aicoin", title: "安装 AICoin 软件", etaMinutes: 5, done: false },
-  { id: "itask", title: "注册 iTask 账号", etaMinutes: 5, done: false },
-  { id: "gitlab", title: "注册 GitLab 账号", etaMinutes: 5, done: false },
-  { id: "figma", title: "注册 Figma 账号", etaMinutes: 4, done: false },
-  { id: "wechat", title: "加入企业微信群", etaMinutes: 6, done: false },
-];
-
-export default function AccountsRegistrationPage({
-  onBack,
-  onAllDone,
-}: {
-  onBack?: () => void;
-  onAllDone?: () => void;
-}) {
+export default function AccountsRegistrationPage() {
+  const navigate = useNavigate();
+  const { accountItems, toggleAccountItem } = useAppState();
   const { takenOver, isScrolling } = useScrollTakeoverContext();
   const headerRef = useRef<HTMLElement | null>(null);
   const [subHeaderHeight, setSubHeaderHeight] = useState(0);
@@ -207,22 +193,10 @@ export default function AccountsRegistrationPage({
   }, []);
 
   const takeoverHeader = takenOver;
-
-  const [items, setItems] = useState<ChecklistItem[]>(() => {
-    if (typeof window === "undefined") return defaultChecklistItems;
-    try {
-      const stored = window.localStorage.getItem(checklistStorageKey);
-      if (stored) {
-        const parsed = JSON.parse(stored) as ChecklistItem[];
-        if (Array.isArray(parsed) && parsed.length) {
-          return parsed;
-        }
-      }
-    } catch {
-      // ignore parse errors
-    }
-    return defaultChecklistItems;
-  });
+  const items = accountItems as ChecklistItem[];
+  const handleBack = useCallback(() => {
+    navigate("/");
+  }, [navigate]);
 
   const details = useMemo<Record<string, StepDetail>>(
     () => ({
@@ -378,15 +352,6 @@ export default function AccountsRegistrationPage({
     }
   }, [selectedDetail, selectedItem?.id]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      window.localStorage.setItem(checklistStorageKey, JSON.stringify(items));
-    } catch {
-      // ignore storage failures
-    }
-  }, [items]);
-
   const handleWechatToggle = (idx: number) => {
     setWechatChecklist((prev) => {
       const next = [...prev];
@@ -435,19 +400,13 @@ export default function AccountsRegistrationPage({
   };
 
   function toggleDone(id: string) {
-    setItems((prev) =>
-      prev.map((it) => {
-        if (it.id !== id) return it;
-        if (it.locked) return it;
-        return { ...it, done: !it.done };
-      })
-    );
+    toggleAccountItem(id);
   }
 
   function goNextUnfinished() {
     const unfinished = items.find((i) => !i.done && !i.locked);
     if (!unfinished) {
-      onAllDone?.();
+      navigate("/dev");
       return;
     }
     setSelectedId(unfinished.id);
@@ -460,7 +419,7 @@ export default function AccountsRegistrationPage({
         ref={headerRef}
         takenOver={takeoverHeader}
         isScrolling={isScrolling}
-        onBack={onBack}
+        onBack={handleBack}
         done={progress.done}
         total={progress.total}
       />

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useAppState } from "@/context/AppStateContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -11,10 +12,10 @@ type FontSize = "small" | "medium" | "large";
 interface SettingsPanelProps {
   open: boolean;
   onClose: () => void;
-  onNameChange?: () => void;
 }
 
-export default function SettingsPanel({ open, onClose, onNameChange }: SettingsPanelProps) {
+export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
+  const { userName, setUserName } = useAppState();
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window === "undefined") return "system";
     const saved = localStorage.getItem("theme");
@@ -27,18 +28,10 @@ export default function SettingsPanel({ open, onClose, onNameChange }: SettingsP
     return (saved as FontSize) || "medium";
   });
 
-  const [userName, setUserName] = useState(() => {
-    if (typeof window === "undefined") return "";
-    return localStorage.getItem("userName") || "";
-  });
+  const [nameInput, setNameInput] = useState(userName);
 
   const handleSaveName = () => {
-    if (typeof window === "undefined") return;
-    const trimmedName = userName.trim();
-    if (trimmedName) {
-      localStorage.setItem("userName", trimmedName);
-      onNameChange?.();
-    }
+    setUserName(nameInput);
   };
 
   const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -52,10 +45,6 @@ export default function SettingsPanel({ open, onClose, onNameChange }: SettingsP
     if (typeof window === "undefined") return;
     localStorage.setItem("theme", theme);
     localStorage.setItem("fontSize", fontSize);
-    if (userName.trim()) {
-      localStorage.setItem("userName", userName.trim());
-      onNameChange?.();
-    }
 
     // 应用主题
     const root = document.documentElement;
@@ -80,7 +69,7 @@ export default function SettingsPanel({ open, onClose, onNameChange }: SettingsP
       large: "18px",
     };
     root.style.fontSize = fontSizeMap[fontSize];
-  }, [theme, fontSize, userName, onNameChange]);
+  }, [theme, fontSize]);
 
   // 监听系统主题变化（仅在 system 模式下）
   useEffect(() => {
@@ -99,6 +88,10 @@ export default function SettingsPanel({ open, onClose, onNameChange }: SettingsP
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, [theme]);
+
+  useEffect(() => {
+    setNameInput(userName);
+  }, [userName]);
 
   if (!open) return null;
 
@@ -148,29 +141,15 @@ export default function SettingsPanel({ open, onClose, onNameChange }: SettingsP
                 </div>
               </div>
               <Input
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
+                value={nameInput}
+                onChange={(e) => setNameInput(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    const trimmedName = userName.trim();
-                    if (trimmedName) {
-                      if (typeof window !== "undefined") {
-                        localStorage.setItem("userName", trimmedName);
-                      }
-                      onNameChange?.();
-                    }
+                    handleSaveName();
                   }
                 }}
-                onBlur={() => {
-                  const trimmedName = userName.trim();
-                  if (trimmedName) {
-                    if (typeof window !== "undefined") {
-                      localStorage.setItem("userName", trimmedName);
-                    }
-                    onNameChange?.();
-                  }
-                }}
+                onBlur={handleSaveName}
                 placeholder="请输入你的名字"
                 className="rounded-xl"
                 maxLength={20}
@@ -287,4 +266,3 @@ export default function SettingsPanel({ open, onClose, onNameChange }: SettingsP
     </>
   );
 }
-
