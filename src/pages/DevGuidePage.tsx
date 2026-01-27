@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useScrollTakeoverContext } from "@/context/ScrollTakeoverContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -404,14 +405,11 @@ const devGuideStorageKey = "dev-guide-read";
 export default function DevGuidePage({
   onBack,
   onDevReadChange,
-  takenOver = false,
-  isScrolling = false,
 }: {
   onBack: () => void;
   onDevReadChange?: (readMap: Record<string, boolean>) => void;
-  takenOver?: boolean;
-  isScrolling?: boolean;
 }) {
+  const { takenOver, isScrolling } = useScrollTakeoverContext();
   const headerRef = useRef<HTMLElement | null>(null);
   const [subHeaderHeight, setSubHeaderHeight] = useState(0);
   const [platform, setPlatform] = useState<Platform>("PC");

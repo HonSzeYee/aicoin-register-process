@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
+import { useScrollTakeoverContext } from "@/context/ScrollTakeoverContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -183,14 +184,11 @@ const defaultChecklistItems: ChecklistItem[] = [
 export default function AccountsRegistrationPage({
   onBack,
   onAllDone,
-  takenOver = false,
-  isScrolling = false,
 }: {
   onBack?: () => void;
   onAllDone?: () => void;
-  takenOver?: boolean;
-  isScrolling?: boolean;
 }) {
+  const { takenOver, isScrolling } = useScrollTakeoverContext();
   const headerRef = useRef<HTMLElement | null>(null);
   const [subHeaderHeight, setSubHeaderHeight] = useState(0);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);

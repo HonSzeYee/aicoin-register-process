@@ -11,7 +11,7 @@ import SettingsPanel from "@/components/SettingsPanel";
 import WelcomeDialog from "@/components/WelcomeDialog";
 import RoleDescriptionDialog from "@/components/RoleDescriptionDialog";
 import { detectDeviceType, DeviceRole } from "@/lib/deviceDetection";
-import useScrollTakeover from "@/hooks/useScrollTakeover";
+import { useScrollTakeoverContext } from "@/context/ScrollTakeoverContext";
 import {
   LayoutDashboard,
   KeyRound,
@@ -454,12 +454,7 @@ export default function AICoinOnboardingDashboard() {
   }, [sections, query]);
 
   // 顶栏滚动状态：收起成单行
-  const { sentinelRef, takenOver: scrolledPast, isScrolling } = useScrollTakeover({
-    threshold: 56,
-    hysteresis: 12,
-    exitDelayMs: 120,
-    stopDelayMs: 120,
-  });
+  const { takenOver: scrolledPast, isScrolling } = useScrollTakeoverContext();
   const headerCollapsed = scrolledPast;
 
   const isSubpage = useMemo(
@@ -486,7 +481,6 @@ export default function AICoinOnboardingDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div ref={sentinelRef} aria-hidden="true" className="h-px w-px" />
       <GlobalHeader
         collapsed={headerCollapsed}
         takenOver={takenOver}
@@ -823,8 +817,6 @@ export default function AICoinOnboardingDashboard() {
 
         {activeNav === "accounts" && (
           <AccountsRegistrationPage
-            takenOver={takenOver}
-            isScrolling={isScrolling}
             onBack={() => setActiveNav("dashboard")}
             onAllDone={() => setActiveNav("dev")}
           />
@@ -832,8 +824,6 @@ export default function AICoinOnboardingDashboard() {
 
         {activeNav === "dev" && (
           <DevGuidePage
-            takenOver={takenOver}
-            isScrolling={isScrolling}
             onBack={() => setActiveNav("dashboard")}
             onDevReadChange={applyDevRead}
           />
