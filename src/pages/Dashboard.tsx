@@ -248,7 +248,7 @@ export default function AICoinOnboardingDashboard() {
                     {it.locked ? (
                       <Lock className="h-4 w-4 text-muted-foreground" />
                     ) : it.done ? (
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                      <CheckCircle2 className="h-4 w-4 text-[#2e7d32]" />
                     ) : (
                       <Circle className="h-4 w-4 text-muted-foreground" />
                     )}

@@ -585,7 +585,7 @@ export default function DevGuidePage() {
                   size="sm"
                   className={`relative rounded-full px-3 ${
                     platform === p.id
-                      ? "bg-transparent text-primary hover:bg-transparent hover:text-primary"
+                      ? "bg-transparent text-primary shadow-sm hover:bg-transparent hover:text-primary"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                   onClick={() => setPlatform(p.id)}
@@ -622,7 +622,7 @@ export default function DevGuidePage() {
                       {section.title}
                     </span>
                     {isRead && (
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                      <CheckCircle2 className="h-4 w-4 text-[#2e7d32]" />
                     )}
                   </Button>
                 );
