@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +11,7 @@ import SettingsPanel from "@/components/SettingsPanel";
 import WelcomeDialog from "@/components/WelcomeDialog";
 import RoleDescriptionDialog from "@/components/RoleDescriptionDialog";
 import { detectDeviceType, DeviceRole } from "@/lib/deviceDetection";
+import useScrollTakeover from "@/hooks/useScrollTakeover";
 import {
   LayoutDashboard,
   KeyRound,
@@ -363,28 +364,74 @@ export default function AICoinOnboardingDashboard() {
       .filter((s) => s.items.length > 0);
   }, [sections, query]);
 
+  // 顶栏滚动状态：收起成单行
+  const headerCollapsed = useScrollTakeover({
+    threshold: 56,
+    hysteresis: 12,
+    exitDelayMs: 120,
+    minToggleIntervalMs: 160,
+  });
+
+  const isSubpage = useMemo(
+    () => activeNav === "accounts" || activeNav === "dev",
+    [activeNav]
+  );
+  const takenOver = useMemo(() => isSubpage && headerCollapsed, [isSubpage, headerCollapsed]);
+
+  const handleNameChange = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const savedName = localStorage.getItem("userName");
+    if (savedName) {
+      setUser((prev) => ({ ...prev, name: savedName }));
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-20 border-b bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-3">
+      <header
+        className={`sticky top-0 z-20 border-b transition-[opacity,transform] duration-200 ${
+          takenOver
+            ? "opacity-0 -translate-y-full pointer-events-none backdrop-blur-none"
+            : headerCollapsed
+              ? "bg-background/95 shadow-sm backdrop-blur"
+              : "bg-background/80 backdrop-blur"
+        }`}
+      >
+        <div
+          className={`mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-200 ${
+            headerCollapsed ? "py-2 gap-2" : "py-3 gap-3"
+          }`}
+        >
+          <div className={`flex items-center ${headerCollapsed ? "gap-2" : "gap-3"}`}>
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl border shadow-sm">
               <Sparkles className="h-5 w-5" />
             </div>
-            <div>
-              <div className="text-sm text-muted-foreground">AICoin</div>
-              <div className="text-lg font-semibold leading-tight">新人入职指南</div>
-            </div>
+            {headerCollapsed ? (
+              <div className="flex items-center gap-2">
+                <div className="text-sm font-semibold leading-tight">AICoin · 新人入职指南</div>
+              </div>
+            ) : (
+              <div>
+                <div className="text-sm text-muted-foreground">AICoin</div>
+                <div className="text-lg font-semibold leading-tight">新人入职指南</div>
+              </div>
+            )}
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-2 rounded-2xl border px-3 py-2 shadow-sm">
+          <div className={`flex items-center ${headerCollapsed ? "gap-2" : "gap-3"}`}>
+            <div
+              className={`hidden md:flex items-center gap-2 rounded-2xl border px-3 shadow-sm transition-all duration-200 ${
+                headerCollapsed ? "py-1.5" : "py-2"
+              }`}
+            >
               <Search className="h-4 w-4 text-muted-foreground" />
               <Input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="搜索步骤 / 工具 / 关键词"
-                className="h-7 w-[260px] border-0 p-0 shadow-none focus-visible:ring-0"
+                className={`h-7 border-0 p-0 shadow-none focus-visible:ring-0 transition-all duration-200 ${
+                  headerCollapsed ? "w-[180px]" : "w-[260px]"
+                }`}
               />
             </div>
             <Button
@@ -730,6 +777,7 @@ export default function AICoinOnboardingDashboard() {
 
         {activeNav === "accounts" && (
           <AccountsRegistrationPage
+            takenOver={takenOver}
             onBack={() => setActiveNav("dashboard")}
             onAllDone={() => setActiveNav("dev")}
           />
@@ -737,6 +785,7 @@ export default function AICoinOnboardingDashboard() {
 
         {activeNav === "dev" && (
           <DevGuidePage
+            takenOver={takenOver}
             onBack={() => setActiveNav("dashboard")}
             onDevReadChange={applyDevRead}
           />
@@ -763,12 +812,7 @@ export default function AICoinOnboardingDashboard() {
       <SettingsPanel
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
-        onNameChange={() => {
-          const savedName = localStorage.getItem("userName");
-          if (savedName) {
-            setUser((prev) => ({ ...prev, name: savedName }));
-          }
-        }}
+        onNameChange={handleNameChange}
       />
 
       <WelcomeDialog

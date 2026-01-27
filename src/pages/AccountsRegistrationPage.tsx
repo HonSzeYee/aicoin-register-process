@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -118,14 +118,31 @@ const defaultChecklistItems: ChecklistItem[] = [
 export default function AccountsRegistrationPage({
   onBack,
   onAllDone,
+  takenOver = false,
 }: {
   onBack?: () => void;
   onAllDone?: () => void;
+  takenOver?: boolean;
 }) {
+  const headerRef = useRef<HTMLElement | null>(null);
+  const [subHeaderHeight, setSubHeaderHeight] = useState(0);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [lightboxLoaded, setLightboxLoaded] = useState(false); // 控制放大图的淡入时机，避免卡顿
   const [wechatChecklist, setWechatChecklist] = useState<boolean[]>([]);
   const handleCloseLightbox = () => setLightboxImage(null);
+
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const update = () => setSubHeaderHeight(el.getBoundingClientRect().height);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const takeoverHeader = takenOver;
+  const compactHeader = takeoverHeader;
 
   const [items, setItems] = useState<ChecklistItem[]>(() => {
     if (typeof window === "undefined") return defaultChecklistItems;
@@ -374,9 +391,19 @@ export default function AccountsRegistrationPage({
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-20 border-b bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-3">
+      {/* 子页接管式吸顶：滚动后固定在顶部 */}
+      <header
+        ref={headerRef}
+        className={`z-30 border-b bg-background/80 backdrop-blur transition-all duration-200 ${
+          takeoverHeader ? "fixed top-0 left-0 right-0" : "relative w-full"
+        }`}
+      >
+        <div
+          className={`mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-200 ${
+            compactHeader ? "py-2" : "py-3"
+          }`}
+        >
+          <div className={`flex items-center ${compactHeader ? "gap-2" : "gap-3"}`}>
             <Button
               variant="outline"
               size="icon"
@@ -390,10 +417,14 @@ export default function AccountsRegistrationPage({
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl border shadow-sm">
               <KeyRound className="h-5 w-5" />
             </div>
-            <div>
-              <div className="text-sm text-muted-foreground">入职第一步</div>
-              <div className="text-lg font-semibold leading-tight">账号注册</div>
-            </div>
+            {compactHeader ? (
+              <div className="text-sm font-semibold leading-tight">入职第一步 · 账号注册</div>
+            ) : (
+              <div>
+                <div className="text-sm text-muted-foreground">入职第一步</div>
+                <div className="text-lg font-semibold leading-tight">账号注册</div>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -403,6 +434,7 @@ export default function AccountsRegistrationPage({
           </div>
         </div>
       </header>
+      {takeoverHeader && <div aria-hidden="true" style={{ height: subHeaderHeight }} />}
 
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 py-6 lg:grid-cols-[1fr_320px]">
         <Card className="rounded-2xl shadow-sm">

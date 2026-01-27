@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -362,13 +362,26 @@ const devGuideStorageKey = "dev-guide-read";
 export default function DevGuidePage({
   onBack,
   onDevReadChange,
+  takenOver = false,
 }: {
   onBack: () => void;
   onDevReadChange?: (readMap: Record<string, boolean>) => void;
+  takenOver?: boolean;
 }) {
+  const headerRef = useRef<HTMLElement | null>(null);
+  const [subHeaderHeight, setSubHeaderHeight] = useState(0);
   const [platform, setPlatform] = useState<Platform>("PC");
   const [activeSection, setActiveSection] = useState("env");
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const tabRefs = useRef<Record<Platform, HTMLButtonElement | null>>({
+    PC: null,
+    iOS: null,
+    Android: null,
+  });
+  const [tabIndicator, setTabIndicator] = useState<{ left: number; width: number }>({
+    left: 0,
+    width: 0,
+  });
   const [readSections, setReadSections] = useState<Record<string, boolean>>(() => {
     if (typeof window === "undefined") return { env: false, flow: false, branch: false, commit: false };
     try {
@@ -427,41 +440,90 @@ export default function DevGuidePage({
     onDevReadChange?.(readSections);
   }, [readSections, onDevReadChange]);
 
+  // 更新平台 Tab 背景滑块位置
+  useEffect(() => {
+    const el = tabRefs.current[platform];
+    if (el) {
+      const { offsetLeft, offsetWidth } = el;
+      setTabIndicator({ left: offsetLeft, width: offsetWidth });
+    }
+    const handleResize = () => {
+      const el = tabRefs.current[platform];
+      if (el) {
+        setTabIndicator({ left: el.offsetLeft, width: el.offsetWidth });
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [platform]);
+
   const currentPlatform = PLATFORMS.find(p => p.id === platform);
+
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const update = () => setSubHeaderHeight(el.getBoundingClientRect().height);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const takeoverHeader = takenOver;
+  const compactHeader = takeoverHeader;
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-20 border-b bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3">
+      {/* 子页接管式吸顶：滚动后固定在顶部 */}
+      <header
+        ref={headerRef}
+        className={`z-30 border-b bg-background/80 backdrop-blur shadow-sm transition-all duration-200 ${
+          takeoverHeader ? "fixed top-0 left-0 right-0" : "relative w-full"
+        }`}
+      >
+        <div
+          className={`mx-auto flex max-w-7xl items-center gap-4 px-4 transition-all duration-200 ${
+            compactHeader ? "py-2" : "py-3"
+          }`}
+        >
           <Button variant="ghost" size="icon" onClick={onBack} className="rounded-full">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div className="flex-1">
-            <h1 className="text-lg font-semibold">开发指南</h1>
+            <h1 className={compactHeader ? "text-sm font-semibold" : "text-lg font-semibold"}>
+              开发指南
+            </h1>
           </div>
         </div>
       </header>
+      {takeoverHeader && <div aria-hidden="true" style={{ height: subHeaderHeight }} />}
 
       <main className="mx-auto max-w-7xl px-4 py-6 space-y-4">
         {/* 顶部平台切换 */}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1" />
           <div className="flex items-center gap-2 rounded-full border px-2 py-1 bg-card shadow-sm">
-            {PLATFORMS.map((p) => (
-              <Button
-                key={p.id}
-                variant={platform === p.id ? "default" : "ghost"}
-                size="sm"
-                className={`rounded-full px-3 ${
-                  platform === p.id ? "bg-primary text-primary-foreground" : "text-muted-foreground"
-                }`}
-                onClick={() => setPlatform(p.id)}
-              >
-                <p.icon className="mr-1 h-4 w-4" />
-                {p.label}
-              </Button>
-            ))}
+            <div className="relative flex items-center gap-2">
+              <span
+                className="absolute inset-y-0 rounded-full bg-primary/10 transition-all duration-250 ease-in-out"
+                style={{ left: tabIndicator.left, width: tabIndicator.width }}
+              />
+              {PLATFORMS.map((p) => (
+                <Button
+                  key={p.id}
+                  ref={(el) => (tabRefs.current[p.id] = el)}
+                  variant={platform === p.id ? "default" : "ghost"}
+                  size="sm"
+                  className={`relative rounded-full px-3 ${
+                    platform === p.id ? "bg-transparent text-primary" : "text-muted-foreground"
+                  }`}
+                  onClick={() => setPlatform(p.id)}
+                >
+                  <p.icon className="mr-1 h-4 w-4" />
+                  {p.label}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -515,11 +577,11 @@ export default function DevGuidePage({
 
             <Separator />
 
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="rounded-full bg-muted text-xs font-semibold">
-                  {currentPlatform?.label}
-                </Badge>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary" className="rounded-full bg-muted text-xs font-semibold">
+                    {currentPlatform?.label}
+                  </Badge>
                 <CardTitle className="text-2xl">
                   {SECTIONS.find(s => s.id === activeSection)?.title}
                 </CardTitle>
