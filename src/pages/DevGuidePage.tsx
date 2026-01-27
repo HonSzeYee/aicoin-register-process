@@ -16,6 +16,7 @@ import {
   GitCommit,
   CheckCircle2,
   GitPullRequest,
+  MessageCircle,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import iOSTutorialImg from "@/assets/iOS-tutorial.png";
@@ -37,12 +38,13 @@ const openImage = (src: string) => {
 };
 
 // 定义数据结构
-type Platform = "PC" | "iOS" | "Android";
+type Platform = "PC" | "iOS" | "Android" | "Chat";
 
 const PLATFORMS: { id: Platform; label: string; icon: React.ElementType }[] = [
   { id: "PC", label: "PC 端", icon: Monitor },
   { id: "iOS", label: "iOS 端", icon: Tablet },
   { id: "Android", label: "Android 端", icon: Smartphone },
+  { id: "Chat", label: "聊天室", icon: MessageCircle },
 ];
 
 type DevGuideHeaderProps = {
@@ -239,6 +241,108 @@ const flowContent = (
   </div>
 );
 
+const flowContentIOS = (
+  <div className="space-y-4">
+    <div className="rounded-2xl border px-4 py-3">
+      <div className="text-sm font-semibold text-foreground">iOS 端流程说明</div>
+      <ol className="mt-2 space-y-2 text-sm text-muted-foreground list-decimal list-inside">
+        <li>在 iOS 任务群确认需求范围与验收口径。</li>
+        <li>从 <span className="font-medium text-foreground">develop</span> 创建 iOS 分支并同步最新代码。</li>
+        <li>完成开发后自测真机与模拟器，确保基础功能可用。</li>
+        <li>创建 MR：需要主管评审则 target 选 <span className="font-medium text-foreground">demo</span>。</li>
+      </ol>
+    </div>
+  </div>
+);
+
+const flowContentAndroid = (
+  <div className="space-y-4">
+    <div className="rounded-2xl border px-4 py-3">
+      <div className="text-sm font-semibold text-foreground">Android 端流程说明</div>
+      <ol className="mt-2 space-y-2 text-sm text-muted-foreground list-decimal list-inside">
+        <li>在 Android 任务群同步需求细节与提测时间。</li>
+        <li>从 <span className="font-medium text-foreground">develop</span> 拉取代码并创建分支。</li>
+        <li>完成开发后进行本地自测与关键机型验证。</li>
+        <li>创建 MR：需要主管评审则 target 选 <span className="font-medium text-foreground">demo</span>。</li>
+      </ol>
+    </div>
+  </div>
+);
+
+const flowContentChat = (
+  <div className="space-y-4">
+    <div className="rounded-2xl border px-4 py-3">
+      <div className="text-sm font-semibold text-foreground">聊天室流程说明</div>
+      <ol className="mt-2 space-y-2 text-sm text-muted-foreground list-decimal list-inside">
+        <li>在聊天室确认需求背景、范围与优先级。</li>
+        <li>汇总关键决策与时间点，记录到任务说明中。</li>
+        <li>与相关端协同验收标准，避免口径不一致。</li>
+        <li>需求完成后在群内同步结果与回归信息。</li>
+      </ol>
+    </div>
+  </div>
+);
+
+const branchContentIOS = (
+  <div className="space-y-4">
+    <div className="rounded-2xl border bg-muted/30 px-4 py-3">
+      <div className="text-sm font-semibold text-foreground">iOS 分支策略</div>
+      <div className="mt-2 text-sm text-muted-foreground">
+        iOS 端遵循主干策略，开发分支以 <span className="font-medium text-foreground">fix-ios-xxx</span> 命名。
+      </div>
+    </div>
+  </div>
+);
+
+const branchContentAndroid = (
+  <div className="space-y-4">
+    <div className="rounded-2xl border bg-muted/30 px-4 py-3">
+      <div className="text-sm font-semibold text-foreground">Android 分支策略</div>
+      <div className="mt-2 text-sm text-muted-foreground">
+        Android 端开发分支建议以 <span className="font-medium text-foreground">fix-android-xxx</span> 命名。
+      </div>
+    </div>
+  </div>
+);
+
+const branchContentChat = (
+  <div className="space-y-4">
+    <div className="rounded-2xl border bg-muted/30 px-4 py-3">
+      <div className="text-sm font-semibold text-foreground">聊天室分支策略</div>
+      <div className="mt-2 text-sm text-muted-foreground">
+        讨论记录以任务名称归档，保持与代码分支一致的命名。
+      </div>
+    </div>
+  </div>
+);
+
+const commitContentIOS = (
+  <div className="space-y-4">
+    <div className="rounded-2xl border px-4 py-3 text-sm text-foreground/80">
+      约定：尽量使用 <span className="font-semibold">fix</span> 作为分支名与 commit 的前缀，并标明作用域。示例：
+      <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(iOS): 修复列表闪烁</span>
+    </div>
+  </div>
+);
+
+const commitContentAndroid = (
+  <div className="space-y-4">
+    <div className="rounded-2xl border px-4 py-3 text-sm text-foreground/80">
+      约定：尽量使用 <span className="font-semibold">fix</span> 作为分支名与 commit 的前缀，并标明作用域。示例：
+      <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(Android): 修复弹窗遮挡</span>
+    </div>
+  </div>
+);
+
+const commitContentChat = (
+  <div className="space-y-4">
+    <div className="rounded-2xl border px-4 py-3 text-sm text-foreground/80">
+      约定：聊天室相关改动需要同步到任务说明。示例：
+      <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(聊天室): 更新需求范围</span>
+    </div>
+  </div>
+);
+
 // 模拟文档内容
 const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
   PC: {
@@ -320,32 +424,9 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
         </div>
       </div>
     ),
-    flow: flowContent,
-    branch: branchContent,
-    commit: (
-      <div className="space-y-4">
-        <div className="rounded-2xl border px-4 py-3 text-sm text-foreground/80">
-          约定：尽量使用 <span className="font-semibold">fix</span> 作为分支名与 commit 的前缀，并标明作用域。示例：
-          <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(聊天室): 增加一个滑动条</span>（括号与冒号均为英文符号）
-        </div>
-        <div className="flex justify-center">
-          <button
-            type="button"
-            onClick={() => openImage(gitlabCommitRulesImg)}
-            aria-label="放大 GitLab Commit 规范示例"
-            className="w-full flex justify-center"
-          >
-            <img
-              src={gitlabCommitRulesImg}
-              alt="GitLab Commit 规范示例"
-              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
-              loading="lazy"
-              decoding="async"
-            />
-          </button>
-        </div>
-      </div>
-    ),
+    flow: flowContentIOS,
+    branch: branchContentIOS,
+    commit: commitContentIOS,
   },
   Android: {
     env: (
@@ -373,32 +454,21 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
         </div>
       </div>
     ),
-    flow: flowContent,
-    branch: branchContent,
-    commit: (
+    flow: flowContentAndroid,
+    branch: branchContentAndroid,
+    commit: commitContentAndroid,
+  },
+  Chat: {
+    env: (
       <div className="space-y-4">
-        <div className="rounded-2xl border px-4 py-3 text-sm text-foreground/80">
-          约定：尽量使用 <span className="font-semibold">fix</span> 作为分支名与 commit 的前缀，并标明作用域。示例：
-          <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(聊天室): 增加一个滑动条</span>（括号与冒号均为英文符号）
-        </div>
-        <div className="flex justify-center">
-          <button
-            type="button"
-            onClick={() => openImage(gitlabCommitRulesImg)}
-            aria-label="放大 GitLab Commit 规范示例"
-            className="w-full flex justify-center"
-          >
-            <img
-              src={gitlabCommitRulesImg}
-              alt="GitLab Commit 规范示例"
-                className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
-              loading="lazy"
-              decoding="async"
-            />
-          </button>
-        </div>
+        <p className="text-sm text-muted-foreground">
+          在企业微信中找到对应产品聊天室，查看群公告与历史决策记录。
+        </p>
       </div>
     ),
+    flow: flowContentChat,
+    branch: branchContentChat,
+    commit: commitContentChat,
   },
 };
 
@@ -415,6 +485,7 @@ export default function DevGuidePage() {
     PC: null,
     iOS: null,
     Android: null,
+    Chat: null,
   });
   const [tabIndicator, setTabIndicator] = useState<{ left: number; width: number }>({
     left: 0,
