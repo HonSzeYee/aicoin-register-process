@@ -4,98 +4,87 @@ type TakeoverOptions = {
   threshold?: number;
   hysteresis?: number;
   exitDelayMs?: number;
-  minToggleIntervalMs?: number;
+  stopDelayMs?: number;
 };
 
 export default function useScrollTakeover(options: number | TakeoverOptions = 72) {
-  const resolved =
-    typeof options === "number" ? { threshold: options } : options;
+  const resolved = typeof options === "number" ? { threshold: options } : options;
   const threshold = resolved.threshold ?? 72;
   const hysteresis = resolved.hysteresis ?? 12;
-  const exitDelayMs = resolved.exitDelayMs ?? 80;
-  const minToggleIntervalMs = resolved.minToggleIntervalMs ?? 120;
+  const exitDelayMs = resolved.exitDelayMs ?? 120;
+  const stopDelayMs = resolved.stopDelayMs ?? 120;
 
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
   const [takenOver, setTakenOver] = useState(false);
-  const ticking = useRef(false);
+  const [observedOver, setObservedOver] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
   const pendingOff = useRef<number | null>(null);
-  const lastScrollY = useRef(0);
-  const lastToggleAt = useRef(0);
-  const takenOverRef = useRef(false);
+  const scrollingRef = useRef(false);
+  const stopTimer = useRef<number | null>(null);
+  const ticking = useRef(false);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    const el = sentinelRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
 
-    takenOverRef.current = takenOver;
+    const marginBase = takenOver ? threshold - hysteresis : threshold;
+    const margin = Math.max(marginBase, 0);
 
-    const clearPendingOff = () => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setObservedOver(!entry.isIntersecting),
+      { root: null, rootMargin: `${margin}px 0px 0px 0px`, threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold, hysteresis, takenOver]);
+
+  useEffect(() => {
+    if (observedOver) {
       if (pendingOff.current !== null) {
         window.clearTimeout(pendingOff.current);
         pendingOff.current = null;
       }
-    };
+      setTakenOver(true);
+      return;
+    }
 
-    const scheduleOff = () => {
-      if (pendingOff.current !== null) return;
-      pendingOff.current = window.setTimeout(() => {
-        pendingOff.current = null;
-        const y = window.scrollY;
-        if (y < threshold - hysteresis) {
-          const now = performance.now();
-          if (now - lastToggleAt.current >= minToggleIntervalMs) {
-            lastToggleAt.current = now;
-            setTakenOver(false);
-          }
-        }
-      }, exitDelayMs);
-    };
+    if (pendingOff.current !== null) return;
+    pendingOff.current = window.setTimeout(() => {
+      pendingOff.current = null;
+      setTakenOver(false);
+    }, exitDelayMs);
+  }, [observedOver, exitDelayMs]);
 
-    const update = () => {
-      const y = window.scrollY;
-      const lastY = lastScrollY.current;
-      const direction = y > lastY ? "down" : y < lastY ? "up" : "none";
-      lastScrollY.current = y;
-
-      const shouldTake = y > threshold;
-      const shouldRelease = y < threshold - hysteresis;
-      const now = performance.now();
-
-      if (!takenOverRef.current) {
-        if (direction === "down" && shouldTake && now - lastToggleAt.current >= minToggleIntervalMs) {
-          lastToggleAt.current = now;
-          setTakenOver(true);
-          return;
-        }
-        return;
-      }
-
-      if (direction === "up" && shouldRelease) {
-        scheduleOff();
-      } else {
-        clearPendingOff();
-      }
-    };
+  useEffect(() => {
+    if (typeof window === "undefined") return;
 
     const onScroll = () => {
       if (ticking.current) return;
       ticking.current = true;
       requestAnimationFrame(() => {
-        update();
+        if (!scrollingRef.current) {
+          scrollingRef.current = true;
+          setIsScrolling(true);
+        }
+        if (stopTimer.current !== null) {
+          window.clearTimeout(stopTimer.current);
+        }
+        stopTimer.current = window.setTimeout(() => {
+          scrollingRef.current = false;
+          setIsScrolling(false);
+        }, stopDelayMs);
         ticking.current = false;
       });
     };
 
-    lastScrollY.current = window.scrollY;
-    update();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
-      clearPendingOff();
+      if (stopTimer.current !== null) {
+        window.clearTimeout(stopTimer.current);
+      }
     };
-  }, [threshold, hysteresis, exitDelayMs, minToggleIntervalMs]);
+  }, [stopDelayMs]);
 
-  useEffect(() => {
-    takenOverRef.current = takenOver;
-  }, [takenOver]);
-
-  return takenOver;
+  return { sentinelRef, takenOver, isScrolling };
 }

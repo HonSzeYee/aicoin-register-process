@@ -93,6 +93,95 @@ const NAV = [
   { id: "faq", label: "常见问题", icon: HelpCircle },
 ] as const;
 
+type GlobalHeaderProps = {
+  collapsed: boolean;
+  takenOver: boolean;
+  isScrolling: boolean;
+  query: string;
+  userName: string;
+  onQueryChange: (value: string) => void;
+  onOpenSettings: () => void;
+};
+
+const GlobalHeader = React.memo(function GlobalHeader({
+  collapsed,
+  takenOver,
+  isScrolling,
+  query,
+  userName,
+  onQueryChange,
+  onOpenSettings,
+}: GlobalHeaderProps) {
+  const transitionClass = isScrolling ? "transition-none" : "transition-[opacity,transform] duration-200";
+  const willChangeClass = takenOver || isScrolling ? "will-change-[transform]" : "";
+  return (
+    <header
+      className={`sticky top-0 z-20 border-b ${transitionClass} ${willChangeClass} ${
+        takenOver
+          ? "opacity-0 -translate-y-full pointer-events-none backdrop-blur-none"
+          : collapsed
+            ? "bg-background/95 shadow-sm backdrop-blur"
+            : "bg-background/80 backdrop-blur"
+      }`}
+    >
+      <div
+        className={`mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-200 ${
+          collapsed ? "py-2 gap-2" : "py-3 gap-3"
+        }`}
+      >
+        <div className={`flex items-center ${collapsed ? "gap-2" : "gap-3"}`}>
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl border shadow-sm">
+            <Sparkles className="h-5 w-5" />
+          </div>
+          {collapsed ? (
+            <div className="flex items-center gap-2">
+              <div className="text-sm font-semibold leading-tight">AICoin · 新人入职指南</div>
+            </div>
+          ) : (
+            <div>
+              <div className="text-sm text-muted-foreground">AICoin</div>
+              <div className="text-lg font-semibold leading-tight">新人入职指南</div>
+            </div>
+          )}
+        </div>
+
+        <div className={`flex items-center ${collapsed ? "gap-2" : "gap-3"}`}>
+          <div
+            className={`hidden md:flex items-center gap-2 rounded-2xl border px-3 shadow-sm transition-all duration-200 ${
+              collapsed ? "py-1.5" : "py-2"
+            }`}
+          >
+            <Search className="h-4 w-4 text-muted-foreground" />
+            <Input
+              value={query}
+              onChange={(e) => onQueryChange(e.target.value)}
+              placeholder="搜索步骤 / 工具 / 关键词"
+              className={`h-7 border-0 p-0 shadow-none focus-visible:ring-0 transition-all duration-200 ${
+                collapsed ? "w-[180px]" : "w-[260px]"
+              }`}
+            />
+          </div>
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-2xl"
+            onClick={onOpenSettings}
+          >
+            <Settings className="h-4 w-4" />
+          </Button>
+          <div className="flex items-center gap-2 rounded-2xl border px-3 py-2 shadow-sm">
+            <div className="hidden sm:block">
+              <div className="text-sm font-medium leading-tight">{userName}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+});
+
+GlobalHeader.displayName = "GlobalHeader";
+
 export default function AICoinOnboardingDashboard() {
   const [user, setUser] = useState(() => {
     const detectedDevice = detectDeviceType(); // PC | iOS | Android
@@ -365,12 +454,13 @@ export default function AICoinOnboardingDashboard() {
   }, [sections, query]);
 
   // 顶栏滚动状态：收起成单行
-  const headerCollapsed = useScrollTakeover({
+  const { sentinelRef, takenOver: scrolledPast, isScrolling } = useScrollTakeover({
     threshold: 56,
     hysteresis: 12,
     exitDelayMs: 120,
-    minToggleIntervalMs: 160,
+    stopDelayMs: 120,
   });
+  const headerCollapsed = scrolledPast;
 
   const isSubpage = useMemo(
     () => activeNav === "accounts" || activeNav === "dev",
@@ -386,70 +476,26 @@ export default function AICoinOnboardingDashboard() {
     }
   }, []);
 
+  const handleQueryChange = useCallback((value: string) => {
+    setQuery(value);
+  }, []);
+
+  const handleOpenSettings = useCallback(() => {
+    setSettingsOpen(true);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
-      <header
-        className={`sticky top-0 z-20 border-b transition-[opacity,transform] duration-200 ${
-          takenOver
-            ? "opacity-0 -translate-y-full pointer-events-none backdrop-blur-none"
-            : headerCollapsed
-              ? "bg-background/95 shadow-sm backdrop-blur"
-              : "bg-background/80 backdrop-blur"
-        }`}
-      >
-        <div
-          className={`mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-200 ${
-            headerCollapsed ? "py-2 gap-2" : "py-3 gap-3"
-          }`}
-        >
-          <div className={`flex items-center ${headerCollapsed ? "gap-2" : "gap-3"}`}>
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border shadow-sm">
-              <Sparkles className="h-5 w-5" />
-            </div>
-            {headerCollapsed ? (
-              <div className="flex items-center gap-2">
-                <div className="text-sm font-semibold leading-tight">AICoin · 新人入职指南</div>
-              </div>
-            ) : (
-              <div>
-                <div className="text-sm text-muted-foreground">AICoin</div>
-                <div className="text-lg font-semibold leading-tight">新人入职指南</div>
-              </div>
-            )}
-          </div>
-
-          <div className={`flex items-center ${headerCollapsed ? "gap-2" : "gap-3"}`}>
-            <div
-              className={`hidden md:flex items-center gap-2 rounded-2xl border px-3 shadow-sm transition-all duration-200 ${
-                headerCollapsed ? "py-1.5" : "py-2"
-              }`}
-            >
-              <Search className="h-4 w-4 text-muted-foreground" />
-              <Input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="搜索步骤 / 工具 / 关键词"
-                className={`h-7 border-0 p-0 shadow-none focus-visible:ring-0 transition-all duration-200 ${
-                  headerCollapsed ? "w-[180px]" : "w-[260px]"
-                }`}
-              />
-            </div>
-            <Button
-              variant="outline"
-              size="icon"
-              className="rounded-2xl"
-              onClick={() => setSettingsOpen(true)}
-            >
-              <Settings className="h-4 w-4" />
-            </Button>
-            <div className="flex items-center gap-2 rounded-2xl border px-3 py-2 shadow-sm">
-              <div className="hidden sm:block">
-                <div className="text-sm font-medium leading-tight">{user.name}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <div ref={sentinelRef} aria-hidden="true" className="h-px w-px" />
+      <GlobalHeader
+        collapsed={headerCollapsed}
+        takenOver={takenOver}
+        query={query}
+        userName={user.name}
+        isScrolling={isScrolling}
+        onQueryChange={handleQueryChange}
+        onOpenSettings={handleOpenSettings}
+      />
 
       <div
         className={`mx-auto flex max-w-7xl px-4 py-6 transition-[gap] duration-200 ${
@@ -778,6 +824,7 @@ export default function AICoinOnboardingDashboard() {
         {activeNav === "accounts" && (
           <AccountsRegistrationPage
             takenOver={takenOver}
+            isScrolling={isScrolling}
             onBack={() => setActiveNav("dashboard")}
             onAllDone={() => setActiveNav("dev")}
           />
@@ -786,6 +833,7 @@ export default function AICoinOnboardingDashboard() {
         {activeNav === "dev" && (
           <DevGuidePage
             takenOver={takenOver}
+            isScrolling={isScrolling}
             onBack={() => setActiveNav("dashboard")}
             onDevReadChange={applyDevRead}
           />

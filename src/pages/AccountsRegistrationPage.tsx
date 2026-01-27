@@ -40,6 +40,71 @@ type ChecklistItem = {
   locked?: boolean;
 };
 
+type AccountsHeaderProps = {
+  takenOver: boolean;
+  isScrolling: boolean;
+  onBack?: () => void;
+  done: number;
+  total: number;
+};
+
+const AccountsHeader = React.memo(
+  React.forwardRef<HTMLElement, AccountsHeaderProps>(function AccountsHeader(
+    { takenOver, isScrolling, onBack, done, total },
+    ref
+  ) {
+    const compactHeader = takenOver;
+    const transitionClass = isScrolling ? "transition-none" : "transition-all duration-200";
+    const willChangeClass = takenOver || isScrolling ? "will-change-[transform]" : "";
+    return (
+      <header
+        ref={ref}
+        className={`z-30 border-b bg-background/80 backdrop-blur ${transitionClass} ${willChangeClass} ${
+          takenOver ? "fixed top-0 left-0 right-0" : "relative w-full"
+        }`}
+      >
+        <div
+          className={`mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-200 ${
+            compactHeader ? "py-2" : "py-3"
+          }`}
+        >
+          <div className={`flex items-center ${compactHeader ? "gap-2" : "gap-3"}`}>
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-2xl"
+              title="返回"
+              onClick={() => onBack?.()}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border shadow-sm">
+              <KeyRound className="h-5 w-5" />
+            </div>
+            {compactHeader ? (
+              <div className="text-sm font-semibold leading-tight">入职第一步 · 账号注册</div>
+            ) : (
+              <div>
+                <div className="text-sm text-muted-foreground">入职第一步</div>
+                <div className="text-lg font-semibold leading-tight">账号注册</div>
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className="rounded-xl">
+              {done} / {total}
+            </Badge>
+          </div>
+        </div>
+      </header>
+    );
+  })
+);
+
+AccountsHeader.displayName = "AccountsHeader";
+
 type StepDetail = {
   purpose: string;
   steps: Array<string | { text: string; linkLabel: string; linkHref: string }>;
@@ -119,10 +184,12 @@ export default function AccountsRegistrationPage({
   onBack,
   onAllDone,
   takenOver = false,
+  isScrolling = false,
 }: {
   onBack?: () => void;
   onAllDone?: () => void;
   takenOver?: boolean;
+  isScrolling?: boolean;
 }) {
   const headerRef = useRef<HTMLElement | null>(null);
   const [subHeaderHeight, setSubHeaderHeight] = useState(0);
@@ -142,7 +209,6 @@ export default function AccountsRegistrationPage({
   }, []);
 
   const takeoverHeader = takenOver;
-  const compactHeader = takeoverHeader;
 
   const [items, setItems] = useState<ChecklistItem[]>(() => {
     if (typeof window === "undefined") return defaultChecklistItems;
@@ -392,48 +458,14 @@ export default function AccountsRegistrationPage({
   return (
     <div className="min-h-screen bg-background">
       {/* 子页接管式吸顶：滚动后固定在顶部 */}
-      <header
+      <AccountsHeader
         ref={headerRef}
-        className={`z-30 border-b bg-background/80 backdrop-blur transition-all duration-200 ${
-          takeoverHeader ? "fixed top-0 left-0 right-0" : "relative w-full"
-        }`}
-      >
-        <div
-          className={`mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-200 ${
-            compactHeader ? "py-2" : "py-3"
-          }`}
-        >
-          <div className={`flex items-center ${compactHeader ? "gap-2" : "gap-3"}`}>
-            <Button
-              variant="outline"
-              size="icon"
-              className="rounded-2xl"
-              title="返回"
-              onClick={() => onBack?.()}
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border shadow-sm">
-              <KeyRound className="h-5 w-5" />
-            </div>
-            {compactHeader ? (
-              <div className="text-sm font-semibold leading-tight">入职第一步 · 账号注册</div>
-            ) : (
-              <div>
-                <div className="text-sm text-muted-foreground">入职第一步</div>
-                <div className="text-lg font-semibold leading-tight">账号注册</div>
-              </div>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="rounded-xl">
-              {progress.done} / {progress.total}
-            </Badge>
-          </div>
-        </div>
-      </header>
+        takenOver={takeoverHeader}
+        isScrolling={isScrolling}
+        onBack={onBack}
+        done={progress.done}
+        total={progress.total}
+      />
       {takeoverHeader && <div aria-hidden="true" style={{ height: subHeaderHeight }} />}
 
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 py-6 lg:grid-cols-[1fr_320px]">

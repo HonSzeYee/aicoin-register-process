@@ -42,6 +42,48 @@ const PLATFORMS: { id: Platform; label: string; icon: React.ElementType }[] = [
   { id: "Android", label: "Android 端", icon: Smartphone },
 ];
 
+type DevGuideHeaderProps = {
+  takenOver: boolean;
+  isScrolling: boolean;
+  onBack: () => void;
+};
+
+const DevGuideHeader = React.memo(
+  React.forwardRef<HTMLElement, DevGuideHeaderProps>(function DevGuideHeader(
+    { takenOver, isScrolling, onBack },
+    ref
+  ) {
+    const compactHeader = takenOver;
+    const transitionClass = isScrolling ? "transition-none" : "transition-all duration-200";
+    const willChangeClass = takenOver || isScrolling ? "will-change-[transform]" : "";
+    return (
+      <header
+        ref={ref}
+        className={`z-30 border-b bg-background/80 backdrop-blur ${transitionClass} ${willChangeClass} ${
+          takenOver ? "fixed top-0 left-0 right-0" : "relative w-full"
+        }`}
+      >
+        <div
+          className={`mx-auto flex max-w-7xl items-center gap-4 px-4 transition-all duration-200 ${
+            compactHeader ? "py-2" : "py-3"
+          }`}
+        >
+          <Button variant="ghost" size="icon" onClick={onBack} className="rounded-full">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div className="flex-1">
+            <h1 className={compactHeader ? "text-sm font-semibold" : "text-lg font-semibold"}>
+              开发指南
+            </h1>
+          </div>
+        </div>
+      </header>
+    );
+  })
+);
+
+DevGuideHeader.displayName = "DevGuideHeader";
+
 const SECTIONS = [
   { id: "env", title: "开发环境搭建", icon: Terminal },
   { id: "flow", title: "整体流程", icon: GitPullRequest },
@@ -363,10 +405,12 @@ export default function DevGuidePage({
   onBack,
   onDevReadChange,
   takenOver = false,
+  isScrolling = false,
 }: {
   onBack: () => void;
   onDevReadChange?: (readMap: Record<string, boolean>) => void;
   takenOver?: boolean;
+  isScrolling?: boolean;
 }) {
   const headerRef = useRef<HTMLElement | null>(null);
   const [subHeaderHeight, setSubHeaderHeight] = useState(0);
@@ -470,32 +514,16 @@ export default function DevGuidePage({
   }, []);
 
   const takeoverHeader = takenOver;
-  const compactHeader = takeoverHeader;
 
   return (
     <div className="min-h-screen bg-background">
       {/* 子页接管式吸顶：滚动后固定在顶部 */}
-      <header
+      <DevGuideHeader
         ref={headerRef}
-        className={`z-30 border-b bg-background/80 backdrop-blur shadow-sm transition-all duration-200 ${
-          takeoverHeader ? "fixed top-0 left-0 right-0" : "relative w-full"
-        }`}
-      >
-        <div
-          className={`mx-auto flex max-w-7xl items-center gap-4 px-4 transition-all duration-200 ${
-            compactHeader ? "py-2" : "py-3"
-          }`}
-        >
-          <Button variant="ghost" size="icon" onClick={onBack} className="rounded-full">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div className="flex-1">
-            <h1 className={compactHeader ? "text-sm font-semibold" : "text-lg font-semibold"}>
-              开发指南
-            </h1>
-          </div>
-        </div>
-      </header>
+        takenOver={takeoverHeader}
+        isScrolling={isScrolling}
+        onBack={onBack}
+      />
       {takeoverHeader && <div aria-hidden="true" style={{ height: subHeaderHeight }} />}
 
       <main className="mx-auto max-w-7xl px-4 py-6 space-y-4">
