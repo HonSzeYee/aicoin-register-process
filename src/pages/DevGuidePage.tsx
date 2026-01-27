@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
   ArrowLeft,
+  Code2,
   Monitor,
   Smartphone,
   Tablet,
@@ -51,11 +52,13 @@ type DevGuideHeaderProps = {
   takenOver: boolean;
   isScrolling: boolean;
   onBack: () => void;
+  done: number;
+  total: number;
 };
 
 const DevGuideHeader = React.memo(
   React.forwardRef<HTMLElement, DevGuideHeaderProps>(function DevGuideHeader(
-    { takenOver, isScrolling, onBack },
+    { takenOver, isScrolling, onBack, done, total },
     ref
   ) {
     const compactHeader = takenOver;
@@ -72,17 +75,38 @@ const DevGuideHeader = React.memo(
         }`}
       >
         <div
-          className={`mx-auto flex max-w-7xl items-center gap-4 px-4 transition-all duration-200 ${
+          className={`mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-200 ${
             compactHeader ? "py-2" : "py-3"
           }`}
         >
-          <Button variant="ghost" size="icon" onClick={onBack} className="rounded-full">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div className="flex-1">
-            <h1 className={compactHeader ? "text-sm font-semibold" : "text-lg font-semibold"}>
-              开发指南
-            </h1>
+          <div className={`flex items-center ${compactHeader ? "gap-2" : "gap-3"}`}>
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-2xl"
+              title="返回"
+              onClick={onBack}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border shadow-sm">
+              <Code2 className="h-5 w-5" />
+            </div>
+            {compactHeader ? (
+              <div className="text-sm font-semibold leading-tight">入职第二步 · 开发指南</div>
+            ) : (
+              <div>
+                <div className="text-sm text-muted-foreground">入职第二步</div>
+                <div className="text-lg font-semibold leading-tight">开发指南</div>
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className="rounded-xl">
+              {done} / {total}
+            </Badge>
           </div>
         </div>
       </header>
@@ -567,6 +591,8 @@ export default function DevGuidePage() {
         takenOver={takeoverHeader}
         isScrolling={isScrolling}
         onBack={handleBack}
+        done={readCount}
+        total={totalReadable}
       />
       {takeoverHeader && <div aria-hidden="true" style={{ height: subHeaderHeight }} />}
 

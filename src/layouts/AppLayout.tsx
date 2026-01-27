@@ -55,12 +55,8 @@ const GlobalHeader = React.memo(function GlobalHeader({
             : "bg-background/80 backdrop-blur"
       }`}
     >
-      <div
-        className={`mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-200 ${
-          collapsed ? "py-2 gap-2" : "py-3 gap-3"
-        }`}
-      >
-        <div className={`flex items-center ${collapsed ? "gap-2" : "gap-3"}`}>
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-200 py-2 gap-2">
+        <div className="flex items-center gap-2">
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl border shadow-sm">
             <Sparkles className="h-5 w-5" />
           </div>
@@ -76,20 +72,14 @@ const GlobalHeader = React.memo(function GlobalHeader({
           )}
         </div>
 
-        <div className={`flex items-center ${collapsed ? "gap-2" : "gap-3"}`}>
-          <div
-            className={`hidden md:flex items-center gap-2 rounded-2xl border px-3 shadow-sm transition-all duration-200 ${
-              collapsed ? "py-1.5" : "py-2"
-            }`}
-          >
+        <div className="flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2 rounded-2xl border px-3 shadow-sm transition-all duration-200 py-1.5">
             <Search className="h-4 w-4 text-muted-foreground" />
             <Input
               value={query}
               onChange={(e) => onQueryChange(e.target.value)}
               placeholder="搜索步骤 / 工具 / 关键词"
-              className={`h-7 border-0 p-0 shadow-none focus-visible:ring-0 transition-all duration-200 ${
-                collapsed ? "w-[180px]" : "w-[260px]"
-              }`}
+              className="h-7 w-[180px] border-0 p-0 shadow-none focus-visible:ring-0 transition-all duration-200"
             />
           </div>
           <Button variant="outline" size="icon" className="rounded-2xl" onClick={onOpenSettings}>
@@ -173,25 +163,26 @@ export default function AppLayout() {
           sidebarCollapsed ? "gap-2 md:gap-3" : "gap-4"
         }`}
       >
-        <aside
-          className={`md:sticky md:top-20 md:h-[calc(100vh-5rem)] transition-all duration-300 ease-in-out will-change-[width] ${
-            sidebarCollapsed ? "w-[52px]" : "w-[220px]"
-          } shrink-0`}
-        >
-          {sidebarCollapsed ? (
-            <div className="flex h-full flex-col items-center pt-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 rounded-lg"
-                onClick={() => setSidebarCollapsed(false)}
-                title="展开侧边栏"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          ) : (
-            <>
+        <div className={`${sidebarCollapsed ? "w-[52px]" : "w-[220px]"} shrink-0`}>
+          <aside
+            className={`md:fixed md:top-20 md:h-[calc(100vh-5rem)] md:left-[max(1rem,calc((100vw-80rem)/2+1rem))] transition-all duration-300 ease-in-out will-change-[width] ${
+              sidebarCollapsed ? "w-[52px]" : "w-[220px]"
+            }`}
+          >
+            {sidebarCollapsed ? (
+              <div className="flex h-full flex-col items-center pt-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-lg"
+                  onClick={() => setSidebarCollapsed(false)}
+                  title="展开侧边栏"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <>
               <Card className="rounded-2xl shadow-sm">
                 <CardHeader className="pb-3 transition-all duration-300">
                   <div className="flex items-center justify-between">
@@ -259,9 +250,10 @@ export default function AppLayout() {
                   </CardContent>
                 </Card>
               </div>
-            </>
-          )}
-        </aside>
+              </>
+            )}
+          </aside>
+        </div>
 
         <main className="flex-1 min-w-0">
           <Outlet />

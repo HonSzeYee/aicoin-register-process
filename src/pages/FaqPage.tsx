@@ -1,5 +1,10 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useScrollTakeoverContext } from "@/context/ScrollTakeoverContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, HelpCircle } from "lucide-react";
 
 const FAQS = [
   {
@@ -32,47 +37,145 @@ const FAQS = [
   },
 ];
 
-export default function FaqPage() {
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-6 space-y-4">
-      <Card className="rounded-2xl shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">常见问题</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {FAQS.map((item, index) => (
-            <details
-              key={item.id}
-              open={index === 0}
-              className="group rounded-2xl border bg-card/60 px-4 py-3"
+type FaqHeaderProps = {
+  takenOver: boolean;
+  isScrolling: boolean;
+  onBack: () => void;
+  total: number;
+};
+
+const FaqHeader = React.memo(
+  React.forwardRef<HTMLElement, FaqHeaderProps>(function FaqHeader(
+    { takenOver, isScrolling, onBack, total },
+    ref
+  ) {
+    const compactHeader = takenOver;
+    const transitionClass = isScrolling ? "transition-none" : "transition-all duration-200";
+    const willChangeClass = takenOver || isScrolling ? "will-change-[transform]" : "";
+    const surfaceClass = takenOver
+      ? "border-b bg-background/80 backdrop-blur"
+      : "border-transparent bg-transparent backdrop-blur-0";
+
+    return (
+      <header
+        ref={ref}
+        className={`z-30 ${surfaceClass} ${transitionClass} ${willChangeClass} ${
+          takenOver ? "fixed top-0 left-0 right-0" : "relative w-full"
+        }`}
+      >
+        <div
+          className={`mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-200 ${
+            compactHeader ? "py-2" : "py-3"
+          }`}
+        >
+          <div className={`flex items-center ${compactHeader ? "gap-2" : "gap-3"}`}>
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-2xl"
+              title="返回"
+              onClick={onBack}
             >
-              <summary className="cursor-pointer list-none text-sm font-medium text-foreground">
-                <span className="mr-2 text-muted-foreground">Q:</span>
-                {item.question}
-              </summary>
-              <div className="mt-3 space-y-2 text-sm text-muted-foreground">
-                {item.answer.map((line, lineIndex) => (
-                  <React.Fragment key={`${item.id}-line-${lineIndex}`}>
-                    <p>
-                      {lineIndex === 0 && <span className="mr-2 text-muted-foreground">A:</span>}
-                      {line.text}
-                    </p>
-                    {line.image && (
-                      <img
-                        src={line.image}
-                        alt={line.alt ?? ""}
-                        className="mt-2 w-full max-w-3xl rounded-xl border"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    )}
-                  </React.Fragment>
-                ))}
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border shadow-sm">
+              <HelpCircle className="h-5 w-5" />
+            </div>
+            {compactHeader ? (
+              <div className="text-sm font-semibold leading-tight">入职答疑 · 常见问题</div>
+            ) : (
+              <div>
+                <div className="text-sm text-muted-foreground">入职答疑</div>
+                <div className="text-lg font-semibold leading-tight">常见问题</div>
               </div>
-            </details>
-          ))}
-        </CardContent>
-      </Card>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className="rounded-xl">
+              {total} 项
+            </Badge>
+          </div>
+        </div>
+      </header>
+    );
+  })
+);
+
+FaqHeader.displayName = "FaqHeader";
+
+export default function FaqPage() {
+  const navigate = useNavigate();
+  const { takenOver, isScrolling } = useScrollTakeoverContext();
+  const headerRef = useRef<HTMLElement | null>(null);
+  const [subHeaderHeight, setSubHeaderHeight] = useState(0);
+  const total = FAQS.length;
+
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const update = () => setSubHeaderHeight(el.getBoundingClientRect().height);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const handleBack = () => {
+    navigate("/");
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <FaqHeader
+        ref={headerRef}
+        takenOver={takenOver}
+        isScrolling={isScrolling}
+        onBack={handleBack}
+        total={total}
+      />
+      {takenOver && <div aria-hidden="true" style={{ height: subHeaderHeight }} />}
+
+      <main className="mx-auto max-w-7xl px-4 py-6 space-y-4">
+        <Card className="rounded-2xl shadow-sm">
+          <CardContent className="space-y-3 pt-6">
+            {FAQS.map((item, index) => (
+              <details
+                key={item.id}
+                open={index === 0}
+                className="group rounded-2xl border bg-card/60 px-4 py-3"
+              >
+                <summary className="cursor-pointer list-none text-sm font-medium text-foreground">
+                  <span className="mr-2 text-muted-foreground">Q:</span>
+                  {item.question}
+                </summary>
+                <div className="mt-3 space-y-2 text-sm text-muted-foreground">
+                  {item.answer.map((line, lineIndex) => (
+                    <React.Fragment key={`${item.id}-line-${lineIndex}`}>
+                      <p>
+                        {lineIndex === 0 && (
+                          <span className="mr-2 text-muted-foreground">A:</span>
+                        )}
+                        {line.text}
+                      </p>
+                      {line.image && (
+                        <img
+                          src={line.image}
+                          alt={line.alt ?? ""}
+                          className="mt-2 w-full max-w-3xl rounded-xl border"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </details>
+            ))}
+          </CardContent>
+        </Card>
+      </main>
     </div>
   );
 }
