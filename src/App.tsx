@@ -6,6 +6,7 @@ import AICoinOnboardingDashboard from "@/pages/Dashboard";
 import AccountsRegistrationPage from "@/pages/AccountsRegistrationPage";
 import DevGuidePage from "@/pages/DevGuidePage";
 import PlaceholderPage from "@/pages/PlaceholderPage";
+import FaqPage from "@/pages/FaqPage";
 
 export default function App() {
   return (
@@ -19,7 +20,7 @@ export default function App() {
               <Route path="dev" element={<DevGuidePage />} />
               <Route path="tools" element={<PlaceholderPage title="软件使用" />} />
               <Route path="workflow" element={<PlaceholderPage title="工作流程" />} />
-              <Route path="faq" element={<PlaceholderPage title="常见问题" />} />
+              <Route path="faq" element={<FaqPage />} />
             </Route>
           </Routes>
         </BrowserRouter>
