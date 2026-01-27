@@ -22,6 +22,8 @@ import {
   ExternalLink,
 } from "lucide-react";
 import vxEmailImg from "@/assets/vx_email.png";
+import vxVpnImg from "@/assets/vx-vpn.png";
+import vxVpnAppImg from "@/assets/vx-vpn-app.png";
 import clashpartyGlobal from "@/assets/clashparty_global.png";
 import aicoinDownload from "@/assets/aicoin-download.png";
 import vxAICoinTestDownload from "@/assets/vx-aicoin-testdownload.png";
@@ -145,6 +147,8 @@ const stepThumb = (index: number) => {
 
 const stepImageFor = (stepId: string, index: number) => {
   if (stepId === "corp-email" && index === 0) return vxEmailImg;
+  if (stepId === "vpn" && index === 0) return vxVpnImg;
+  if (stepId === "vpn" && index === 1) return vxVpnAppImg;
   if (stepId === "aicoin" && index === 0) return clashpartyGlobal;
   if (stepId === "aicoin" && index === 1) return aicoinDownload;
   if (stepId === "corp-email" && index === 1) return vxAICoinTestDownload;
@@ -216,15 +220,8 @@ export default function AccountsRegistrationPage() {
       vpn: {
         purpose: "用于访问受网络限制的开发资源（依赖源、文档、外部服务等）。",
         steps: [
-          "按公司指定渠道下载并安装代理/翻墙工具。",
-          {
-            text: "通过下方链接下载 Clash Party 的 YAML 配置（包含节点/规则），保存后可导入 Clash 或其他代理工具。",
-            linkLabel: "下载 Clash Party 配置",
-            linkHref:
-              "https://new.adoptangelaboradvacotionclwonthorughconfrmcompimentdeseertaltar.org/sub/60f14f42178c2f18/clash",
-          },
-          "导入公司提供的配置（节点/订阅/配置文件）。",
-          "开启系统代理或在工具内切换规则/全局模式，访问目标站点验证生效。",
+          "点开企业微信的微盘，选择「产品部」中的「梯子下载」。",
+          "下载对应版本的软件，请在群中询问最新的yaml文件。",
         ],
         pitfalls: [
           "连上但无法访问：确认系统代理已开启，或切换规则/全局模式。",

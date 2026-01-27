@@ -510,10 +510,12 @@ export default function DevGuidePage() {
                 <Button
                   key={p.id}
                   ref={(el) => (tabRefs.current[p.id] = el)}
-                  variant={platform === p.id ? "default" : "ghost"}
+                  variant="ghost"
                   size="sm"
                   className={`relative rounded-full px-3 ${
-                    platform === p.id ? "bg-transparent text-primary" : "text-muted-foreground"
+                    platform === p.id
+                      ? "bg-transparent text-primary hover:bg-transparent hover:text-primary"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                   onClick={() => setPlatform(p.id)}
                 >
