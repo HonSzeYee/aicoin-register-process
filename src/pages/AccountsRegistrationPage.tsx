@@ -61,10 +61,13 @@ const AccountsHeader = React.memo(
     const compactHeader = takenOver;
     const transitionClass = isScrolling ? "transition-none" : "transition-all duration-200";
     const willChangeClass = takenOver || isScrolling ? "will-change-[transform]" : "";
+    const surfaceClass = takenOver
+      ? "border-b bg-background/80 backdrop-blur"
+      : "border-transparent bg-transparent backdrop-blur-0";
     return (
       <header
         ref={ref}
-        className={`z-30 border-b bg-background/80 backdrop-blur ${transitionClass} ${willChangeClass} ${
+        className={`z-30 ${surfaceClass} ${transitionClass} ${willChangeClass} ${
           takenOver ? "fixed top-0 left-0 right-0" : "relative w-full"
         }`}
       >

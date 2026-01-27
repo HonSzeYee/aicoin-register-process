@@ -10,7 +10,7 @@ import PlaceholderPage from "@/pages/PlaceholderPage";
 export default function App() {
   return (
     <AppStateProvider>
-      <ScrollTakeoverProvider threshold={56} hysteresis={12} exitDelayMs={120} stopDelayMs={120}>
+      <ScrollTakeoverProvider threshold={40} hysteresis={12} exitDelayMs={120} stopDelayMs={120}>
         <BrowserRouter>
           <Routes>
             <Route element={<AppLayout />}>
