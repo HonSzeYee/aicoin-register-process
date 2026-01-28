@@ -295,10 +295,6 @@ export default function AICoinOnboardingDashboard() {
         </CardContent>
       </Card>
 
-      <div className="pb-6 text-center text-xs text-muted-foreground">
-        建议把"步骤详情页"做成可维护的模块：目的说明 / 操作步骤 / 常见坑 / 负责人。
-      </div>
-
       <WelcomeDialog
         open={showWelcome}
         onComplete={(name) => {
