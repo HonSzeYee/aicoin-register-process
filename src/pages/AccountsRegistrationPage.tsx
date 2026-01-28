@@ -241,17 +241,6 @@ export default function AccountsRegistrationPage() {
             linkHref: "https://www.aicoin.com/",
           },
           "根据自己的机型来选择「AiCoin 正式版」的下载版本。",
-          {
-            text: "iOS 测试版下载。",
-            linkLabel: "下载 iOS 测试版",
-            linkHref:
-              "itms-services://?action=download-manifest&url=https://static.aicoinstorge.com/ios/upload/f41f6f8eeb1f4be023a796f7072cc8db.plist",
-          },
-          {
-            text: "Android 测试版下载。",
-            linkLabel: "下载 Android 测试版",
-            linkHref: "http://internal.aicoinstorge.com/app_android_test.apk",
-          },
         ],
         pitfalls: ["无法登录：确认企业邮箱已激活，检查网络/代理设置。"],
         owner: "业务支持/IT",
@@ -682,9 +671,6 @@ export default function AccountsRegistrationPage() {
         </div>
       )}
 
-      <div className="mx-auto max-w-7xl px-4 pb-8 text-center text-xs text-muted-foreground">
-        建议把每个步骤的内容按统一模板维护：目的 / 操作步骤 / 注意事项 / 负责人 / 链接。
-      </div>
     </div>
   );
 }

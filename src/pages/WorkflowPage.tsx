@@ -107,12 +107,10 @@ export default function WorkflowPage() {
                             }
                           : undefined
                       }
-                      className={`rounded-2xl border bg-card/60 p-3 ${
-                        isDevGuide
-                          ? "cursor-pointer transition hover:border-primary/40 hover:bg-primary/5 motion-safe:animate-breathe"
-                          : ""
-                      }`}
-                    >
+                    className={`rounded-2xl border bg-card/60 p-3 shadow-sm transition hover:border-primary/60 hover:bg-primary/5 hover:shadow-[0_0_4px_0_rgba(109,76,255,0.14)] ${
+                      isDevGuide ? "cursor-pointer" : ""
+                    }`}
+                  >
                       <div className="flex items-start gap-3">
                         <div className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
                           {index + 1}
