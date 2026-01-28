@@ -47,7 +47,7 @@ export default function WelcomeDialog({ open, onComplete }: WelcomeDialogProps) 
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
               <Sparkles className="h-8 w-8 text-primary" />
             </div>
-            <CardTitle className="text-2xl">欢迎加入 AICoin</CardTitle>
+            <CardTitle className="text-2xl">欢迎加入 AiCoin</CardTitle>
             <p className="mt-2 text-sm text-muted-foreground">
               请先设置你的名字，以便我们更好地为你提供服务
             </p>

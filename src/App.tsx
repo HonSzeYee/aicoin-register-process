@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ScrollTakeoverProvider } from "@/context/ScrollTakeoverContext";
 import { AppStateProvider } from "@/context/AppStateContext";
 import AppLayout from "@/layouts/AppLayout";
-import AICoinOnboardingDashboard from "@/pages/Dashboard";
+import AiCoinOnboardingDashboard from "@/pages/Dashboard";
 import AccountsRegistrationPage from "@/pages/AccountsRegistrationPage";
 import DevGuidePage from "@/pages/DevGuidePage";
 import PlaceholderPage from "@/pages/PlaceholderPage";
@@ -16,7 +16,7 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             <Route element={<AppLayout />}>
-              <Route index element={<AICoinOnboardingDashboard />} />
+              <Route index element={<AiCoinOnboardingDashboard />} />
               <Route path="accounts" element={<AccountsRegistrationPage />} />
               <Route path="dev" element={<DevGuidePage />} />
               <Route path="tools" element={<PlaceholderPage title="软件使用" />} />

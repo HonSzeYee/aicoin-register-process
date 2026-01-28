@@ -58,7 +58,7 @@ const SAVE_DEBOUNCE_MS = 600;
 export const DEFAULT_ACCOUNT_ITEMS: AccountChecklistItem[] = [
   { id: "corp-email", title: "查找企业邮箱", etaMinutes: 3, done: true },
   { id: "vpn", title: "安装翻墙软件", etaMinutes: 8, done: false },
-  { id: "aicoin", title: "安装 AICoin 软件", etaMinutes: 5, done: false },
+  { id: "aicoin", title: "安装 AiCoin 软件", etaMinutes: 5, done: false },
   { id: "itask", title: "注册 iTask 账号", etaMinutes: 5, done: false },
   { id: "gitlab", title: "注册 GitLab 账号", etaMinutes: 5, done: false },
   { id: "figma", title: "注册 Figma 账号", etaMinutes: 4, done: false },

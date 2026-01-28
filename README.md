@@ -1,4 +1,4 @@
-# AICoin 新人入职指南 · 前端页面结构（Vite + React + TS + Tailwind）
+# AiCoin 新人入职指南 · 前端页面结构（Vite + React + TS + Tailwind）
 
 ## 1) 运行方式
 ```bash
@@ -23,4 +23,3 @@ npm run dev
 Dashboard 采用 **activeNav** 状态切换导航：
 - 点击侧边栏「账号注册」→ 渲染 AccountsRegistrationPage
 - 在账号注册页点击「返回」→ `onBack()` → 回到 Dashboard 首页（activeNav='dashboard')
-

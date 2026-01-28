@@ -211,7 +211,7 @@ export default function AccountsRegistrationPage() {
           "企业邮箱是所有内部系统的身份凭证。你需要它来接收邀请、登录软件平台、加入群与订阅通知。",
         steps: [
           "点击企业微信的右侧导航栏的「邮件」，查看自己的企业邮箱，这个邮箱用于注册后续软件平台帐号。",
-          "企业微信联系陆柏良，让他帮忙将你加入到版本日志的推送，以后 AICoin PC 端的测试版会通过这个推送下载。",
+          "企业微信联系陆柏良，让他帮忙将你加入到版本日志的推送，以后 AiCoin PC 端的测试版会通过这个推送下载。",
         ],
         pitfalls: [
           "收不到邀请邮件：检查垃圾箱/拦截规则，再联系 IT/HR 重新发送。",
@@ -232,10 +232,10 @@ export default function AccountsRegistrationPage() {
         owner: "IT",
       },
       aicoin: {
-        purpose: "安装 AICoin 客户端/工具，确保你能进入业务环境并验证权限。",
+        purpose: "安装 AiCoin 客户端/工具，确保你能进入业务环境并验证权限。",
         steps: [
           {
-            text: "在 Clash Party 中开启全局代理后，再访问 AICoin 官网获取安装资源。",
+            text: "在 Clash Party 中开启全局代理后，再访问 AiCoin 官网获取安装资源。",
             linkLabel: "前往 aicoin.com",
             linkHref: "https://www.aicoin.com/",
           },

@@ -62,11 +62,11 @@ const GlobalHeader = React.memo(function GlobalHeader({
           </div>
           {collapsed ? (
             <div className="flex items-center gap-2">
-              <div className="text-sm font-semibold leading-tight">AICoin · 新人入职指南</div>
+              <div className="text-sm font-semibold leading-tight">AiCoin · 新人入职指南</div>
             </div>
           ) : (
             <div>
-              <div className="text-sm text-muted-foreground">AICoin</div>
+              <div className="text-sm text-muted-foreground">AiCoin</div>
               <div className="text-lg font-semibold leading-tight">新人入职指南</div>
             </div>
           )}
