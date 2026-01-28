@@ -42,13 +42,12 @@ const openImage = (src: string) => {
 };
 
 // 定义数据结构
-type Platform = "PC" | "iOS" | "Android" | "Chat";
+type Platform = "PC" | "iOS" | "Android";
 
 const PLATFORMS: { id: Platform; label: string; icon: React.ElementType }[] = [
   { id: "PC", label: "PC 端", icon: Monitor },
   { id: "iOS", label: "iOS 端", icon: Tablet },
   { id: "Android", label: "Android 端", icon: Smartphone },
-  { id: "Chat", label: "聊天室", icon: MessageCircle },
 ];
 
 type DevGuideHeaderProps = {
@@ -395,20 +394,6 @@ const flowContentAndroid = (
   </div>
 );
 
-const flowContentChat = (
-  <div className="space-y-4">
-    <div className="rounded-2xl border px-4 py-3">
-      <div className="text-sm font-semibold text-foreground">聊天室流程说明</div>
-      <ol className="mt-2 space-y-2 text-sm text-muted-foreground list-decimal list-inside">
-        <li>在聊天室确认需求背景、范围与优先级。</li>
-        <li>汇总关键决策与时间点，记录到任务说明中。</li>
-        <li>与相关端协同验收标准，避免口径不一致。</li>
-        <li>需求完成后在群内同步结果与回归信息。</li>
-      </ol>
-    </div>
-  </div>
-);
-
 const branchContentIOS = (
   <div className="space-y-4">
     <div className="rounded-2xl border bg-muted/30 px-4 py-3">
@@ -444,17 +429,6 @@ const branchContentAndroid = (
           <li>申请 MR 时 Target Branch 选择 <code className="rounded bg-muted px-1">develop-normal</code>，合并后进行测试。</li>
           <li><code className="rounded bg-muted px-1">master</code> 为正式版本分支。</li>
         </ul>
-      </div>
-    </div>
-  </div>
-);
-
-const branchContentChat = (
-  <div className="space-y-4">
-    <div className="rounded-2xl border bg-muted/30 px-4 py-3">
-      <div className="text-sm font-semibold text-foreground">聊天室分支策略</div>
-      <div className="mt-2 text-sm text-muted-foreground">
-        讨论记录以任务名称归档，保持与代码分支一致的命名。
       </div>
     </div>
   </div>
@@ -581,18 +555,6 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
     branch: branchContentAndroid,
     commit: commitContentAndroid,
   },
-  Chat: {
-    env: (
-      <div className="space-y-4">
-        <p className="text-sm text-muted-foreground">
-          在企业微信中找到对应产品聊天室，查看群公告与历史决策记录。
-        </p>
-      </div>
-    ),
-    flow: flowContentChat,
-    branch: branchContentChat,
-    commit: commitContentChat,
-  },
 };
 
 export default function DevGuidePage() {
@@ -608,7 +570,6 @@ export default function DevGuidePage() {
     PC: null,
     iOS: null,
     Android: null,
-    Chat: null,
   });
   const [tabIndicator, setTabIndicator] = useState<{ left: number; width: number }>({
     left: 0,

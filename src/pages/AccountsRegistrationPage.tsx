@@ -94,7 +94,6 @@ const AccountsHeader = React.memo(
               <div className="text-sm font-semibold leading-tight">入职第一步 · 账号注册</div>
             ) : (
               <div>
-                <div className="text-sm text-muted-foreground">入职第一步</div>
                 <div className="text-lg font-semibold leading-tight">账号注册</div>
               </div>
             )}

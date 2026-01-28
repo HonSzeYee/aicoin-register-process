@@ -25,6 +25,17 @@ const FAQS = [
     ],
   },
   {
+    id: "repo-structure",
+    question: "这么多项目（iOS/Android/PC）要怎么分辨每个项目的结构呢？",
+    answer: [
+      {
+        text: "打开 GitLab 中对应的项目代码仓库，项目中会有 markdown 文档解释整份仓库。",
+        image: "/src/assets/image copy.png",
+        alt: "项目结构说明示例",
+      },
+    ],
+  },
+  {
     id: "demo-flow",
     question: "怎么确定是不是走产品Demo流程？",
     answer: [
@@ -32,6 +43,24 @@ const FAQS = [
         text: "查看PRD集合文档，如果技术安排写的是「走demo流程」，就是产品经理独立完成代码。反之，如果有安排技术人员的话，产品经理就不需要写代码，只需要负责监控整个需求周期是否准时。",
         image: "/src/assets/vx-demo.png",
         alt: "PRD 集合文档示例",
+      },
+    ],
+  },
+  {
+    id: "wrong-branch-merge",
+    question: "本应合并到 master 分支，但把 develop 的内容也带进来了，怎么办？",
+    answer: [
+      {
+        text: "记录该 MR 的 Target Branch，从这个 Target Branch 作为新的 Source Branch 拉取一条开发分支，使用 git cherry-pick [commit id] 将之前的改动复制过来，再重新提 MR。",
+      },
+    ],
+  },
+  {
+    id: "mr-conflict",
+    question: "申请 MR 后提示有冲突（conflicts）要怎么办？",
+    answer: [
+      {
+        text: "先在本地拉取最新代码，让 AI 帮你定位冲突内容和原因，再根据实际情况决定保留 HEAD 还是 commit 的内容，解决冲突后重新提交。",
       },
     ],
   },
@@ -86,7 +115,6 @@ const FaqHeader = React.memo(
               <div className="text-sm font-semibold leading-tight">入职答疑 · 常见问题</div>
             ) : (
               <div>
-                <div className="text-sm text-muted-foreground">入职答疑</div>
                 <div className="text-lg font-semibold leading-tight">常见问题</div>
               </div>
             )}
