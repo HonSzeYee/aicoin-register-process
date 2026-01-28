@@ -30,6 +30,10 @@ import pullCodeImg from "@/assets/pull-code.png";
 import gitlabMrCreateImg from "@/assets/gitlab-mr-create.png";
 import gitlabMrCreateXImg from "@/assets/gitlab-mr-create-x.png";
 import itaskNodeImg from "@/assets/itask-node.png";
+import appMainNameImg from "@/assets/app-main-name.png";
+import appMainNameImg2 from "@/assets/app-main-name2.png";
+import appMainMrImg from "@/assets/app-main-mr.png";
+import appMainMrImg2 from "@/assets/image.png";
 
 // 全局图查看回调占位，用于顶部静态内容触发弹窗
 let lightboxSetter: ((src: string | null) => void) | null = null;
@@ -165,8 +169,7 @@ const branchContent = (
 const flowContent = (
   <div className="space-y-4">
     <div className="rounded-2xl border px-4 py-3">
-      <div className="text-sm font-semibold text-foreground">从需求到合并的整体流程</div>
-      <ol className="mt-2 space-y-2 text-sm text-muted-foreground list-decimal list-inside">
+      <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
         <li>以 <span className="font-medium text-foreground">develop</span> 作为 source branch 拉取一条自己的开发分支。
           <div className="mt-2 grid gap-3 sm:grid-cols-2">
             <button
@@ -275,8 +278,7 @@ const flowContent = (
 const flowContentIOS = (
   <div className="space-y-4">
     <div className="rounded-2xl border px-4 py-3">
-      <div className="text-sm font-semibold text-foreground">iOS 端流程说明</div>
-      <ol className="mt-2 space-y-2 text-sm text-muted-foreground list-decimal list-inside">
+      <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
         <li>在企微找到「贺举锋」，描述你的 demo 任务，由他帮忙创建新的 iOS 开发分支。</li>
         <li>
           在 IDE 拉取最新代码并切到自己的开发分支。
@@ -301,18 +303,89 @@ const flowContentIOS = (
         <li>创建 MR：具体 Target Branch 向「贺举锋」确认后再选择。</li>
       </ol>
     </div>
+    <div className="rounded-2xl border bg-primary/5 px-4 py-3 text-sm text-foreground/80 shadow-sm">
+      <div className="font-semibold text-foreground mb-1">Tips</div>
+      <p>
+        当「开发分支」合并到「测试分支」后，进行测试。如果测试没问题，端负责人会自动合并到正式版中，届时请关注企微邮件通知。
+      </p>
+    </div>
   </div>
 );
 
 const flowContentAndroid = (
   <div className="space-y-4">
     <div className="rounded-2xl border px-4 py-3">
-      <div className="text-sm font-semibold text-foreground">Android 端流程说明</div>
-      <ol className="mt-2 space-y-2 text-sm text-muted-foreground list-decimal list-inside">
-        <li>在 Android 任务群同步需求细节与提测时间。</li>
-        <li>从 <span className="font-medium text-foreground">develop</span> 拉取代码并创建分支。</li>
-        <li>完成开发后进行本地自测与关键机型验证。</li>
-        <li>创建 MR：需要主管评审则 target 选 <span className="font-medium text-foreground">demo</span>。</li>
+      <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
+        <li>
+          在 <span className="font-medium text-foreground">develop-normal</span> 拉取一条新的开发分支，
+          命名遵循 <code className="rounded bg-muted px-1">dev-normal-xxx-a.b.c-feature</code>。
+          其中 <strong>xxx</strong> 为个人名字缩写，<strong>a.b.c</strong> 为对应版本号，<strong>feature</strong> 为修改功能。
+          示例：<code className="rounded bg-muted px-1">dev-normal-hsy-2.6.6-threedaylist</code>
+          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+            <button
+              type="button"
+              className="inline-flex"
+              onClick={() => openImage(appMainNameImg)}
+              aria-label="放大分支创建示意"
+            >
+              <img
+                src={appMainNameImg}
+                alt="分支创建与命名示意"
+                className="w-full max-w-xl rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+            <button
+              type="button"
+              className="inline-flex"
+              onClick={() => openImage(appMainNameImg2)}
+              aria-label="放大分支创建与命名示意 2"
+            >
+              <img
+                src={appMainNameImg2}
+                alt="分支创建与命名示意 2"
+                className="w-full max-w-xl rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+          </div>
+        </li>
+        <li>进行代码修改。</li>
+        <li>
+          创建 MR：Target Branch 选择 <span className="font-medium text-foreground">develop_normal</span>。
+          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+            <button
+              type="button"
+              className="inline-flex"
+              onClick={() => openImage(appMainMrImg)}
+              aria-label="放大 MR 创建示意"
+            >
+              <img
+                src={appMainMrImg}
+                alt="MR 创建与目标分支选择示意"
+                className="w-full max-w-xl rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+            <button
+              type="button"
+              className="inline-flex"
+              onClick={() => openImage(appMainMrImg2)}
+              aria-label="放大 MR 创建示意 2"
+            >
+              <img
+                src={appMainMrImg2}
+                alt="MR 创建与目标分支选择示意 2"
+                className="w-full max-w-xl rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+          </div>
+        </li>
       </ol>
     </div>
   </div>
@@ -336,8 +409,22 @@ const branchContentIOS = (
   <div className="space-y-4">
     <div className="rounded-2xl border bg-muted/30 px-4 py-3">
       <div className="text-sm font-semibold text-foreground">iOS 分支策略</div>
-      <div className="mt-2 text-sm text-muted-foreground">
-        iOS 端遵循主干策略，开发分支以 <span className="font-medium text-foreground">fix-ios-xxx</span> 命名。
+      <div className="mt-2 text-sm text-muted-foreground space-y-1">
+        <p>遵循发布/开发双轨，命名规范如下：</p>
+        <ul className="list-disc list-inside space-y-1">
+          <li>
+            <code className="rounded bg-muted px-1">master</code>：生产环境代码。
+          </li>
+          <li>
+            <code className="rounded bg-muted px-1">pro-x.y.z</code>：正式版发布分支。
+          </li>
+          <li>
+            <code className="rounded bg-muted px-1">dev-x.y.z</code>：开发测试分支。
+          </li>
+          <li>
+            <code className="rounded bg-muted px-1">dev-x.y.z-功能名</code>：个人开发分支。
+          </li>
+        </ul>
       </div>
     </div>
   </div>
