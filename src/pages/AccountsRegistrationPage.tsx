@@ -141,7 +141,7 @@ const stepThumb = (index: number) => {
   <circle cx="26" cy="26" r="10" fill="rgba(255,255,255,0.75)"/>
   <path d="M48 24h40" stroke="rgba(255,255,255,0.8)" stroke-width="6" stroke-linecap="round"/>
   <path d="M48 44h30" stroke="rgba(255,255,255,0.65)" stroke-width="6" stroke-linecap="round"/>
-  <text x="22" y="30" text-anchor="middle" font-size="12" font-family="Arial, sans-serif" fill="#111827">${
+  <text x="22" y="30" text-anchor="middle" font-size="12" font-family="PingFang SC, PingFangSC, Hiragino Sans GB, Microsoft YaHei, Noto Sans CJK SC, Source Han Sans SC, sans-serif" fill="#111827">${
     index + 1
   }</text>
   </svg>`;

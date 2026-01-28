@@ -143,7 +143,6 @@ export default function FaqPage() {
             {FAQS.map((item, index) => (
               <details
                 key={item.id}
-                open={index === 0}
                 className="group rounded-2xl border bg-card/60 px-4 py-3"
               >
                 <summary className="cursor-pointer list-none text-sm font-medium text-foreground">

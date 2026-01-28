@@ -5,7 +5,6 @@ import { useScrollTakeoverContext } from "@/context/ScrollTakeoverContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
   ArrowLeft,
   Code2,
@@ -54,11 +53,12 @@ type DevGuideHeaderProps = {
   onBack: () => void;
   done: number;
   total: number;
+  center?: React.ReactNode;
 };
 
 const DevGuideHeader = React.memo(
   React.forwardRef<HTMLElement, DevGuideHeaderProps>(function DevGuideHeader(
-    { takenOver, isScrolling, onBack, done, total },
+    { takenOver, isScrolling, onBack, done, total, center },
     ref
   ) {
     const compactHeader = takenOver;
@@ -101,6 +101,10 @@ const DevGuideHeader = React.memo(
                 <div className="text-lg font-semibold leading-tight">开发指南</div>
               </div>
             )}
+          </div>
+
+          <div className="flex-1 flex items-center justify-center px-3">
+            {center}
           </div>
 
           <div className="flex items-center gap-2">
@@ -343,32 +347,34 @@ const branchContentChat = (
   </div>
 );
 
-const commitContentIOS = (
+const commitContentBase = (
   <div className="space-y-4">
     <div className="rounded-2xl border px-4 py-3 text-sm text-foreground/80">
       约定：尽量使用 <span className="font-semibold">fix</span> 作为分支名与 commit 的前缀，并标明作用域。示例：
-      <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(iOS): 修复列表闪烁</span>
+      <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(聊天室): 增加一个滑动条</span>（括号与冒号均为英文符号）
+    </div>
+    <div className="flex justify-center">
+      <button
+        type="button"
+        onClick={() => openImage(gitlabCommitRulesImg)}
+        aria-label="放大 GitLab Commit 规范示例"
+        className="w-full flex justify-center"
+      >
+        <img
+          src={gitlabCommitRulesImg}
+          alt="GitLab Commit 规范示例"
+          className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
+          loading="lazy"
+          decoding="async"
+        />
+      </button>
     </div>
   </div>
 );
 
-const commitContentAndroid = (
-  <div className="space-y-4">
-    <div className="rounded-2xl border px-4 py-3 text-sm text-foreground/80">
-      约定：尽量使用 <span className="font-semibold">fix</span> 作为分支名与 commit 的前缀，并标明作用域。示例：
-      <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(Android): 修复弹窗遮挡</span>
-    </div>
-  </div>
-);
-
-const commitContentChat = (
-  <div className="space-y-4">
-    <div className="rounded-2xl border px-4 py-3 text-sm text-foreground/80">
-      约定：聊天室相关改动需要同步到任务说明。示例：
-      <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(聊天室): 更新需求范围</span>
-    </div>
-  </div>
-);
+const commitContentIOS = commitContentBase;
+const commitContentAndroid = commitContentBase;
+const commitContentChat = commitContentBase;
 
 // 模拟文档内容
 const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
@@ -400,30 +406,7 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
     ),
     flow: flowContent,
     branch: branchContent,
-    commit: (
-      <div className="space-y-4">
-        <div className="rounded-2xl border px-4 py-3 text-sm text-foreground/80">
-          约定：尽量使用 <span className="font-semibold">fix</span> 作为分支名与 commit 的前缀，并标明作用域。示例：
-          <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(聊天室): 增加一个滑动条</span>（括号与冒号均为英文符号）
-        </div>
-        <div className="flex justify-center">
-          <button
-            type="button"
-            onClick={() => openImage(gitlabCommitRulesImg)}
-            aria-label="放大 GitLab Commit 规范示例"
-            className="w-full flex justify-center"
-          >
-            <img
-              src={gitlabCommitRulesImg}
-              alt="GitLab Commit 规范示例"
-              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
-              loading="lazy"
-              decoding="async"
-            />
-          </button>
-        </div>
-      </div>
-    ),
+    commit: commitContentBase,
   },
   iOS: {
     env: (
@@ -570,6 +553,36 @@ export default function DevGuidePage() {
   }, [platform]);
 
   const currentPlatform = PLATFORMS.find(p => p.id === platform);
+  const takeoverHeader = takenOver;
+
+  const platformTabs = (
+    <div className="hidden md:flex items-center gap-2 rounded-full border px-2 py-1 bg-card shadow-sm">
+      <div className="relative flex items-center gap-2">
+        <span
+          className="absolute inset-y-0 rounded-full bg-primary/10 transition-all duration-250 ease-in-out"
+          style={{ left: tabIndicator.left, width: tabIndicator.width }}
+        />
+        {PLATFORMS.map((p) => (
+          <Button
+            key={p.id}
+            ref={(el) => (tabRefs.current[p.id] = el)}
+            variant="ghost"
+            size="sm"
+            className={`relative rounded-full px-3 ${
+              platform === p.id
+                ? "bg-transparent text-primary shadow-sm hover:bg-transparent hover:text-primary"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+            onClick={() => setPlatform(p.id)}
+            title={p.label}
+          >
+            <p.icon className="mr-1 h-4 w-4" />
+            {!takeoverHeader && p.label}
+          </Button>
+        ))}
+      </div>
+    </div>
+  );
 
   useEffect(() => {
     const el = headerRef.current;
@@ -581,8 +594,6 @@ export default function DevGuidePage() {
     return () => observer.disconnect();
   }, []);
 
-  const takeoverHeader = takenOver;
-
   return (
     <div className="min-h-screen bg-background">
       {/* 子页接管式吸顶：滚动后固定在顶部 */}
@@ -593,40 +604,11 @@ export default function DevGuidePage() {
         onBack={handleBack}
         done={readCount}
         total={totalReadable}
+        center={platformTabs}
       />
       {takeoverHeader && <div aria-hidden="true" style={{ height: subHeaderHeight }} />}
 
       <main className="mx-auto max-w-7xl px-4 py-6 space-y-4">
-        {/* 顶部平台切换 */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="space-y-1" />
-          <div className="flex items-center gap-2 rounded-full border px-2 py-1 bg-card shadow-sm">
-            <div className="relative flex items-center gap-2">
-              <span
-                className="absolute inset-y-0 rounded-full bg-primary/10 transition-all duration-250 ease-in-out"
-                style={{ left: tabIndicator.left, width: tabIndicator.width }}
-              />
-              {PLATFORMS.map((p) => (
-                <Button
-                  key={p.id}
-                  ref={(el) => (tabRefs.current[p.id] = el)}
-                  variant="ghost"
-                  size="sm"
-                  className={`relative rounded-full px-3 ${
-                    platform === p.id
-                      ? "bg-transparent text-primary shadow-sm hover:bg-transparent hover:text-primary"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                  onClick={() => setPlatform(p.id)}
-                >
-                  <p.icon className="mr-1 h-4 w-4" />
-                  {p.label}
-                </Button>
-              ))}
-            </div>
-          </div>
-        </div>
-
         {/* 导航 + 正文合并为单卡片 */}
         <Card className="rounded-3xl shadow-sm">
           <CardContent className="space-y-4 p-4 sm:p-6">
@@ -659,10 +641,6 @@ export default function DevGuidePage() {
               </div>
               {READABLE_SECTIONS.includes(activeSection as any) && (
                 <div className="ml-auto flex items-center gap-3">
-                  <div className="hidden sm:flex items-center gap-2 rounded-full border px-3 py-1 text-xs text-muted-foreground">
-                    <span>已读 {readCount} / {totalReadable}</span>
-                    <Progress value={(readCount / totalReadable) * 100} className="h-1 w-16" />
-                  </div>
                   <Button
                     variant="default"
                     className="rounded-full px-5"

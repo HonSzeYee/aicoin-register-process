@@ -66,4 +66,37 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  html,
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-family: "PingFang SC", "PingFangSC", "PingFang SC Regular", "Hiragino Sans GB",
+      "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", system-ui, -apple-system,
+      "Segoe UI", sans-serif;
+  }
+
+  svg,
+  canvas {
+    shape-rendering: geometricPrecision;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+@layer utilities {
+  @keyframes breathe {
+    0%, 100% {
+      transform: translateY(0) scale(1);
+      box-shadow: 0 0 0 0 hsl(var(--primary) / 0.0);
+    }
+    50% {
+      transform: translateY(-1px) scale(1.01);
+      box-shadow: 0 6px 18px -8px hsl(var(--primary) / 0.45);
+    }
+  }
+
+  .animate-breathe {
+    animation: breathe 2.6s ease-in-out infinite;
+  }
 }

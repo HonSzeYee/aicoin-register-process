@@ -7,6 +7,7 @@ import AccountsRegistrationPage from "@/pages/AccountsRegistrationPage";
 import DevGuidePage from "@/pages/DevGuidePage";
 import PlaceholderPage from "@/pages/PlaceholderPage";
 import FaqPage from "@/pages/FaqPage";
+import WorkflowPage from "@/pages/WorkflowPage";
 
 export default function App() {
   return (
@@ -19,7 +20,7 @@ export default function App() {
               <Route path="accounts" element={<AccountsRegistrationPage />} />
               <Route path="dev" element={<DevGuidePage />} />
               <Route path="tools" element={<PlaceholderPage title="软件使用" />} />
-              <Route path="workflow" element={<PlaceholderPage title="工作流程" />} />
+              <Route path="workflow" element={<WorkflowPage />} />
               <Route path="faq" element={<FaqPage />} />
             </Route>
           </Routes>
