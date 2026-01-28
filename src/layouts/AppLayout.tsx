@@ -163,9 +163,13 @@ export default function AppLayout() {
           sidebarCollapsed ? "gap-2 md:gap-3" : "gap-4"
         }`}
       >
-        <div className={`${sidebarCollapsed ? "w-[52px]" : "w-[220px]"} shrink-0`}>
+        <div
+          className={`${
+            sidebarCollapsed ? "w-[52px]" : "w-[220px]"
+          } shrink-0 md:sticky md:top-20 md:h-[calc(100vh-5rem)] transition-all duration-300 ease-in-out`}
+        >
           <aside
-            className={`md:fixed md:top-20 md:h-[calc(100vh-5rem)] md:left-[max(1rem,calc((100vw-80rem)/2+1rem))] transition-all duration-300 ease-in-out will-change-[width] ${
+            className={`relative transition-all duration-300 ease-in-out will-change-[width] ${
               sidebarCollapsed ? "w-[52px]" : "w-[220px]"
             }`}
           >

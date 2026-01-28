@@ -2,7 +2,6 @@ import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import WelcomeDialog from "@/components/WelcomeDialog";
@@ -20,14 +19,10 @@ import {
   CheckCircle2,
   Circle,
   Lock,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 
-type UpdateItem = {
-  id: string;
-  date: string;
-  title: string;
-  tag?: string;
-};
 
 const SECTION_ROUTE_MAP: Record<string, string> = {
   accounts: "/accounts",
@@ -54,6 +49,7 @@ export default function AICoinOnboardingDashboard() {
 
   const [roleDialogOpen, setRoleDialogOpen] = useState(false);
   const [showWelcome, setShowWelcome] = useState(userName === "新用户");
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (userName !== "新用户") setShowWelcome(false);
@@ -62,12 +58,6 @@ export default function AICoinOnboardingDashboard() {
   const sections = useMemo(() => buildSections(accountItems, devReadMap), [accountItems, devReadMap]);
 
   const nextAction = useMemo(() => pickNextAction(sections), [sections]);
-
-  const [updates] = useState<UpdateItem[]>([
-    { id: "u1", date: "2026-01-18", title: "更新：Android 环境搭建说明（Gradle 镜像）", tag: "开发" },
-    { id: "u2", date: "2026-01-15", title: "新增：Demo 版本工作流程说明", tag: "流程" },
-    { id: "u3", date: "2026-01-12", title: "补充：GitLab MR 命名规范示例", tag: "工具" },
-  ]);
 
   const filteredSections = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -103,6 +93,18 @@ export default function AICoinOnboardingDashboard() {
     [navigate]
   );
 
+  const toggleSectionExpanded = useCallback((sectionId: string) => {
+    setExpandedSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(sectionId)) {
+        next.delete(sectionId);
+      } else {
+        next.add(sectionId);
+      }
+      return next;
+    });
+  }, []);
+
   return (
     <div className="space-y-4">
       <Card className="rounded-2xl shadow-sm">
@@ -136,7 +138,6 @@ export default function AICoinOnboardingDashboard() {
         <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           {nextAction ? (
             <div className="space-y-1">
-              <div className="text-sm text-muted-foreground">建议你优先完成：</div>
               <div className="text-lg font-semibold">
                 {nextAction.section.title} · {nextAction.item.title}
               </div>
@@ -161,9 +162,6 @@ export default function AICoinOnboardingDashboard() {
               }}
             >
               立刻去完成
-            </Button>
-            <Button className="rounded-2xl" variant="outline">
-              查看全部清单
             </Button>
           </div>
         </CardContent>
@@ -238,7 +236,7 @@ export default function AICoinOnboardingDashboard() {
               </div>
 
               <div className="space-y-2">
-                {s.items.slice(0, 6).map((it) => (
+                {(expandedSections.has(s.id) ? s.items : s.items.slice(0, 3)).map((it) => (
                   <button
                     key={it.id}
                     onClick={() => handleToggleItem(s.id, it.id)}
@@ -270,10 +268,24 @@ export default function AICoinOnboardingDashboard() {
                   </button>
                 ))}
 
-                {s.items.length > 6 && (
-                  <div className="px-3 py-2 text-xs text-muted-foreground">
-                    还有 {s.items.length - 6} 项未展示…
-                  </div>
+                {s.items.length > 3 && (
+                  <button
+                    type="button"
+                    onClick={() => toggleSectionExpanded(s.id)}
+                    className="inline-flex items-center gap-1 px-3 py-2 text-xs text-muted-foreground transition hover:text-foreground"
+                  >
+                    {expandedSections.has(s.id) ? (
+                      <>
+                        收起
+                        <ChevronUp className="h-3 w-3" />
+                      </>
+                    ) : (
+                      <>
+                        展开全部
+                        <ChevronDown className="h-3 w-3" />
+                      </>
+                    )}
+                  </button>
                 )}
               </div>
 
@@ -282,49 +294,6 @@ export default function AICoinOnboardingDashboard() {
           ))}
         </CardContent>
       </Card>
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card className="rounded-2xl shadow-sm">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">今日提示</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm">
-            <div className="rounded-2xl border p-3">
-              ⚠️ 提交代码前请先同步 <span className="font-medium">develop</span> 分支，避免冲突。
-            </div>
-            <div className="rounded-2xl border p-3">
-              💡 Demo 项目通常不走完整测试流程，但仍需保持 MR 规范。
-            </div>
-            <div className="rounded-2xl border p-3">
-              ✅ 不确定找谁？优先在 iTask 评论 @ 负责人，保留沟通记录。
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl shadow-sm">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">最近更新</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {updates.slice(0, 5).map((u) => (
-              <div key={u.id} className="rounded-2xl border p-3">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="text-sm font-medium">{u.title}</div>
-                  {u.tag && (
-                    <Badge className="rounded-xl" variant="secondary">
-                      {u.tag}
-                    </Badge>
-                  )}
-                </div>
-                <div className="mt-1 text-xs text-muted-foreground">{u.date}</div>
-              </div>
-            ))}
-            <Button variant="outline" className="w-full rounded-2xl">
-              查看更多更新
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
 
       <div className="pb-6 text-center text-xs text-muted-foreground">
         建议把"步骤详情页"做成可维护的模块：目的说明 / 操作步骤 / 常见坑 / 负责人。
