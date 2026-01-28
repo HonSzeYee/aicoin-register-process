@@ -386,6 +386,10 @@ const flowContentAndroid = (
             </button>
           </div>
         </li>
+        <li>
+          合并成功后，在 iTask 将任务改为「待测试」。测试部门会自动分配测试人员，产品经理需跟进；若有 bug，继续在该分支修复；测试通过且已合入
+          <span className="font-medium text-foreground"> develop_normal</span> 后等待正式版发布。
+        </li>
       </ol>
     </div>
   </div>
@@ -434,8 +438,12 @@ const branchContentAndroid = (
   <div className="space-y-4">
     <div className="rounded-2xl border bg-muted/30 px-4 py-3">
       <div className="text-sm font-semibold text-foreground">Android 分支策略</div>
-      <div className="mt-2 text-sm text-muted-foreground">
-        Android 端开发分支建议以 <span className="font-medium text-foreground">fix-android-xxx</span> 命名。
+      <div className="mt-2 text-sm text-muted-foreground space-y-1">
+        <ul className="list-disc list-inside space-y-1">
+          <li>从 <code className="rounded bg-muted px-1">develop-normal</code> 拉取一条新的开发分支。</li>
+          <li>申请 MR 时 Target Branch 选择 <code className="rounded bg-muted px-1">develop-normal</code>，合并后进行测试。</li>
+          <li><code className="rounded bg-muted px-1">master</code> 为正式版本分支。</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -640,31 +648,30 @@ export default function DevGuidePage() {
     navigate("/");
   }, [navigate]);
 
+  const takeoverHeader = takenOver;
+  const showPlatformTabs = !takeoverHeader;
+  const currentPlatform = PLATFORMS.find(p => p.id === platform);
+
   // 更新平台 Tab 背景滑块位置
   useEffect(() => {
-    const el = tabRefs.current[platform];
-    if (el) {
-      const { offsetLeft, offsetWidth } = el;
-      setTabIndicator({ left: offsetLeft, width: offsetWidth });
-    }
-    const handleResize = () => {
+    if (!showPlatformTabs) return;
+    const update = () => {
       const el = tabRefs.current[platform];
       if (el) {
         setTabIndicator({ left: el.offsetLeft, width: el.offsetWidth });
       }
     };
+    update();
+    const handleResize = () => update();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [platform]);
-
-  const currentPlatform = PLATFORMS.find(p => p.id === platform);
-  const takeoverHeader = takenOver;
+  }, [platform, showPlatformTabs]);
 
   const platformTabs = (
     <div className="hidden md:flex items-center gap-2 rounded-full border px-2 py-1 bg-card shadow-sm">
       <div className="relative flex items-center gap-2">
         <span
-          className="absolute inset-y-0 rounded-full bg-primary/10 transition-all duration-250 ease-in-out"
+          className="absolute inset-y-0 rounded-full bg-primary/8 ring-1 ring-primary/15 transition-all duration-250 ease-in-out shadow-[0_2px_10px_-6px_rgba(91,63,191,0.35)]"
           style={{ left: tabIndicator.left, width: tabIndicator.width }}
         />
         {PLATFORMS.map((p) => (
@@ -675,7 +682,7 @@ export default function DevGuidePage() {
             size="sm"
             className={`relative rounded-full px-3 ${
               platform === p.id
-                ? "bg-transparent text-primary shadow-sm hover:bg-transparent hover:text-primary"
+                ? "bg-primary/10 text-foreground shadow-sm hover:bg-primary/10 hover:text-foreground"
                 : "text-muted-foreground hover:text-foreground"
             }`}
             onClick={() => setPlatform(p.id)}
@@ -709,7 +716,7 @@ export default function DevGuidePage() {
         onBack={handleBack}
         done={readCount}
         total={totalReadable}
-        center={platformTabs}
+        center={showPlatformTabs ? platformTabs : null}
       />
       {takeoverHeader && <div aria-hidden="true" style={{ height: subHeaderHeight }} />}
 
