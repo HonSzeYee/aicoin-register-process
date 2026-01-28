@@ -277,10 +277,28 @@ const flowContentIOS = (
     <div className="rounded-2xl border px-4 py-3">
       <div className="text-sm font-semibold text-foreground">iOS 端流程说明</div>
       <ol className="mt-2 space-y-2 text-sm text-muted-foreground list-decimal list-inside">
-        <li>在 iOS 任务群确认需求范围与验收口径。</li>
-        <li>从 <span className="font-medium text-foreground">develop</span> 创建 iOS 分支并同步最新代码。</li>
-        <li>完成开发后自测真机与模拟器，确保基础功能可用。</li>
-        <li>创建 MR：需要主管评审则 target 选 <span className="font-medium text-foreground">demo</span>。</li>
+        <li>在企微找到「贺举锋」，描述你的 demo 任务，由他帮忙创建新的 iOS 开发分支。</li>
+        <li>
+          在 IDE 拉取最新代码并切到自己的开发分支。
+          <div className="mt-2">
+            <button
+              type="button"
+              onClick={() => openImage(pullCodeImg)}
+              className="inline-flex"
+              aria-label="放大 IDE 拉取并切换分支示意"
+            >
+              <img
+                src={pullCodeImg}
+                alt="IDE 拉取并切换分支示意"
+                className="w-full max-w-lg rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+          </div>
+        </li>
+        <li>进行代码修改。</li>
+        <li>创建 MR：具体 Target Branch 向「贺举锋」确认后再选择。</li>
       </ol>
     </div>
   </div>

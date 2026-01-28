@@ -143,7 +143,7 @@ export default function FaqPage() {
             {FAQS.map((item, index) => (
               <details
                 key={item.id}
-                className="group rounded-2xl border bg-card/60 px-4 py-3"
+                className="group rounded-2xl border bg-card/60 px-4 py-3 shadow-sm transition hover:border-primary/60 hover:bg-primary/5 hover:shadow-[0_0_4px_0_rgba(109,76,255,0.14)]"
               >
                 <summary className="cursor-pointer list-none text-sm font-medium text-foreground">
                   <span className="mr-2 text-muted-foreground">Q:</span>

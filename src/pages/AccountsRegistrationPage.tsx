@@ -588,9 +588,9 @@ export default function AccountsRegistrationPage() {
                 return (
                   <div
                     key={it.id}
-                    className={`rounded-2xl border ${active ? "border-foreground/20" : "border-border"} ${
-                      it.done ? "bg-muted/10 text-muted-foreground/80" : ""
-                    }`}
+                    className={`rounded-2xl border transition hover:border-primary/60 hover:bg-primary/5 hover:shadow-[0_0_4px_0_rgba(109,76,255,0.14)] ${
+                      active ? "border-foreground/20" : "border-border"
+                    } ${it.done ? "bg-muted/10 text-muted-foreground/80" : ""}`}
                   >
                     <div className="flex items-center gap-2 p-2">
                       <button

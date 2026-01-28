@@ -240,7 +240,12 @@ export default function AppLayout() {
               <div className="mt-4 transition-all duration-300">
                 <Card className="rounded-2xl shadow-sm">
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-base">总进度</CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-base">总进度</CardTitle>
+                      <div className="text-sm font-semibold text-foreground/90">
+                        {overall.pct}% 
+                      </div>
+                    </div>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="flex items-center justify-between">
@@ -250,7 +255,6 @@ export default function AppLayout() {
                       </div>
                     </div>
                     <Progress value={clamp(overall.pct, 0, 100)} />
-                    <div className="text-xs text-muted-foreground">完成度 {overall.pct}%</div>
                   </CardContent>
                 </Card>
               </div>
