@@ -404,12 +404,18 @@ export default function AccountsRegistrationPage() {
   }
 
   function goNextUnfinished() {
-    const unfinished = items.find((i) => !i.done && !i.locked);
-    if (!unfinished) {
-      navigate("/dev");
-      return;
+    if (!items.length) return;
+    const currentIndex = items.findIndex((i) => i.id === selectedId);
+    // 从当前的下一项开始向后查找第一个未锁定的步骤
+    for (let offset = 1; offset <= items.length; offset++) {
+      const next = items[(currentIndex + offset) % items.length];
+      if (!next.locked) {
+        setSelectedId(next.id);
+        return;
+      }
     }
-    setSelectedId(unfinished.id);
+    // 如果全部被锁定，保持不变并跳到 Dev 指引
+    navigate("/dev");
   }
 
   return (
