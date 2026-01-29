@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,16 +33,16 @@ export default function WelcomeDialog({ open, onComplete }: WelcomeDialogProps) 
 
   if (!open) return null;
 
-  return (
+  return createPortal(
     <>
       {/* 遮罩层 */}
       <div
-        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+        className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm"
         aria-hidden="true"
       />
       
       {/* 对话框 */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
         <Card className="w-full max-w-md rounded-2xl shadow-xl">
           <CardHeader className="text-center pb-4">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
@@ -93,6 +94,7 @@ export default function WelcomeDialog({ open, onComplete }: WelcomeDialogProps) 
           </CardContent>
         </Card>
       </div>
-    </>
+    </>,
+    document.body
   );
 }
