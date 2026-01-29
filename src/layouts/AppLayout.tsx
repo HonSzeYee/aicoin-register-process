@@ -17,10 +17,10 @@ import {
   HelpCircle,
   Settings,
   Search,
-  Sparkles,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import logoSvgRaw from "@/assets/Logo.svg?raw";
 
 type GlobalHeaderProps = {
   collapsed: boolean;
@@ -57,9 +57,11 @@ const GlobalHeader = React.memo(function GlobalHeader({
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-200 py-2 gap-2">
         <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl border shadow-sm">
-            <Sparkles className="h-5 w-5" />
-          </div>
+          <div
+            className="inline-flex items-center [&_svg]:h-10 [&_svg]:w-auto [&_svg]:block"
+            aria-label="AiCoin Logo"
+            dangerouslySetInnerHTML={{ __html: logoSvgRaw }}
+          />
           {collapsed ? (
             <div className="flex items-center gap-2">
               <div className="text-sm font-semibold leading-tight">AiCoin · 新人入职指南</div>
