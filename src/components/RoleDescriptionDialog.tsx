@@ -1,4 +1,5 @@
 import React from "react";
+import { createPortal } from "react-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { X, Users, Briefcase, CheckSquare, Wrench } from "lucide-react";
@@ -11,15 +12,15 @@ interface RoleDescriptionDialogProps {
 export default function RoleDescriptionDialog({ open, onClose }: RoleDescriptionDialogProps) {
   if (!open) return null;
 
-  return (
+  return createPortal(
     <>
       <div
-        className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 z-[100] bg-black/55 backdrop-blur-sm transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
       
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
         <Card className="w-full max-w-2xl overflow-hidden rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-200">
           <CardHeader className="border-b bg-muted/30 pb-4">
             <div className="flex items-center justify-between">
@@ -141,6 +142,7 @@ export default function RoleDescriptionDialog({ open, onClose }: RoleDescription
           </CardContent>
         </Card>
       </div>
-    </>
+    </>,
+    document.body
   );
 }
