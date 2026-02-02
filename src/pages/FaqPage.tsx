@@ -33,7 +33,7 @@ const FAQS = [
       },
       {
         text: "1）在 GitLab 中获取 HTTPS 链接，使用 git clone 将 go-pc-api 后端代码克隆到本地 IDE。",
-        image: "/src/assets/image copy 2.png",
+        image: "/src/assets/image-copy-2.png",
         alt: "GitLab 获取 HTTPS 链接示例",
       },
       {
