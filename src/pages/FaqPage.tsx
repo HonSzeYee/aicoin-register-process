@@ -25,6 +25,29 @@ const FAQS = [
     ],
   },
   {
+    id: "go-pc-api-quickstart",
+    question: "如何快速上手PC后端接口go-pc-api项目？",
+    answer: [
+      {
+        text: "",
+      },
+      {
+        text: "1）在 GitLab 中获取 HTTPS 链接，使用 git clone 将 go-pc-api 后端代码克隆到本地 IDE。",
+        image: "/src/assets/image copy 2.png",
+        alt: "GitLab 获取 HTTPS 链接示例",
+      },
+      {
+        text: "2）在 IDE 的终端执行 `git clone <https链接>`，把后端代码复制到本地工作区。",
+      },
+      {
+        text: "3）想新增「三日涨幅」指标时，先让 AI 阅读已有的「七日涨幅」实现，理解它的数据获取与返回字段逻辑，再让 AI 协助按同样模式修改。",
+      },
+      {
+        text: "4）可用的提示语示例：我正在开发一个后端接口，目标是新增「三日涨幅」指标。我需要查看和理解「七日涨幅」的实现，尤其是如何获取数据和如何返回字段给前端。请帮助我理解「七日涨幅」接口的实现方式，包括数据获取、计算和返回字段的逻辑，之后指导我如何新增一个「三日涨幅」接口，并确保它与「七日涨幅」的处理逻辑一致。",
+      },
+    ],
+  },
+  {
     id: "repo-structure",
     question: "这么多项目（iOS/Android/PC）要怎么分辨每个项目的结构呢？",
     answer: [
