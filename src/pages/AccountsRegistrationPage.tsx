@@ -647,13 +647,13 @@ export default function AccountsRegistrationPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="absolute right-3 top-3 rounded-full bg-background/90 px-3 py-1 text-xs font-medium text-muted-foreground transition hover:bg-background"
+              className="absolute right-3 top-3 z-20 rounded-full bg-background/90 px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm transition hover:bg-background"
               onClick={handleCloseLightbox}
             >
               关闭
             </button>
             {!lightboxLoaded && (
-              <div className="absolute inset-0 grid place-items-center bg-card/40 backdrop-blur-sm">
+              <div className="absolute inset-0 grid place-items-center bg-card/40 backdrop-blur-sm pointer-events-none">
                 <div className="h-10 w-10 animate-spin rounded-full border-2 border-muted-foreground/30 border-t-primary" />
               </div>
             )}
