@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, HelpCircle } from "lucide-react";
+import imageCopy2 from "@/assets/image-copy-2.png";
 
 const FAQS = [
   {
@@ -33,7 +34,7 @@ const FAQS = [
       },
       {
         text: "1）在 GitLab 中获取 HTTPS 链接，使用 git clone 将 go-pc-api 后端代码克隆到本地 IDE。",
-        image: "/src/assets/image-copy-2.png",
+        image: imageCopy2,
         alt: "GitLab 获取 HTTPS 链接示例",
       },
       {
