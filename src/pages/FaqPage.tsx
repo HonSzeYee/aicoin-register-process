@@ -5,6 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, HelpCircle } from "lucide-react";
+import vxFqa1 from "@/assets/vx-fqa-1.png";
+import vxFqa2 from "@/assets/vx-fqa-2.png";
+import demoImage from "@/assets/image-copy.png";
+import vxDemo from "@/assets/vx-demo.png";
 import imageCopy2 from "@/assets/image-copy-2.png";
 
 const FAQS = [
@@ -15,12 +19,12 @@ const FAQS = [
     answer: [
       {
         text: "端负责人会在发版前，将你合并到 develop 的开发分支再合并到一个 sync-日期 的分支。",
-        image: "/src/assets/vx-fqa-1.png",
+        image: vxFqa1,
         alt: "sync 分支邮件示例",
       },
       {
         text: "并且，在正式版发版的时候，会合并到正式版的版本号中。（注意观察企业微信邮箱）",
-        image: "/src/assets/vx-fqa-2.png",
+        image: vxFqa2,
         alt: "正式版本号邮件示例",
       },
     ],
@@ -54,7 +58,7 @@ const FAQS = [
     answer: [
       {
         text: "打开 GitLab 中对应的项目代码仓库，项目中会有 markdown 文档解释整份仓库。",
-        image: "/src/assets/image copy.png",
+        image: demoImage,
         alt: "项目结构说明示例",
       },
     ],
@@ -65,7 +69,7 @@ const FAQS = [
     answer: [
       {
         text: "查看PRD集合文档，如果技术安排写的是「走demo流程」，就是产品经理独立完成代码。反之，如果有安排技术人员的话，产品经理就不需要写代码，只需要负责监控整个需求周期是否准时。",
-        image: "/src/assets/vx-demo.png",
+        image: vxDemo,
         alt: "PRD 集合文档示例",
       },
     ],
