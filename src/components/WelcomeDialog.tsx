@@ -3,7 +3,8 @@ import { createPortal } from "react-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { User, Sparkles } from "lucide-react";
+import { User } from "lucide-react";
+import logoSvg from "@/assets/Logo.svg";
 
 interface WelcomeDialogProps {
   open: boolean;
@@ -49,9 +50,11 @@ export default function WelcomeDialog({ open, onComplete }: WelcomeDialogProps) 
       <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
         <Card className="w-full max-w-md rounded-2xl bg-card shadow-xl backdrop-blur-0">
           <CardHeader className="text-center pb-4">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-              <Sparkles className="h-8 w-8 text-primary" />
-            </div>
+            <img
+              src={logoSvg}
+              alt="AiCoin Logo"
+              className="mx-auto mb-4 h-16 w-16"
+            />
             <CardTitle className="text-2xl">欢迎加入 AiCoin</CardTitle>
             <p className="mt-2 text-sm text-muted-foreground">
               请先设置你的名字，以便我们更好地为你提供服务
