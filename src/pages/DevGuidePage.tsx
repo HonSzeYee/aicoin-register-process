@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppState } from "@/context/AppStateContext";
 import { useScrollTakeoverContext } from "@/context/ScrollTakeoverContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Segmented } from "antd";
 import {
   ArrowLeft,
   Code2,
@@ -687,15 +688,6 @@ export default function DevGuidePage() {
   const [platform, setPlatform] = useState<Platform>("PC");
   const [activeSection, setActiveSection] = useState<SectionId>("pre");
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
-  const tabRefs = useRef<Record<Platform, HTMLButtonElement | null>>({
-    PC: null,
-    iOS: null,
-    Android: null,
-  });
-  const [tabIndicator, setTabIndicator] = useState<{ left: number; width: number }>({
-    left: 0,
-    width: 0,
-  });
   const readSections = devReadMap;
 
   const READABLE_SECTIONS: SectionId[] = ["pre", "env", "flow", "branch", "commit"];
@@ -734,45 +726,24 @@ export default function DevGuidePage() {
   const showPlatformTabs = !takeoverHeader;
   const currentPlatform = PLATFORMS.find(p => p.id === platform);
 
-  // 更新平台 Tab 背景滑块位置
-  useLayoutEffect(() => {
-    if (!showPlatformTabs) return;
-    const update = () => {
-      const el = tabRefs.current[platform];
-      if (el) {
-        setTabIndicator({ left: el.offsetLeft, width: el.offsetWidth });
-      }
-    };
-    update();
-    const handleResize = () => update();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [platform, showPlatformTabs]);
+  const platformOptions = PLATFORMS.map((p) => ({
+    value: p.id,
+    label: (
+      <span className="inline-flex items-center gap-2">
+        <p.icon className="h-4 w-4" />
+        {p.label}
+      </span>
+    ),
+  }));
 
   const platformTabs = (
-    <div className="hidden md:flex items-center gap-2 rounded-full border px-2 py-1 bg-card shadow-sm">
-      <div className="relative flex items-center gap-2">
-        <span
-          className="pointer-events-none absolute inset-y-0 z-0 rounded-full bg-primary/12 ring-1 ring-primary/30 backdrop-blur-xl transition-all duration-250 ease-in-out shadow-[inset_0_0_0_1px_rgba(255,255,255,0.2),0_10px_24px_-16px_rgba(59,130,246,0.6)]"
-          style={{ left: tabIndicator.left, width: tabIndicator.width }}
-        />
-        {PLATFORMS.map((p) => (
-          <Button
-            key={p.id}
-            ref={(el) => (tabRefs.current[p.id] = el)}
-            variant="ghost"
-            size="sm"
-            className={`relative z-10 rounded-full px-3 transition-colors duration-200 ${
-              platform === p.id ? "text-[#111111]" : "text-foreground/50 hover:text-foreground"
-            }`}
-            onClick={() => setPlatform(p.id)}
-            title={p.label}
-          >
-            <p.icon className="mr-1 h-4 w-4" />
-            {!takeoverHeader && p.label}
-          </Button>
-        ))}
-      </div>
+    <div className="hidden md:flex items-center">
+      <Segmented
+        value={platform}
+        options={platformOptions}
+        onChange={(value) => setPlatform(value as Platform)}
+        className="rounded-lg"
+      />
     </div>
   );
 
@@ -817,7 +788,7 @@ export default function DevGuidePage() {
                     size="sm"
                     onClick={() => setActiveSection(section.id)}
                     className={`group rounded-full px-3 shadow-none ${
-                      isActive ? "border-primary/50 text-primary bg-primary/10" : ""
+                      isActive ? "border-[#E6ECF7] text-accent-foreground bg-[#E6ECF7]" : ""
                     }`}
                   >
                     <span className="mr-1 flex items-center gap-1">

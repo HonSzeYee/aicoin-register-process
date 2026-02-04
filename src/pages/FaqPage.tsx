@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useScrollTakeoverContext } from "@/context/ScrollTakeoverContext";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, HelpCircle } from "lucide-react";
+import { CaretRightOutlined } from "@ant-design/icons";
+import type { CollapseProps } from "antd";
+import { Collapse, theme } from "antd";
 import vxFqa1 from "@/assets/vx-fqa-1.png";
 import vxFqa2 from "@/assets/vx-fqa-2.png";
 import demoImage from "@/assets/image-copy.png";
@@ -167,6 +170,47 @@ export default function FaqPage() {
   const headerRef = useRef<HTMLElement | null>(null);
   const [subHeaderHeight, setSubHeaderHeight] = useState(0);
   const total = FAQS.length;
+  const { token } = theme.useToken();
+
+  const panelStyle: React.CSSProperties = {
+    marginBottom: 14,
+    background: "hsl(var(--card) / 0.6)",
+    borderRadius: 22,
+    border: "1px solid hsl(var(--border) / 0.6)",
+    boxShadow: "0 10px 30px -26px rgba(15, 23, 42, 0.35)",
+  };
+
+  const items: CollapseProps["items"] = FAQS.map((item) => ({
+    key: item.id,
+    label: (
+      <div className="text-sm font-medium text-foreground">
+        <span className="mr-2 text-muted-foreground">Q:</span>
+        {item.question}
+      </div>
+    ),
+    children: (
+      <div className="space-y-2 text-sm text-muted-foreground">
+        {item.answer.map((line, lineIndex) => (
+          <React.Fragment key={`${item.id}-line-${lineIndex}`}>
+            <p>
+              {lineIndex === 0 && <span className="mr-2 text-muted-foreground">A:</span>}
+              {line.text}
+            </p>
+            {line.image && (
+              <img
+                src={line.image}
+                alt={line.alt ?? ""}
+                className="mt-2 w-full max-w-3xl rounded-xl border"
+                loading="lazy"
+                decoding="async"
+              />
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    ),
+    style: panelStyle,
+  }));
 
   useEffect(() => {
     const el = headerRef.current;
@@ -196,38 +240,18 @@ export default function FaqPage() {
       <main className="mx-auto max-w-7xl px-4 py-6 space-y-4">
         <Card className="rounded-2xl shadow-sm">
           <CardContent className="space-y-3 pt-6">
-            {FAQS.map((item, index) => (
-              <details
-                key={item.id}
-                className="group rounded-2xl border bg-card/60 px-4 py-3 shadow-sm transition hover:border-primary/60 hover:bg-primary/5 hover:shadow-[0_0_4px_0_rgba(109,76,255,0.14)]"
-              >
-                <summary className="cursor-pointer list-none text-sm font-medium text-foreground">
-                  <span className="mr-2 text-muted-foreground">Q:</span>
-                  {item.question}
-                </summary>
-                <div className="mt-3 space-y-2 text-sm text-muted-foreground">
-                  {item.answer.map((line, lineIndex) => (
-                    <React.Fragment key={`${item.id}-line-${lineIndex}`}>
-                      <p>
-                        {lineIndex === 0 && (
-                          <span className="mr-2 text-muted-foreground">A:</span>
-                        )}
-                        {line.text}
-                      </p>
-                      {line.image && (
-                        <img
-                          src={line.image}
-                          alt={line.alt ?? ""}
-                          className="mt-2 w-full max-w-3xl rounded-xl border"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      )}
-                    </React.Fragment>
-                  ))}
-                </div>
-              </details>
-            ))}
+            <Collapse
+              bordered={false}
+              expandIconPosition="end"
+              expandIcon={({ isActive }) => (
+                <CaretRightOutlined
+                  rotate={isActive ? 90 : 0}
+                  style={{ color: token.colorTextSecondary }}
+                />
+              )}
+              style={{ background: "transparent" }}
+              items={items}
+            />
           </CardContent>
         </Card>
       </main>

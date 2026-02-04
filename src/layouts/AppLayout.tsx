@@ -229,7 +229,7 @@ export default function AppLayout() {
                         key={n.id}
                         onClick={() => navigate(n.path)}
                         className={`flex w-full items-center gap-2 rounded-2xl px-3 py-2 text-sm transition-colors ${
-                          active ? "bg-accent text-accent-foreground" : "hover:bg-accent/60"
+                          active ? "bg-[#E6ECF7] text-accent-foreground" : "hover:bg-accent/60"
                         }`}
                       >
                         <Icon className="h-4 w-4 shrink-0" />
