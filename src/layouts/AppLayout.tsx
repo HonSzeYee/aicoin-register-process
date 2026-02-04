@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -120,6 +120,7 @@ export default function AppLayout() {
   const { takenOver: scrolledPast, isScrolling } = useScrollTakeoverContext();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarReady, setSidebarReady] = useState(!sidebarCollapsed);
 
   const isSubpage = useMemo(() => {
     return location.pathname.startsWith("/accounts") || location.pathname.startsWith("/dev");
@@ -147,6 +148,15 @@ export default function AppLayout() {
     },
     [location.pathname]
   );
+
+  useEffect(() => {
+    if (sidebarCollapsed) {
+      setSidebarReady(false);
+      return;
+    }
+    const timer = window.setTimeout(() => setSidebarReady(true), 140);
+    return () => window.clearTimeout(timer);
+  }, [sidebarCollapsed]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -192,7 +202,13 @@ export default function AppLayout() {
               <Card className="rounded-2xl shadow-sm">
                 <CardHeader className="pb-3 transition-all duration-300">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-base transition-opacity duration-300">导航</CardTitle>
+                    <CardTitle
+                      className={`text-base whitespace-nowrap transition-opacity duration-200 ${
+                        sidebarReady ? "opacity-100" : "opacity-0"
+                      }`}
+                    >
+                      导航
+                    </CardTitle>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -218,15 +234,17 @@ export default function AppLayout() {
                       >
                         <Icon className="h-4 w-4 shrink-0" />
                         <span
-                          className={`flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis transition-opacity duration-500 ${
-                            sidebarCollapsed ? "opacity-0 pointer-events-none select-none" : "opacity-100"
+                          className={`flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis transition-opacity duration-200 ${
+                            sidebarCollapsed || !sidebarReady
+                              ? "opacity-0 pointer-events-none select-none"
+                              : "opacity-100"
                           }`}
                         >
                           {n.label}
                         </span>
                         <span
-                          className={`text-xs text-muted-foreground transition-opacity duration-500 ${
-                            sidebarCollapsed || n.id === "dashboard"
+                          className={`text-xs text-muted-foreground transition-opacity duration-200 ${
+                            sidebarCollapsed || !sidebarReady || n.id === "dashboard"
                               ? "opacity-0 pointer-events-none select-none"
                               : "opacity-100"
                           }`}
@@ -243,13 +261,27 @@ export default function AppLayout() {
                 <Card className="rounded-2xl shadow-sm">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-base">总进度</CardTitle>
-                      <div className="text-sm font-semibold text-foreground/90">
+                      <CardTitle
+                        className={`text-base whitespace-nowrap transition-opacity duration-200 ${
+                          sidebarReady ? "opacity-100" : "opacity-0"
+                        }`}
+                      >
+                        总进度
+                      </CardTitle>
+                      <div
+                        className={`text-sm font-semibold text-foreground/90 transition-opacity duration-200 ${
+                          sidebarReady ? "opacity-100" : "opacity-0"
+                        }`}
+                      >
                         {overall.pct}% 
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-3">
+                  <CardContent
+                    className={`space-y-3 transition-opacity duration-200 ${
+                      sidebarReady ? "opacity-100" : "opacity-0"
+                    }`}
+                  >
                     <div className="flex items-center justify-between">
                       <div className="text-sm text-muted-foreground">已完成</div>
                       <div className="text-sm font-medium">
