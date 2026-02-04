@@ -37,13 +37,17 @@ export default function WelcomeDialog({ open, onComplete }: WelcomeDialogProps) 
     <>
       {/* 遮罩层 */}
       <div
-        className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm"
+        className="fixed inset-0 z-[100] backdrop-blur-[2px]"
+        style={{
+          background:
+            "radial-gradient(900px 520px at 50% -10%, rgba(59,130,246,0.12), transparent 60%), rgba(15,23,42,0.45)",
+        }}
         aria-hidden="true"
       />
       
       {/* 对话框 */}
       <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-        <Card className="w-full max-w-md rounded-2xl shadow-xl">
+        <Card className="w-full max-w-md rounded-2xl bg-card shadow-xl backdrop-blur-0">
           <CardHeader className="text-center pb-4">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
               <Sparkles className="h-8 w-8 text-primary" />
