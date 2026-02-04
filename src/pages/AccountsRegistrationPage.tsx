@@ -661,7 +661,7 @@ export default function AccountsRegistrationPage() {
               src={lightboxImage}
               alt="放大图"
               decoding="async"
-              fetchpriority="high"
+              fetchPriority="high"
               className={`h-full w-full object-contain transform-gpu motion-safe:transition-opacity motion-safe:duration-200 motion-reduce:transition-none ${
                 lightboxLoaded ? "opacity-100" : "opacity-0"
               }`}

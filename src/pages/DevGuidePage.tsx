@@ -45,6 +45,7 @@ const openImage = (src: string) => {
 
 // 定义数据结构
 type Platform = "PC" | "iOS" | "Android";
+type SectionId = "pre" | "env" | "flow" | "branch" | "commit";
 
 const PLATFORMS: { id: Platform; label: string; icon: React.ElementType }[] = [
   { id: "PC", label: "PC 端", icon: Monitor },
@@ -125,7 +126,7 @@ const DevGuideHeader = React.memo(
 
 DevGuideHeader.displayName = "DevGuideHeader";
 
-const SECTIONS = [
+const SECTIONS: { id: SectionId; title: string; icon: React.ElementType }[] = [
   { id: "pre", title: "前置准备", icon: MessageCircle },
   { id: "env", title: "开发环境搭建", icon: Terminal },
   { id: "flow", title: "整体流程", icon: GitPullRequest },
@@ -684,7 +685,7 @@ export default function DevGuidePage() {
   const headerRef = useRef<HTMLElement | null>(null);
   const [subHeaderHeight, setSubHeaderHeight] = useState(0);
   const [platform, setPlatform] = useState<Platform>("PC");
-  const [activeSection, setActiveSection] = useState("pre");
+  const [activeSection, setActiveSection] = useState<SectionId>("pre");
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const tabRefs = useRef<Record<Platform, HTMLButtonElement | null>>({
     PC: null,
@@ -697,7 +698,7 @@ export default function DevGuidePage() {
   });
   const readSections = devReadMap;
 
-  const READABLE_SECTIONS = ["pre", "env", "flow", "branch", "commit"] as const;
+  const READABLE_SECTIONS: SectionId[] = ["pre", "env", "flow", "branch", "commit"];
 
   const goNextSection = () => {
     const idx = SECTIONS.findIndex((s) => s.id === activeSection);

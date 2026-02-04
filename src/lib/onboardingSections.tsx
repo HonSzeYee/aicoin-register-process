@@ -18,6 +18,7 @@ type Section = {
 };
 
 const DEV_READ_ITEMS = [
+  { id: "pre-read", title: "前置准备", etaMinutes: 2, key: "pre" },
   { id: "env-read", title: "开发环境搭建", etaMinutes: 8, key: "env" },
   { id: "flow-read", title: "整体流程", etaMinutes: 6, key: "flow" },
   { id: "branch-read", title: "GitLab 分支规范", etaMinutes: 6, key: "branch" },
@@ -102,6 +103,7 @@ export function pickNextAction(sections: Section[]) {
 }
 
 export const DEV_READ_ID_MAP: Record<string, keyof DevReadMap> = {
+  "pre-read": "pre",
   "env-read": "env",
   "flow-read": "flow",
   "branch-read": "branch",

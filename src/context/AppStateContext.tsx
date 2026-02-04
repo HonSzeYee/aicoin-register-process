@@ -26,6 +26,7 @@ export type AccountChecklistItem = {
 };
 
 export type DevReadMap = {
+  pre: boolean;
   env: boolean;
   flow: boolean;
   branch: boolean;
@@ -66,6 +67,7 @@ export const DEFAULT_ACCOUNT_ITEMS: AccountChecklistItem[] = [
 ];
 
 const DEFAULT_DEV_READ: DevReadMap = {
+  pre: false,
   env: false,
   flow: false,
   branch: false,
@@ -90,6 +92,7 @@ function normalizeAccountItems(items?: AccountChecklistItem[]) {
 
 function normalizeDevReadMap(map?: Partial<DevReadMap>) {
   return {
+    pre: !!map?.pre,
     env: !!map?.env,
     flow: !!map?.flow,
     branch: !!map?.branch,
