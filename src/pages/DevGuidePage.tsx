@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppState } from "@/context/AppStateContext";
 import { useScrollTakeoverContext } from "@/context/ScrollTakeoverContext";
@@ -735,7 +735,7 @@ export default function DevGuidePage() {
   const currentPlatform = PLATFORMS.find(p => p.id === platform);
 
   // 更新平台 Tab 背景滑块位置
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!showPlatformTabs) return;
     const update = () => {
       const el = tabRefs.current[platform];
@@ -753,7 +753,7 @@ export default function DevGuidePage() {
     <div className="hidden md:flex items-center gap-2 rounded-full border px-2 py-1 bg-card shadow-sm">
       <div className="relative flex items-center gap-2">
         <span
-          className="absolute inset-y-0 rounded-full bg-primary/8 ring-1 ring-primary/15 transition-all duration-250 ease-in-out shadow-[0_2px_10px_-6px_rgba(91,63,191,0.35)]"
+          className="pointer-events-none absolute inset-y-0 z-0 rounded-full bg-primary/12 ring-1 ring-primary/30 backdrop-blur-xl transition-all duration-250 ease-in-out shadow-[inset_0_0_0_1px_rgba(255,255,255,0.2),0_10px_24px_-16px_rgba(59,130,246,0.6)]"
           style={{ left: tabIndicator.left, width: tabIndicator.width }}
         />
         {PLATFORMS.map((p) => (
@@ -762,10 +762,8 @@ export default function DevGuidePage() {
             ref={(el) => (tabRefs.current[p.id] = el)}
             variant="ghost"
             size="sm"
-            className={`relative rounded-full px-3 ${
-              platform === p.id
-                ? "bg-primary/10 text-foreground shadow-sm hover:bg-primary/10 hover:text-foreground"
-                : "text-muted-foreground hover:text-foreground"
+            className={`relative z-10 rounded-full px-3 transition-colors duration-200 ${
+              platform === p.id ? "text-[#111111]" : "text-foreground/50 hover:text-foreground"
             }`}
             onClick={() => setPlatform(p.id)}
             title={p.label}
