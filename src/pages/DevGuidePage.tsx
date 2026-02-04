@@ -34,6 +34,8 @@ import appMainNameImg from "@/assets/app-main-name.png";
 import appMainNameImg2 from "@/assets/app-main-name2.png";
 import appMainMrImg from "@/assets/app-main-mr.png";
 import appMainMrImg2 from "@/assets/image.png";
+import vxApplyImg from "@/assets/vx-apply.png";
+import vxDetailsImg from "@/assets/vx-details.png";
 
 // 全局图查看回调占位，用于顶部静态内容触发弹窗
 let lightboxSetter: ((src: string | null) => void) | null = null;
@@ -124,6 +126,7 @@ const DevGuideHeader = React.memo(
 DevGuideHeader.displayName = "DevGuideHeader";
 
 const SECTIONS = [
+  { id: "pre", title: "前置准备", icon: MessageCircle },
   { id: "env", title: "开发环境搭建", icon: Terminal },
   { id: "flow", title: "整体流程", icon: GitPullRequest },
   { id: "branch", title: "GitLab 分支规范", icon: GitBranch },
@@ -466,6 +469,45 @@ const commitContentChat = commitContentBase;
 // 模拟文档内容
 const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
   PC: {
+    pre: (
+      <div className="space-y-3">
+        <div className="rounded-2xl border bg-primary/5 px-4 py-3 text-sm text-foreground/80 shadow-sm">
+          在开发前，请确保已在企业微信「审批」中提交并通过「产品代码权限申请」。
+        </div>
+        <div className="flex justify-center">
+          <button
+            type="button"
+            className="inline-flex"
+            onClick={() => openImage(vxApplyImg)}
+            aria-label="放大审批入口示例"
+          >
+            <img
+              src={vxApplyImg}
+              alt="企业微信审批入口示例"
+              className="w-full max-w-xl rounded-xl border shadow-sm"
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
+        </div>
+        <div className="flex justify-center">
+          <button
+            type="button"
+            className="inline-flex"
+            onClick={() => openImage(vxDetailsImg)}
+            aria-label="放大审批详情示例"
+          >
+            <img
+              src={vxDetailsImg}
+              alt="企业微信审批详情示例"
+              className="w-full max-w-xl rounded-xl border shadow-sm"
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
+        </div>
+      </div>
+    ),
     env: (
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground">
@@ -496,6 +538,45 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
     commit: commitContentBase,
   },
   iOS: {
+    pre: (
+      <div className="space-y-3">
+        <div className="rounded-2xl border bg-primary/5 px-4 py-3 text-sm text-foreground/80 shadow-sm">
+          在开发前，请确保已在企业微信「审批」中提交并通过「产品代码权限申请」。
+        </div>
+        <div className="flex justify-center">
+          <button
+            type="button"
+            className="inline-flex"
+            onClick={() => openImage(vxApplyImg)}
+            aria-label="放大审批入口示例"
+          >
+            <img
+              src={vxApplyImg}
+              alt="企业微信审批入口示例"
+              className="w-full max-w-xl rounded-xl border shadow-sm"
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
+        </div>
+        <div className="flex justify-center">
+          <button
+            type="button"
+            className="inline-flex"
+            onClick={() => openImage(vxDetailsImg)}
+            aria-label="放大审批详情示例"
+          >
+            <img
+              src={vxDetailsImg}
+              alt="企业微信审批详情示例"
+              className="w-full max-w-xl rounded-xl border shadow-sm"
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
+        </div>
+      </div>
+    ),
     env: (
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground">
@@ -526,6 +607,45 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
     commit: commitContentIOS,
   },
   Android: {
+    pre: (
+      <div className="space-y-3">
+        <div className="rounded-2xl border bg-primary/5 px-4 py-3 text-sm text-foreground/80 shadow-sm">
+          在开发前，请确保已在企业微信「审批」中提交并通过「产品代码权限申请」。
+        </div>
+        <div className="flex justify-center">
+          <button
+            type="button"
+            className="inline-flex"
+            onClick={() => openImage(vxApplyImg)}
+            aria-label="放大审批入口示例"
+          >
+            <img
+              src={vxApplyImg}
+              alt="企业微信审批入口示例"
+              className="w-full max-w-xl rounded-xl border shadow-sm"
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
+        </div>
+        <div className="flex justify-center">
+          <button
+            type="button"
+            className="inline-flex"
+            onClick={() => openImage(vxDetailsImg)}
+            aria-label="放大审批详情示例"
+          >
+            <img
+              src={vxDetailsImg}
+              alt="企业微信审批详情示例"
+              className="w-full max-w-xl rounded-xl border shadow-sm"
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
+        </div>
+      </div>
+    ),
     env: (
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground">
@@ -564,7 +684,7 @@ export default function DevGuidePage() {
   const headerRef = useRef<HTMLElement | null>(null);
   const [subHeaderHeight, setSubHeaderHeight] = useState(0);
   const [platform, setPlatform] = useState<Platform>("PC");
-  const [activeSection, setActiveSection] = useState("env");
+  const [activeSection, setActiveSection] = useState("pre");
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const tabRefs = useRef<Record<Platform, HTMLButtonElement | null>>({
     PC: null,
@@ -577,7 +697,7 @@ export default function DevGuidePage() {
   });
   const readSections = devReadMap;
 
-  const READABLE_SECTIONS = ["env", "flow", "branch", "commit"] as const;
+  const READABLE_SECTIONS = ["pre", "env", "flow", "branch", "commit"] as const;
 
   const goNextSection = () => {
     const idx = SECTIONS.findIndex((s) => s.id === activeSection);
