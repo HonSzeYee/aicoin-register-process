@@ -95,6 +95,21 @@ const FAQS = [
       },
     ],
   },
+  {
+    id: "temp-request-approval",
+    question: "如果走「临时需求」插入审批？",
+    answer: [
+      {
+        text: "1）在 GitLab 的 PM 仓库中创建 issue，填好相关需求内容。（如有产品建议的 issue 需要关联，需求内容要和需求提出者沟通确认）",
+      },
+      {
+        text: "2）打开企业微信的工作台，在「审批」类别中的「临时需求插入审批」按要求填好相关内容，并上传「GitLab 的 PM 仓库中创建 issue 需求」的截图。",
+      },
+      {
+        text: "3）审批通过后，将审批通过的截图贴在 GitLab 的 PM 仓库的评论区。",
+      },
+    ],
+  },
 ];
 
 type FaqHeaderProps = {
