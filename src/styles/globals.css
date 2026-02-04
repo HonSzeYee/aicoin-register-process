@@ -100,6 +100,40 @@
     box-shadow: none;
   }
 
+  /* Global hover glow utility */
+  .interactive-glow {
+    transition: box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+    box-shadow: 0 8px 20px -18px rgba(15, 23, 42, 0.25);
+  }
+
+  .interactive-glow:hover {
+    border-color: rgba(92, 130, 255, 0.45);
+    box-shadow:
+      0 0 0 1px rgba(92, 130, 255, 0.12),
+      0 10px 24px -18px rgba(92, 130, 255, 0.35);
+  }
+
+  /* FAQ panels: match "详细步骤" base styling */
+  .faq-item.ant-collapse-item {
+    border: 1px solid hsl(var(--border) / 0.6) !important;
+    background: hsl(var(--card) / 0.6);
+    border-radius: 8px;
+    box-shadow: 0 8px 20px -18px rgba(15, 23, 42, 0.25);
+  }
+
+  .faq-item .ant-collapse-header {
+    padding: 12px !important;
+  }
+
+  .faq-item .ant-collapse-content {
+    border-top: none;
+    background: transparent;
+  }
+
+  .faq-item .ant-collapse-content-box {
+    padding: 12px !important;
+  }
+
   /* Platform tabs (Ant Design Segmented) */
   .platform-segmented.ant-segmented {
     background: #f0f1f3;

@@ -107,7 +107,7 @@ export default function WorkflowPage() {
                             }
                           : undefined
                       }
-                    className={`rounded-2xl border bg-card/60 p-3 shadow-sm transition hover:border-primary/60 hover:bg-primary/5 hover:shadow-[0_0_4px_0_rgba(109,76,255,0.14)] ${
+                    className={`rounded-2xl border bg-card/60 p-3 shadow-sm transition interactive-glow ${
                       isDevGuide ? "cursor-pointer" : ""
                     }`}
                   >

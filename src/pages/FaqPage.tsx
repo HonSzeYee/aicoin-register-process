@@ -189,14 +189,11 @@ export default function FaqPage() {
 
   const panelStyle: React.CSSProperties = {
     marginBottom: 14,
-    background: "hsl(var(--card) / 0.6)",
-    borderRadius: 22,
-    border: "1px solid hsl(var(--border) / 0.6)",
-    boxShadow: "0 10px 30px -26px rgba(15, 23, 42, 0.35)",
   };
 
   const items: CollapseProps["items"] = FAQS.map((item) => ({
     key: item.id,
+    className: "faq-item interactive-glow",
     label: (
       <div className="text-sm font-medium text-foreground">
         <span className="mr-2 text-muted-foreground">Q:</span>
