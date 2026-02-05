@@ -15,13 +15,17 @@ export default function RoleDescriptionDialog({ open, onClose }: RoleDescription
   return createPortal(
     <>
       <div
-        className="fixed inset-0 z-[100] bg-black/55 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 z-[100] backdrop-blur-[2px] transition-opacity"
+        style={{
+          background:
+            "radial-gradient(900px 520px at 50% -10%, rgba(59,130,246,0.12), transparent 60%), rgba(15,23,42,0.45)",
+        }}
         onClick={onClose}
         aria-hidden="true"
       />
       
       <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-        <Card className="w-full max-w-2xl overflow-hidden rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+        <Card className="w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl animate-in fade-in zoom-in-95 duration-200">
           <CardHeader className="border-b bg-muted/30 pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
