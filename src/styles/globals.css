@@ -113,6 +113,98 @@
       0 10px 24px -18px rgba(92, 130, 255, 0.35);
   }
 
+  /* Split-tree (two-column) */
+  .split-tree {
+    display: grid;
+    grid-template-columns: minmax(220px, 280px) 1fr;
+    gap: 16px;
+  }
+
+  .split-tree-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .split-tree-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #e6e8ed;
+    background: #fbfbfc;
+    color: #1f2937;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .split-tree-item.is-active {
+    background: #eef3ff;
+    border-color: #d8e3ff;
+    box-shadow: inset 2px 0 0 #4f8cff;
+  }
+
+  .split-tree-index {
+    display: inline-flex;
+    min-width: 28px;
+    height: 22px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #f0f2f6;
+    color: #6b7280;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .split-tree-panel {
+    border: 1px solid #e6e8ed;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 12px;
+    align-self: start;
+  }
+
+  .split-tree-panel--auto {
+    height: fit-content;
+  }
+
+  .split-tree-section {
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: #f7f8fb;
+    border: 1px solid #e6e8ed;
+  }
+
+  .split-tree-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  .split-tree-list {
+    margin-top: 6px;
+    padding-left: 16px;
+    color: #4b5563;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .split-tree-list li {
+    margin: 2px 0;
+  }
+
+  .split-tree-paragraph {
+    margin-top: 6px;
+    color: #4b5563;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+
   /* FAQ panels: match "详细步骤" base styling */
   .faq-item.ant-collapse-item {
     border: 1px solid hsl(var(--border) / 0.6) !important;

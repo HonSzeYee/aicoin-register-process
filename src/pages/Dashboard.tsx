@@ -51,6 +51,7 @@ export default function AiCoinOnboardingDashboard() {
   const [showWelcome, setShowWelcome] = useState(userName === "新用户");
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [showChecklist, setShowChecklist] = useState(false);
+  const [activeCoreTask, setActiveCoreTask] = useState("prd");
 
   useEffect(() => {
     if (userName !== "新用户") setShowWelcome(false);
@@ -212,6 +213,102 @@ export default function AiCoinOnboardingDashboard() {
               </Card>
             );
           })}
+        </CardContent>
+      </Card>
+
+      <Card className="rounded-2xl shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">核心任务逻辑图</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="split-tree">
+            <div className="split-tree-nav">
+              <button
+                type="button"
+                onClick={() => setActiveCoreTask("prd")}
+                className={`split-tree-item ${activeCoreTask === "prd" ? "is-active" : ""}`}
+              >
+                <span className="split-tree-index">01</span>
+                <span>撰写 PRD</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveCoreTask("prototype")}
+                className={`split-tree-item ${activeCoreTask === "prototype" ? "is-active" : ""}`}
+              >
+                <span className="split-tree-index">02</span>
+                <span>制作原型图、部分设计图</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveCoreTask("sync")}
+                className={`split-tree-item ${activeCoreTask === "sync" ? "is-active" : ""}`}
+              >
+                <span className="split-tree-index">03</span>
+                <span>需求同步，跟进开发、测试</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveCoreTask("accept")}
+                className={`split-tree-item ${activeCoreTask === "accept" ? "is-active" : ""}`}
+              >
+                <span className="split-tree-index">04</span>
+                <span>产品验收</span>
+              </button>
+            </div>
+
+            <div className="split-tree-panel split-tree-panel--auto">
+              {activeCoreTask === "prd" && (
+                <div className="space-y-3">
+                  <div className="split-tree-section">
+                  <div className="split-tree-title">需求分析</div>
+                    <p className="split-tree-paragraph">
+                      问题/痛点/场景、需求目标
+                    </p>
+                  </div>
+                  <div className="split-tree-section">
+                    <div className="split-tree-title">竞品分析</div>
+                    <p className="split-tree-paragraph">
+                      确定竞品范围（具备xxx功能，参考xxx设计）、寻找并识别竞品、解构竞品的功能与设计、SWOT分析，确定产品方向
+                    </p>
+                  </div>
+                  <div className="split-tree-section">
+                    <div className="split-tree-title">产品策划</div>
+                    <p className="split-tree-paragraph">
+                      具体的功能点、串联起功能点的流程图
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {activeCoreTask === "prototype" && (
+                <div className="split-tree-section">
+                  <div className="split-tree-title">原型与设计</div>
+                  <p className="split-tree-paragraph">
+                    将产品功能具像化、页面布局、交互逻辑
+                  </p>
+                </div>
+              )}
+
+              {activeCoreTask === "sync" && (
+                <div className="split-tree-section">
+                  <div className="split-tree-title">需求同步</div>
+                  <p className="split-tree-paragraph">
+                    需求讲解，信息同步至执行同事；需求跟进，信息同步至主管
+                  </p>
+                </div>
+              )}
+
+              {activeCoreTask === "accept" && (
+                <div className="split-tree-section">
+                  <div className="split-tree-title">产品验收</div>
+                  <p className="split-tree-paragraph">
+                    视觉效果是否符合预期；交互逻辑是否有 bug
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
         </CardContent>
       </Card>
 
