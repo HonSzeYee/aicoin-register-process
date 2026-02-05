@@ -77,19 +77,7 @@ const AccountsHeader = React.memo(
           }`}
         >
           <div className={`flex items-center ${compactHeader ? "gap-2" : "gap-3"}`}>
-            <Button
-              variant="outline"
-              size="icon"
-              className="rounded-2xl"
-              title="返回"
-              onClick={() => onBack?.()}
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border shadow-sm">
-              <KeyRound className="h-5 w-5" />
-            </div>
+            <KeyRound className="h-5 w-5 text-foreground" />
             {compactHeader ? (
               <div className="text-sm font-semibold leading-tight">入职第一步 · 账号注册</div>
             ) : (
@@ -100,7 +88,7 @@ const AccountsHeader = React.memo(
           </div>
 
           <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="rounded-xl">
+            <Badge variant="secondary" className="rounded-xl bg-secondary/70">
               {done} / {total}
             </Badge>
           </div>
