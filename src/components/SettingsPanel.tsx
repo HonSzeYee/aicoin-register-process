@@ -4,9 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-import { X, Sun, Moon, Type, Minus, Plus, User } from "lucide-react";
+import { X, Type, Minus, Plus, User } from "lucide-react";
 
-type Theme = "light" | "dark" | "system";
 type FontSize = "small" | "medium" | "large";
 
 interface SettingsPanelProps {
@@ -16,12 +15,6 @@ interface SettingsPanelProps {
 
 export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
   const { userName, setUserName } = useAppState();
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window === "undefined") return "system";
-    const saved = localStorage.getItem("theme");
-    return (saved as Theme) || "system";
-  });
-
   const [fontSize, setFontSize] = useState<FontSize>(() => {
     if (typeof window === "undefined") return "medium";
     const saved = localStorage.getItem("fontSize");
@@ -43,51 +36,17 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    localStorage.setItem("theme", theme);
     localStorage.setItem("fontSize", fontSize);
 
-    // 应用主题
-    const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else if (theme === "light") {
-      root.classList.remove("dark");
-    } else {
-      // system
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      if (prefersDark) {
-        root.classList.add("dark");
-      } else {
-        root.classList.remove("dark");
-      }
-    }
-
     // 应用字体大小
+    const root = document.documentElement;
     const fontSizeMap = {
       small: "14px",
       medium: "16px",
       large: "18px",
     };
     root.style.fontSize = fontSizeMap[fontSize];
-  }, [theme, fontSize]);
-
-  // 监听系统主题变化（仅在 system 模式下）
-  useEffect(() => {
-    if (typeof window === "undefined" || theme !== "system") return;
-    
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = (e: MediaQueryListEvent) => {
-      const root = document.documentElement;
-      if (e.matches) {
-        root.classList.add("dark");
-      } else {
-        root.classList.remove("dark");
-      }
-    };
-    
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [theme]);
+  }, [fontSize]);
 
   useEffect(() => {
     setNameInput(userName);
@@ -99,12 +58,6 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
     { value: "small", label: "小" },
     { value: "medium", label: "中" },
     { value: "large", label: "大" },
-  ];
-
-  const themes: { value: Theme; label: string; icon: React.ReactNode }[] = [
-    { value: "light", label: "浅色", icon: <Sun className="h-4 w-4" /> },
-    { value: "dark", label: "深色", icon: <Moon className="h-4 w-4" /> },
-    { value: "system", label: "跟随系统", icon: <Type className="h-4 w-4" /> },
   ];
 
   return (
@@ -154,37 +107,6 @@ export default function SettingsPanel({ open, onClose }: SettingsPanelProps) {
                 className="rounded-xl"
                 maxLength={20}
               />
-            </div>
-
-            <Separator />
-
-            {/* 颜色主题 */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary">
-                  <Sun className="h-4 w-4" />
-                </div>
-                <div>
-                  <div className="font-medium">颜色主题</div>
-                  <div className="text-sm text-muted-foreground">选择浅色或深色主题</div>
-                </div>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                {themes.map((t) => (
-                  <button
-                    key={t.value}
-                    onClick={() => setTheme(t.value)}
-                    className={`flex flex-col items-center gap-2 rounded-xl border p-3 transition ${
-                      theme === t.value
-                        ? "border-primary bg-primary/10"
-                        : "border-border hover:bg-accent"
-                    }`}
-                  >
-                    {t.icon}
-                    <span className="text-xs font-medium">{t.label}</span>
-                  </button>
-                ))}
-              </div>
             </div>
 
             <Separator />
