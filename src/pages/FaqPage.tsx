@@ -13,6 +13,8 @@ import vxFqa2 from "@/assets/vx-fqa-2.png";
 import demoImage from "@/assets/image-copy.png";
 import vxDemo from "@/assets/vx-demo.png";
 import imageCopy2 from "@/assets/image-copy-2.png";
+import yapiStep1 from "@/assets/yapi-step1.png";
+import yapiStep2 from "@/assets/yapi-step2.png";
 
 const FAQS = [
   {
@@ -92,6 +94,29 @@ const FAQS = [
     answer: [
       {
         text: "先在本地拉取最新代码，让 AI 帮你定位冲突内容和原因，再根据实际情况决定保留 HEAD 还是 commit 的内容，解决冲突后重新提交。",
+      },
+    ],
+  },
+  {
+    id: "yapi-usage",
+    question: "什么时候要使用 YApi 工具？如何使用 YApi 工具？",
+    answer: [],
+    list: [
+      {
+        text: "当产品经理在处理涉及后端接口的需求时，可以通过 YApi 工具查看接口的具体位置以及对应的字段内容，从而快速理解接口的功能与数据结构。",
+      },
+      {
+        text: "使用 YApi 前，需要先联系「杜韦志」，请他协助创建一个 YApi 账号。",
+      },
+      {
+        text: "登录后，在 YApi 中搜索并找到对应的接口文档。",
+        image: yapiStep1,
+        alt: "YApi 接口文档搜索示例",
+      },
+      {
+        text: "在接口详情页面中，可以查看 HTTP 请求方法以及接口必须返回的数据内容，方便我们在 Postman 中测试接口返回结果是否正确。",
+        image: yapiStep2,
+        alt: "YApi 接口详情示例",
       },
     ],
   },
@@ -198,23 +223,46 @@ export default function FaqPage() {
     ),
     children: (
       <div className="space-y-2 text-sm text-muted-foreground">
-        {item.answer.map((line, lineIndex) => (
-          <React.Fragment key={`${item.id}-line-${lineIndex}`}>
-            <p>
-              {lineIndex === 0 && <span className="mr-2 text-muted-foreground">A:</span>}
-              {line.text}
-            </p>
-            {line.image && (
-              <img
-                src={line.image}
-                alt={line.alt ?? ""}
-                className="mt-2 w-full max-w-3xl rounded-xl border"
-                loading="lazy"
-                decoding="async"
-              />
-            )}
-          </React.Fragment>
-        ))}
+        {item.list?.length ? (
+          <ol className="ml-5 list-decimal space-y-2 text-muted-foreground">
+            {item.list.map((entry, idx) => {
+              const text = typeof entry === "string" ? entry : entry.text;
+              const image = typeof entry === "string" ? undefined : entry.image;
+              const alt = typeof entry === "string" ? "" : entry.alt ?? "";
+              return (
+                <li key={`${item.id}-list-${idx}`}>
+                  <div>{text}</div>
+                  {image && (
+                    <img
+                      src={image}
+                      alt={alt}
+                      className="mt-2 w-full max-w-3xl rounded-xl border"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        ) : (
+          item.answer.map((line, lineIndex) => (
+            <React.Fragment key={`${item.id}-line-${lineIndex}`}>
+              <p>
+                {line.text}
+              </p>
+              {line.image && (
+                <img
+                  src={line.image}
+                  alt={line.alt ?? ""}
+                  className="mt-2 w-full max-w-3xl rounded-xl border"
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
+            </React.Fragment>
+          ))
+        )}
       </div>
     ),
     style: panelStyle,
