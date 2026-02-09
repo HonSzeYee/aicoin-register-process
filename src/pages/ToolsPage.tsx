@@ -139,6 +139,7 @@ function CardsWall() {
 }
 
 function SkillTile({ skill }: { skill: Skill }) {
+  const isYapi = skill.label.toLowerCase() === "yapi";
   return (
     <a
       href={skill.url}
@@ -147,7 +148,11 @@ function SkillTile({ skill }: { skill: Skill }) {
       className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-[hsl(var(--card))] p-4 shadow-sm transition-all duration-150 hover:-translate-y-[2px] hover:shadow-md"
     >
       <div className="flex items-center gap-3">
-        <img src={skill.icon} alt={skill.label} className="h-9 w-9 object-contain" />
+        <img
+          src={skill.icon}
+          alt={skill.label}
+          className={`h-9 w-9 object-contain ${isYapi ? "scale-110" : ""}`}
+        />
         <div className="leading-tight">
           <div className="text-sm font-semibold text-foreground">{skill.label}</div>
           <div className="text-[11px] text-muted-foreground/80">{skill.note}</div>
