@@ -24,6 +24,7 @@ import {
 import vxEmailImg from "@/assets/vx_email.png";
 import vxVpnImg from "@/assets/vx-vpn.png";
 import vxVpnAppImg from "@/assets/vx-vpn-app.png";
+import vxYamlImg from "@/assets/vx-yaml.png";
 import clashpartyGlobal from "@/assets/clashparty_global.png";
 import aicoinDownload from "@/assets/aicoin-download.png";
 import vxAICoinTestDownload from "@/assets/vx-aicoin-testdownload.png";
@@ -135,6 +136,7 @@ const stepImageFor = (stepId: string, index: number) => {
   if (stepId === "corp-email" && index === 0) return vxEmailImg;
   if (stepId === "vpn" && index === 0) return vxVpnImg;
   if (stepId === "vpn" && index === 1) return vxVpnAppImg;
+  if (stepId === "vpn" && index === 2) return vxYamlImg;
   if (stepId === "aicoin" && index === 0) return clashpartyGlobal;
   if (stepId === "aicoin" && index === 1) return aicoinDownload;
   if (stepId === "corp-email" && index === 1) return vxAICoinTestDownload;
@@ -208,6 +210,7 @@ export default function AccountsRegistrationPage() {
         steps: [
           "点开企业微信的微盘，选择「产品部」中的「梯子下载」。",
           "下载对应版本的软件，请在群中询问最新的yaml文件。",
+          "导入最新的 yaml 配置，选择合适节点并连接成功后再继续操作。",
         ],
         pitfalls: [
           "连上但无法访问：确认系统代理已开启，或切换规则/全局模式。",
