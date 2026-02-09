@@ -67,21 +67,18 @@ export default function WelcomeDialog({ open, onComplete }: WelcomeDialogProps) 
                 <label htmlFor="name" className="text-sm font-medium">
                   你的名字
                 </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    id="name"
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                      setError("");
-                    }}
-                    placeholder="请输入你的名字"
-                    className="rounded-xl pl-10"
-                    maxLength={20}
-                    autoFocus
-                  />
-                </div>
+                <Input
+                  id="name"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    setError("");
+                  }}
+                  placeholder="请输入你的名字"
+                  className="rounded-xl"
+                  maxLength={20}
+                  autoFocus
+                />
                 {error && (
                   <p className="text-sm text-destructive">{error}</p>
                 )}
