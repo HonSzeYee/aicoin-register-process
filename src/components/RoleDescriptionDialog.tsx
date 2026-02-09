@@ -2,7 +2,9 @@ import React from "react";
 import { createPortal } from "react-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X, Users, Briefcase, CheckSquare, Wrench } from "lucide-react";
+import { X, Users, Briefcase, CheckSquare, Wrench, Gitlab } from "lucide-react";
+import figmaIcon from "@/assets/figma-color.svg";
+import cursorIcon from "@/assets/cursor.svg";
 
 interface RoleDescriptionDialogProps {
   open: boolean;
@@ -106,7 +108,7 @@ export default function RoleDescriptionDialog({ open, onClose }: RoleDescription
                 <ul className="space-y-3 text-sm text-muted-foreground">
                   <li className="flex items-center gap-3 rounded-lg bg-secondary/30 p-2 transition-colors hover:bg-secondary/50">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-background shadow-sm border">
-                      <span className="text-xs font-bold text-blue-600">i</span>
+                      <CheckSquare className="h-4 w-4 text-blue-600" />
                     </div>
                     <div>
                       <div className="font-medium text-foreground text-xs">iTask</div>
@@ -115,7 +117,7 @@ export default function RoleDescriptionDialog({ open, onClose }: RoleDescription
                   </li>
                   <li className="flex items-center gap-3 rounded-lg bg-secondary/30 p-2 transition-colors hover:bg-secondary/50">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-background shadow-sm border">
-                      <span className="text-xs font-bold text-purple-600">F</span>
+                      <img src={figmaIcon} alt="Figma" className="h-4 w-4" />
                     </div>
                     <div>
                       <div className="font-medium text-foreground text-xs">Figma</div>
@@ -124,7 +126,7 @@ export default function RoleDescriptionDialog({ open, onClose }: RoleDescription
                   </li>
                   <li className="flex items-center gap-3 rounded-lg bg-secondary/30 p-2 transition-colors hover:bg-secondary/50">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-background shadow-sm border">
-                      <span className="text-xs font-bold text-orange-600">G</span>
+                      <Gitlab className="h-4 w-4 text-orange-600" />
                     </div>
                     <div>
                       <div className="font-medium text-foreground text-xs">GitLab</div>
@@ -133,7 +135,7 @@ export default function RoleDescriptionDialog({ open, onClose }: RoleDescription
                   </li>
                   <li className="flex items-center gap-3 rounded-lg bg-secondary/30 p-2 transition-colors hover:bg-secondary/50">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-background shadow-sm border">
-                      <span className="text-xs font-bold text-indigo-600">C</span>
+                      <img src={cursorIcon} alt="Cursor" className="h-4 w-4 text-indigo-600" />
                     </div>
                     <div>
                       <div className="font-medium text-foreground text-xs">Cursor</div>
