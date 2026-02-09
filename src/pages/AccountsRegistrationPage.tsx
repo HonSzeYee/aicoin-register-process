@@ -71,15 +71,11 @@ const AccountsHeader = React.memo(
           takenOver ? "fixed top-0 left-0 right-0" : "relative w-full"
         }`}
       >
-        <div
-          className={`mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-200 ${
-            compactHeader ? "py-2" : "py-3"
-          }`}
-        >
+        <div className="mx-auto flex h-[58.5px] max-w-7xl items-center justify-between px-4 transition-all duration-200">
           <div className={`flex items-center ${compactHeader ? "gap-2" : "gap-3"}`}>
             <KeyRound className="h-5 w-5 text-foreground" />
             {compactHeader ? (
-              <div className="text-sm font-semibold leading-tight">入职第一步 · 账号注册</div>
+              <div className="text-[18px] font-semibold leading-tight">入职第一步 · 账号注册</div>
             ) : (
               <div>
                 <div className="text-lg font-semibold leading-tight">账号注册</div>

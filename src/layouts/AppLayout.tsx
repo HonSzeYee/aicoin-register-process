@@ -55,7 +55,7 @@ const GlobalHeader = React.memo(function GlobalHeader({
             : "bg-background/80 backdrop-blur"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-200 py-2 gap-2">
+      <div className="mx-auto flex h-[58.5px] max-w-7xl items-center justify-between px-4 transition-all duration-200 gap-2">
         <div className="flex items-center gap-2">
           <div
             className="inline-flex items-center [&_svg]:h-10 [&_svg]:w-auto [&_svg]:block"
