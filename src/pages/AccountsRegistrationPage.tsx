@@ -553,16 +553,6 @@ export default function AccountsRegistrationPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 rounded-2xl border px-3 py-2">
-              <Search className="h-4 w-4 text-muted-foreground" />
-              <Input
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="搜索步骤"
-                className="h-7 border-0 p-0 shadow-none focus-visible:ring-0"
-              />
-            </div>
-
             <div className="space-y-2">
               {filteredItems.map((it, index) => {
                 const active = it.id === selectedId;
