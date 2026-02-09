@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   ArrowLeft,
   ArrowRight,
@@ -463,24 +464,14 @@ export default function AccountsRegistrationPage() {
                       return (
                         <li
                           key={idx}
-                          className="rounded-2xl border border-dashed border-muted-foreground/40 bg-muted/10 p-3 text-foreground/90"
+                          className="rounded-2xl border border-border/60 bg-background/60 p-3 text-foreground/90 shadow-sm"
                         >
                           <button
                             type="button"
                             onClick={() => handleWechatToggle(idx)}
                             className="flex w-full items-start gap-3 text-left"
                           >
-                            <span
-                              className={`mt-0.5 flex h-5 w-5 items-center justify-center rounded-full border ${
-                                checked ? "border-primary" : "border-muted-foreground/60"
-                              }`}
-                            >
-                              {checked ? (
-                                <CheckCircle2 className="h-3 w-3 text-[#2e7d32]" />
-                              ) : (
-                                <Circle className="h-3 w-3 text-muted-foreground/60" />
-                              )}
-                            </span>
+                            <Checkbox checked={checked} className="mt-0.5" aria-label="勾选步骤" />
                             <div
                               className={`flex-1 text-sm font-medium ${
                                 checked ? "text-muted-foreground/80" : "text-foreground/90"
