@@ -570,16 +570,13 @@ export default function AccountsRegistrationPage() {
             <div className="space-y-2">
               {filteredItems.map((it, index) => {
                 const active = it.id === selectedId;
-                const focusFirstStep = active && index === 0;
                 const stepLabel = `第${index + 1}步：`;
                 return (
                   <div
                     key={it.id}
                     className={`rounded-2xl border transition hover:border-primary/60 hover:bg-primary/5 hover:shadow-[0_0_4px_0_rgba(109,76,255,0.14)] ${
-                      focusFirstStep
+                      active
                         ? "border-2 border-blue-500/90 bg-blue-500/10"
-                        : active
-                        ? "border-foreground/20"
                         : "border-border"
                     } ${it.done ? "bg-muted/10 text-muted-foreground/80" : ""}`}
                   >
