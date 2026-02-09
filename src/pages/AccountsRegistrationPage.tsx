@@ -407,7 +407,7 @@ export default function AccountsRegistrationPage() {
       />
       {takeoverHeader && <div aria-hidden="true" style={{ height: subHeaderHeight }} />}
 
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 py-6 lg:grid-cols-[1fr_320px]">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 py-6 lg:grid-cols-[1fr_300px]">
         <Card className="rounded-2xl shadow-sm">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">{selectedItem?.title}</CardTitle>
@@ -562,7 +562,7 @@ export default function AccountsRegistrationPage() {
               <Input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="搜索步骤（邮箱 / GitLab / 群…）"
+                placeholder="搜索步骤"
                 className="h-7 border-0 p-0 shadow-none focus-visible:ring-0"
               />
             </div>
