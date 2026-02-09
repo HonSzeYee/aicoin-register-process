@@ -410,7 +410,7 @@ export default function AccountsRegistrationPage() {
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 py-6 lg:grid-cols-[1fr_320px]">
         <Card className="rounded-2xl shadow-sm">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base">{selectedItem?.title} · 操作指引</CardTitle>
+            <CardTitle className="text-base">{selectedItem?.title}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="rounded-2xl border p-4">
