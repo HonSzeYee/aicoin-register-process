@@ -413,11 +413,16 @@ export default function AccountsRegistrationPage() {
             <CardTitle className="text-base">{selectedItem?.title}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="rounded-2xl border p-4">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <ShieldCheck className="h-4 w-4" /> 目的
+            <div className="rounded-2xl border p-4 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  <ShieldCheck className="h-4 w-4" /> 目的
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CalendarClock className="h-4 w-4" /> 预计耗时 {selectedItem?.etaMinutes ?? 5} 分钟
+                </div>
               </div>
-              <div className="mt-2 text-sm text-muted-foreground">
+              <div className="text-sm text-muted-foreground">
                 {selectedDetail?.purpose ?? "（待补充）"}
               </div>
             </div>
@@ -517,13 +522,6 @@ export default function AccountsRegistrationPage() {
                   }
                 )}
               </ol>
-            </div>
-
-            <div className="rounded-2xl border p-4">
-              <div className="text-sm font-medium">预计耗时</div>
-              <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-                <CalendarClock className="h-4 w-4" /> {selectedItem?.etaMinutes ?? 5} 分钟
-              </div>
             </div>
 
             <div className="flex flex-col gap-2 sm:flex-row">
