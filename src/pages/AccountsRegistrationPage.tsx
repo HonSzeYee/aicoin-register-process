@@ -570,8 +570,9 @@ export default function AccountsRegistrationPage() {
             </div>
 
             <div className="space-y-2">
-              {filteredItems.map((it) => {
+              {filteredItems.map((it, index) => {
                 const active = it.id === selectedId;
+                const stepLabel = `第${index + 1}步：`;
                 return (
                   <div
                     key={it.id}
@@ -604,7 +605,8 @@ export default function AccountsRegistrationPage() {
                         onClick={() => setSelectedId(it.id)}
                         className="flex-1 rounded-xl px-2 py-2 text-left text-sm transition"
                       >
-                      <div className={`font-medium ${it.done ? "line-through text-muted-foreground/70" : "text-foreground"}`}>
+                        <div className={`font-medium ${it.done ? "line-through text-muted-foreground/70" : "text-foreground"}`}>
+                          {stepLabel}
                           {it.title}
                         </div>
                         <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
