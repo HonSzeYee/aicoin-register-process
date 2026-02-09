@@ -8,6 +8,7 @@ import antdIcon from "@/assets/ant-design.svg";
 import dockerIcon from "@/assets/docker.svg";
 import aistudioIcon from "@/assets/aistudio.svg";
 import codiaIcon from "@/assets/codia-logo.png";
+import yapiIcon from "@/assets/yapi-logo.png";
 
 type Skill = {
   label: string;
@@ -100,6 +101,16 @@ const SKILLS: Skill[] = [
     chips: ["容器化", "本地环境", "数据库"],
     badge: "容器工具",
     url: "https://www.docker.com/",
+  },
+  {
+    label: "YApi",
+    note: "接口工具",
+    tag: "开发",
+    icon: yapiIcon,
+    desc: "YApi 是高效、易用、功能强大的 API 管理平台，旨在为开发、产品、测试人员提供更优雅的接口管理服务，你可以在 YApi 查看后台接口的细节。",
+    chips: ["API 管理", "接口文档", "协作"],
+    badge: "开发工具",
+    url: "http://yapi.aicoin.com/group/19",
   },
 ];
 
