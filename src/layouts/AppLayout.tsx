@@ -269,11 +269,11 @@ export default function AppLayout() {
                         总进度
                       </CardTitle>
                       <div
-                        className={`text-sm font-semibold text-foreground/90 transition-opacity duration-200 ${
+                        className={`text-sm font-medium transition-opacity duration-200 ${
                           sidebarReady ? "opacity-100" : "opacity-0"
                         }`}
                       >
-                        {overall.pct}% 
+                        {overall.done} / {overall.total}
                       </div>
                     </div>
                   </CardHeader>
@@ -282,12 +282,6 @@ export default function AppLayout() {
                       sidebarReady ? "opacity-100" : "opacity-0"
                     }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm text-muted-foreground">已完成</div>
-                      <div className="text-sm font-medium">
-                        {overall.done} / {overall.total}
-                      </div>
-                    </div>
                     <Progress value={clamp(overall.pct, 0, 100)} />
                   </CardContent>
                 </Card>

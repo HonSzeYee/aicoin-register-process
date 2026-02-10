@@ -594,7 +594,6 @@ export default function AccountsRegistrationPage() {
                         </div>
                         <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
                           {typeof it.etaMinutes === "number" && <span>预计 {it.etaMinutes} 分钟</span>}
-                          {it.done && <span>已完成</span>}
                           {!it.done && !it.locked && <span>未完成</span>}
                           {it.locked && <span>已锁定</span>}
                         </div>
