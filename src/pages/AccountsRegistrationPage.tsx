@@ -514,16 +514,19 @@ export default function AccountsRegistrationPage() {
               </ol>
             </div>
 
-            <div className="flex flex-col gap-2 sm:flex-row">
+            <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
               <Button
                 className="rounded-2xl"
-                onClick={() => selectedItem && toggleDone(selectedItem.id)}
+                onClick={() => {
+                  if (!selectedItem) return;
+                  if (!selectedItem.done) {
+                    toggleDone(selectedItem.id);
+                  }
+                  goNextUnfinished();
+                }}
                 disabled={!!selectedItem?.locked}
               >
-                {selectedItem?.done ? "标记为未完成" : "标记为已完成"}
-              </Button>
-              <Button variant="outline" className="rounded-2xl" onClick={goNextUnfinished}>
-                切到下一项
+                完成并继续
               </Button>
             </div>
           </CardContent>
