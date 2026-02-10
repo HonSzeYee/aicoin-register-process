@@ -129,8 +129,27 @@ export default function AiCoinOnboardingDashboard() {
         <CardContent className="grid gap-3 md:grid-cols-2">
           {sections.map((s) => {
             const p = sectionProgress(s);
+            const canNavigate = !!SECTION_ROUTE_MAP[s.id];
             return (
-              <Card key={s.id} className="rounded-2xl">
+              <Card
+                key={s.id}
+                className={`rounded-2xl transition ${
+                  canNavigate ? "cursor-pointer hover:border-primary/40 hover:bg-primary/5" : ""
+                }`}
+                role={canNavigate ? "button" : undefined}
+                tabIndex={canNavigate ? 0 : undefined}
+                onClick={canNavigate ? () => handleGoToSection(s.id) : undefined}
+                onKeyDown={
+                  canNavigate
+                    ? (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleGoToSection(s.id);
+                        }
+                      }
+                    : undefined
+                }
+              >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
@@ -147,18 +166,6 @@ export default function AiCoinOnboardingDashboard() {
                         <Progress value={clamp(p.pct, 0, 100)} />
                       </div>
                     </div>
-                  </div>
-                  <div className="mt-3 flex items-center justify-between">
-                    <div className="text-xs text-muted-foreground">完成度 {p.pct}%</div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="rounded-2xl"
-                      disabled={!SECTION_ROUTE_MAP[s.id]}
-                      onClick={() => handleGoToSection(s.id)}
-                    >
-                      进入
-                    </Button>
                   </div>
                 </CardContent>
               </Card>
