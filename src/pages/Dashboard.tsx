@@ -9,18 +9,12 @@ import RoleDescriptionDialog from "@/components/RoleDescriptionDialog";
 import { useAppState } from "@/context/AppStateContext";
 import {
   buildSections,
-  DEV_READ_ID_MAP,
   pickNextAction,
   sectionProgress,
 } from "@/lib/onboardingSections";
 import {
   ArrowRight,
   CalendarClock,
-  CheckCircle2,
-  Circle,
-  Lock,
-  ChevronDown,
-  ChevronUp,
 } from "lucide-react";
 
 
@@ -41,16 +35,11 @@ export default function AiCoinOnboardingDashboard() {
     userName,
     setUserName,
     accountItems,
-    toggleAccountItem,
     devReadMap,
-    setDevRead,
-    searchQuery,
   } = useAppState();
 
   const [roleDialogOpen, setRoleDialogOpen] = useState(false);
   const [showWelcome, setShowWelcome] = useState(userName === "新用户");
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
-  const [showChecklist, setShowChecklist] = useState(false);
   const [activeCoreTask, setActiveCoreTask] = useState("prd");
 
   useEffect(() => {
@@ -61,32 +50,6 @@ export default function AiCoinOnboardingDashboard() {
 
   const nextAction = useMemo(() => pickNextAction(sections), [sections]);
 
-  const filteredSections = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    if (!q) return sections;
-    return sections
-      .map((s) => ({
-        ...s,
-        items: s.items.filter((i) => i.title.toLowerCase().includes(q)),
-      }))
-      .filter((s) => s.items.length > 0);
-  }, [sections, searchQuery]);
-
-  const handleToggleItem = useCallback(
-    (sectionId: string, itemId: string) => {
-      if (sectionId === "accounts") {
-        toggleAccountItem(itemId);
-        return;
-      }
-      if (sectionId === "dev") {
-        const key = DEV_READ_ID_MAP[itemId];
-        if (!key) return;
-        setDevRead(key, !devReadMap[key]);
-      }
-    },
-    [toggleAccountItem, setDevRead, devReadMap]
-  );
-
   const handleGoToSection = useCallback(
     (sectionId: string) => {
       const path = SECTION_ROUTE_MAP[sectionId];
@@ -94,18 +57,6 @@ export default function AiCoinOnboardingDashboard() {
     },
     [navigate]
   );
-
-  const toggleSectionExpanded = useCallback((sectionId: string) => {
-    setExpandedSections((prev) => {
-      const next = new Set(prev);
-      if (next.has(sectionId)) {
-        next.delete(sectionId);
-      } else {
-        next.add(sectionId);
-      }
-      return next;
-    });
-  }, []);
 
   return (
     <div className="space-y-4">
@@ -310,104 +261,6 @@ export default function AiCoinOnboardingDashboard() {
             </div>
           </div>
         </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl shadow-sm">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-base">清单（可勾选示例）</CardTitle>
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-full px-3 interactive-glow"
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowChecklist((v) => !v);
-              }}
-            >
-              {showChecklist ? "收起" : "展开"}
-            </Button>
-          </div>
-        </CardHeader>
-        {showChecklist && (
-          <CardContent className="space-y-4">
-            <div className="text-sm text-muted-foreground">
-              这里展示“账号注册”等清单的交互方式。实际产品中可在各模块内展开完整指引页面。
-            </div>
-
-            {filteredSections.map((s, idx) => (
-              <div key={s.id} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-accent">
-                      {s.icon}
-                    </div>
-                    <div className="font-medium">{s.title}</div>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {sectionProgress(s).done} / {sectionProgress(s).total}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  {(expandedSections.has(s.id) ? s.items : s.items.slice(0, 3)).map((it) => (
-                    <button
-                      key={it.id}
-                      onClick={() => handleToggleItem(s.id, it.id)}
-                      className="flex w-full items-center gap-2 rounded-2xl border bg-card px-3 py-2 text-left text-sm transition active:shadow-none interactive-glow"
-                      title={it.locked ? "该步骤当前被锁定" : "点击切换完成状态"}
-                    >
-                      {it.locked ? (
-                        <Lock className="h-4 w-4 text-muted-foreground" />
-                      ) : it.done ? (
-                        <CheckCircle2 className="h-4 w-4 text-[#2e7d32]" />
-                      ) : (
-                        <Circle className="h-4 w-4 text-muted-foreground" />
-                      )}
-                      <div className="flex-1">
-                        <div
-                          className={`font-medium ${
-                            it.done ? "line-through text-muted-foreground" : "text-foreground"
-                          }`}
-                        >
-                          {it.title}
-                        </div>
-                        <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
-                          {typeof it.etaMinutes === "number" && <span>预计 {it.etaMinutes} 分钟</span>}
-                          {it.done && <span>已完成</span>}
-                          {!it.done && !it.locked && <span>未完成</span>}
-                          {it.locked && <span>已锁定</span>}
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-
-                  {s.items.length > 3 && (
-                    <button
-                      type="button"
-                      onClick={() => toggleSectionExpanded(s.id)}
-                      className="inline-flex items-center gap-1 px-3 py-2 text-xs text-muted-foreground transition hover:text-foreground"
-                    >
-                      {expandedSections.has(s.id) ? (
-                        <>
-                          收起
-                          <ChevronUp className="h-3 w-3" />
-                        </>
-                      ) : (
-                        <>
-                          展开全部
-                          <ChevronDown className="h-3 w-3" />
-                        </>
-                      )}
-                    </button>
-                  )}
-                </div>
-
-                {idx !== filteredSections.length - 1 && <Separator className="my-2" />}
-              </div>
-            ))}
-          </CardContent>
-        )}
       </Card>
 
       <WelcomeDialog
