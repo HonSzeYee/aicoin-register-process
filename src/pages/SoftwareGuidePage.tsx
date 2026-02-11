@@ -15,6 +15,13 @@ import gitlabStep3Img from "@/assets/gitlab5.png";
 import gitlabStep4Img from "@/assets/gitlab6.png";
 import gitlabStep5Img from "@/assets/gitlab7.png";
 import gitlabStep6Img from "@/assets/vx1.png";
+import groupStep1Img from "@/assets/vx2.png";
+import prdStep1Img from "@/assets/prd6.png";
+import prdStep2Img from "@/assets/prd1.png";
+import prdStep3Img from "@/assets/prd2.png";
+import prdStep4Img from "@/assets/prd3.png";
+import prdStep5Img from "@/assets/prd4.png";
+import prdStep6Img from "@/assets/prd5.png";
 
 type GuideStep = {
   title: string;
@@ -168,7 +175,13 @@ const GUIDE_SECTIONS: GuideSection[] = [
     steps: [
       {
         title: "建群与命名",
-        desc: "按发版日期、端别、需求名称命名并创建群。",
+        desc: "按发版日期、端别、需求名称命名并创建群。由产品经理针对自己负责的需求拉群，沟通每个需求的进度、问题（实习生拉带教，如果需要「洁丽」协调资源拉「洁丽」）。",
+        images: [
+          {
+            src: groupStep1Img,
+            alt: "需求群建群与命名示意",
+          },
+        ],
       },
       {
         title: "公告与资料",
@@ -189,14 +202,38 @@ const GUIDE_SECTIONS: GuideSection[] = [
       {
         title: "文档入口",
         desc: "定位最新 PRD 集合文档与对应版本。",
+        images: [
+          {
+            src: prdStep1Img,
+            alt: "PRD 集合文档入口示意",
+          },
+        ],
       },
       {
-        title: "字段解读",
-        desc: "需求状态、优先级、排期与负责人说明。",
-      },
-      {
-        title: "使用规范",
-        desc: "录入与更新规则、注意事项。",
+        title: "文档的表格解读",
+        desc: "解释sheet的功能。",
+        images: [
+          {
+            src: prdStep2Img,
+            alt: "PRD 表格解读示意",
+          },
+          {
+            src: prdStep3Img,
+            alt: "PRD 表格解读示意 2",
+          },
+          {
+            src: prdStep4Img,
+            alt: "PRD 表格解读示意 3",
+          },
+          {
+            src: prdStep5Img,
+            alt: "PRD 表格解读示意 4",
+          },
+          {
+            src: prdStep6Img,
+            alt: "PRD 表格解读示意 5",
+          },
+        ],
       },
     ],
   },
