@@ -30,6 +30,7 @@ import gitlabCreateBranchImg from "@/assets/gitlab-create-branch.png";
 import pullCodeImg from "@/assets/pull-code.png";
 import gitlabMrCreateImg from "@/assets/gitlab-mr-create.png";
 import gitlabMrCreateXImg from "@/assets/gitlab-mr-create-x.png";
+import gitlabMrDetailsImg from "@/assets/gitlab-mr-details.png";
 import itaskNodeImg from "@/assets/itask-node.png";
 import appMainNameImg from "@/assets/app-main-name.png";
 import appMainNameImg2 from "@/assets/app-main-name2.png";
@@ -216,9 +217,9 @@ const flowContent = (
         <li>进行代码修改。</li>
         <li>创建 MR：需要主管评审 → target 选 <span className="font-medium text-foreground">demo</span>；否则选 <span className="font-medium text-foreground">develop</span>。
           <div className="mt-1 text-foreground/90">
-            如果是需要主管审核的需求，合并到 demo target 并通过评审后，还需要手动将该分支再次合并到 develop 分支。
+            如果是需要主管审核的需求，合并到 demo target 并通过评审后，还需要手动创建一个新的 MR，Target Branch 选择 develop 分支，将之前的 commit 内容复制到新的 MR 中。
           </div>
-          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+          <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <button
               type="button"
               className="inline-flex"
@@ -242,6 +243,20 @@ const flowContent = (
               <img
                 src={gitlabMrCreateXImg}
                 alt="MR 创建示例 2"
+                className="w-full max-w-xl rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+            <button
+              type="button"
+              className="inline-flex"
+              onClick={() => openImage(gitlabMrDetailsImg)}
+              aria-label="放大 MR 详情示例"
+            >
+              <img
+                src={gitlabMrDetailsImg}
+                alt="MR 详情示例"
                 className="w-full max-w-xl rounded-xl border shadow-sm"
                 loading="lazy"
                 decoding="async"
@@ -297,7 +312,25 @@ const flowContentIOS = (
           </div>
         </li>
         <li>进行代码修改。</li>
-        <li>创建 MR：具体 Target Branch 向「贺举锋」确认后再选择。</li>
+        <li>
+          创建 MR：具体 Target Branch 向「贺举锋」确认后再选择。
+          <div className="mt-2">
+            <button
+              type="button"
+              className="inline-flex"
+              onClick={() => openImage(gitlabMrDetailsImg)}
+              aria-label="放大 MR 详情示例"
+            >
+              <img
+                src={gitlabMrDetailsImg}
+                alt="MR 详情示例"
+                className="w-full max-w-xl rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+          </div>
+        </li>
       </ol>
     </div>
     <div className="rounded-2xl border bg-primary/5 px-4 py-3 text-sm text-foreground/80 shadow-sm">
@@ -352,7 +385,7 @@ const flowContentAndroid = (
         <li>进行代码修改。</li>
         <li>
           创建 MR：Target Branch 选择 <span className="font-medium text-foreground">develop_normal</span>。
-          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+          <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <button
               type="button"
               className="inline-flex"
@@ -376,6 +409,20 @@ const flowContentAndroid = (
               <img
                 src={appMainMrImg2}
                 alt="MR 创建与目标分支选择示意 2"
+                className="w-full max-w-xl rounded-xl border shadow-sm"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+            <button
+              type="button"
+              className="inline-flex"
+              onClick={() => openImage(gitlabMrDetailsImg)}
+              aria-label="放大 MR 详情示例"
+            >
+              <img
+                src={gitlabMrDetailsImg}
+                alt="MR 详情示例"
                 className="w-full max-w-xl rounded-xl border shadow-sm"
                 loading="lazy"
                 decoding="async"
@@ -435,7 +482,7 @@ const branchContentAndroid = (
 const commitContentBase = (
   <div className="space-y-4">
     <div className="rounded-2xl border px-4 py-3 text-sm text-foreground/80">
-      约定：尽量使用 <span className="font-semibold">fix</span> 作为分支名与 commit 的前缀，并标明作用域。示例：
+      约定：尽量使用 <span className="font-semibold">fix</span> 作为 commit 的前缀，并标明作用域。示例：
       <span className="ml-1 rounded bg-muted px-2 py-0.5 font-mono text-xs">fix(聊天室): 增加一个滑动条</span>（括号与冒号均为英文符号）
     </div>
     <div className="flex justify-center">
