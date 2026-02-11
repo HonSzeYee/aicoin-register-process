@@ -18,11 +18,21 @@ type Section = {
 };
 
 const DEV_READ_ITEMS = [
-  { id: "pre-read", title: "前置准备", etaMinutes: 2, key: "pre" },
-  { id: "env-read", title: "开发环境搭建", etaMinutes: 8, key: "env" },
-  { id: "flow-read", title: "整体流程", etaMinutes: 6, key: "flow" },
-  { id: "branch-read", title: "GitLab 分支规范", etaMinutes: 6, key: "branch" },
-  { id: "commit-read", title: "Commit 规范", etaMinutes: 5, key: "commit" },
+  { id: "pc-pre-read", title: "PC 端 · 前置准备", etaMinutes: 2, key: "pc_pre" },
+  { id: "pc-env-read", title: "PC 端 · 开发环境搭建", etaMinutes: 8, key: "pc_env" },
+  { id: "pc-flow-read", title: "PC 端 · 整体流程", etaMinutes: 6, key: "pc_flow" },
+  { id: "pc-branch-read", title: "PC 端 · GitLab 分支规范", etaMinutes: 6, key: "pc_branch" },
+  { id: "pc-commit-read", title: "PC 端 · Commit 规范", etaMinutes: 5, key: "pc_commit" },
+  { id: "ios-pre-read", title: "iOS 端 · 前置准备", etaMinutes: 2, key: "ios_pre" },
+  { id: "ios-env-read", title: "iOS 端 · 开发环境搭建", etaMinutes: 8, key: "ios_env" },
+  { id: "ios-flow-read", title: "iOS 端 · 整体流程", etaMinutes: 6, key: "ios_flow" },
+  { id: "ios-branch-read", title: "iOS 端 · GitLab 分支规范", etaMinutes: 6, key: "ios_branch" },
+  { id: "ios-commit-read", title: "iOS 端 · Commit 规范", etaMinutes: 5, key: "ios_commit" },
+  { id: "android-pre-read", title: "Android 端 · 前置准备", etaMinutes: 2, key: "android_pre" },
+  { id: "android-env-read", title: "Android 端 · 开发环境搭建", etaMinutes: 8, key: "android_env" },
+  { id: "android-flow-read", title: "Android 端 · 整体流程", etaMinutes: 6, key: "android_flow" },
+  { id: "android-branch-read", title: "Android 端 · GitLab 分支规范", etaMinutes: 6, key: "android_branch" },
+  { id: "android-commit-read", title: "Android 端 · Commit 规范", etaMinutes: 5, key: "android_commit" },
 ] as const;
 
 const DEV_EXTRA_ITEMS: ChecklistItem[] = [
@@ -48,7 +58,12 @@ const WORKFLOW_ITEMS: ChecklistItem[] = [
   { id: "classic-flow", title: "传统版本工作流程", etaMinutes: 12, done: false },
 ];
 
-export function buildSections(accountItems: AccountChecklistItem[], devReadMap: DevReadMap): Section[] {
+export function buildSections(
+  accountItems: AccountChecklistItem[],
+  devReadMap: DevReadMap,
+  toolsRead: boolean,
+  workflowRead: boolean
+): Section[] {
   const devItems: ChecklistItem[] = [
     ...DEV_READ_ITEMS.map((item) => ({
       id: item.id,
@@ -56,7 +71,7 @@ export function buildSections(accountItems: AccountChecklistItem[], devReadMap: 
       etaMinutes: item.etaMinutes,
       done: !!devReadMap[item.key],
     })),
-    ...DEV_EXTRA_ITEMS,
+    ...DEV_EXTRA_ITEMS.map((item) => ({ ...item, done: true })),
   ];
 
   return [
@@ -76,13 +91,13 @@ export function buildSections(accountItems: AccountChecklistItem[], devReadMap: 
       id: "tools",
       title: "软件使用",
       icon: <Wrench className="h-4 w-4" />,
-      items: TOOL_ITEMS,
+      items: TOOL_ITEMS.map((item) => ({ ...item, done: toolsRead })),
     },
     {
       id: "workflow",
       title: "工作流程",
       icon: <GitPullRequest className="h-4 w-4" />,
-      items: WORKFLOW_ITEMS,
+      items: WORKFLOW_ITEMS.map((item) => ({ ...item, done: workflowRead })),
     },
   ];
 }
@@ -103,11 +118,21 @@ export function pickNextAction(sections: Section[]) {
 }
 
 export const DEV_READ_ID_MAP: Record<string, keyof DevReadMap> = {
-  "pre-read": "pre",
-  "env-read": "env",
-  "flow-read": "flow",
-  "branch-read": "branch",
-  "commit-read": "commit",
+  "pc-pre-read": "pc_pre",
+  "pc-env-read": "pc_env",
+  "pc-flow-read": "pc_flow",
+  "pc-branch-read": "pc_branch",
+  "pc-commit-read": "pc_commit",
+  "ios-pre-read": "ios_pre",
+  "ios-env-read": "ios_env",
+  "ios-flow-read": "ios_flow",
+  "ios-branch-read": "ios_branch",
+  "ios-commit-read": "ios_commit",
+  "android-pre-read": "android_pre",
+  "android-env-read": "android_env",
+  "android-flow-read": "android_flow",
+  "android-branch-read": "android_branch",
+  "android-commit-read": "android_commit",
 };
 
 export type { Section, ChecklistItem };

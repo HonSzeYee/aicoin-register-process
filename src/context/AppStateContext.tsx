@@ -26,11 +26,21 @@ export type AccountChecklistItem = {
 };
 
 export type DevReadMap = {
-  pre: boolean;
-  env: boolean;
-  flow: boolean;
-  branch: boolean;
-  commit: boolean;
+  pc_pre: boolean;
+  pc_env: boolean;
+  pc_flow: boolean;
+  pc_branch: boolean;
+  pc_commit: boolean;
+  ios_pre: boolean;
+  ios_env: boolean;
+  ios_flow: boolean;
+  ios_branch: boolean;
+  ios_commit: boolean;
+  android_pre: boolean;
+  android_env: boolean;
+  android_flow: boolean;
+  android_branch: boolean;
+  android_commit: boolean;
 };
 
 type AppState = {
@@ -44,6 +54,10 @@ type AppState = {
   devReadMap: DevReadMap;
   setDevReadMap: React.Dispatch<React.SetStateAction<DevReadMap>>;
   setDevRead: (key: keyof DevReadMap, value: boolean) => void;
+  toolsRead: boolean;
+  setToolsRead: (value: boolean) => void;
+  workflowRead: boolean;
+  setWorkflowRead: (value: boolean) => void;
   searchQuery: string;
   setSearchQuery: (value: string) => void;
 };
@@ -53,6 +67,8 @@ const AppStateContext = createContext<AppState | null>(null);
 const USER_NAME_KEY = "userName";
 const ACCOUNT_KEY = "accounts-registration-checklist";
 const DEV_READ_KEY = "dev-guide-read";
+const TOOLS_READ_KEY = "tools-guide-read";
+const WORKFLOW_READ_KEY = "workflow-guide-read";
 const PROGRESS_META_KEY = "onboarding-progress-meta";
 const SAVE_DEBOUNCE_MS = 600;
 
@@ -67,11 +83,21 @@ export const DEFAULT_ACCOUNT_ITEMS: AccountChecklistItem[] = [
 ];
 
 const DEFAULT_DEV_READ: DevReadMap = {
-  pre: false,
-  env: false,
-  flow: false,
-  branch: false,
-  commit: false,
+  pc_pre: false,
+  pc_env: false,
+  pc_flow: false,
+  pc_branch: false,
+  pc_commit: false,
+  ios_pre: false,
+  ios_env: false,
+  ios_flow: false,
+  ios_branch: false,
+  ios_commit: false,
+  android_pre: false,
+  android_env: false,
+  android_flow: false,
+  android_branch: false,
+  android_commit: false,
 };
 
 function normalizeAccountItems(items?: AccountChecklistItem[]) {
@@ -92,13 +118,32 @@ function normalizeAccountItems(items?: AccountChecklistItem[]) {
   return [...merged, ...extra];
 }
 
-function normalizeDevReadMap(map?: Partial<DevReadMap>) {
+function normalizeDevReadMap(map?: Partial<DevReadMap> & Record<string, unknown>) {
+  const get = (key: keyof DevReadMap, legacyKey?: string) => {
+    const incoming = map?.[key];
+    if (typeof incoming === "boolean") return incoming;
+    if (legacyKey) {
+      const legacy = (map as Record<string, unknown>)?.[legacyKey];
+      if (typeof legacy === "boolean") return legacy;
+    }
+    return false;
+  };
   return {
-    pre: !!map?.pre,
-    env: !!map?.env,
-    flow: !!map?.flow,
-    branch: !!map?.branch,
-    commit: !!map?.commit,
+    pc_pre: get("pc_pre", "pre"),
+    pc_env: get("pc_env", "env"),
+    pc_flow: get("pc_flow", "flow"),
+    pc_branch: get("pc_branch", "branch"),
+    pc_commit: get("pc_commit", "commit"),
+    ios_pre: get("ios_pre"),
+    ios_env: get("ios_env"),
+    ios_flow: get("ios_flow"),
+    ios_branch: get("ios_branch"),
+    ios_commit: get("ios_commit"),
+    android_pre: get("android_pre"),
+    android_env: get("android_env"),
+    android_flow: get("android_flow"),
+    android_branch: get("android_branch"),
+    android_commit: get("android_commit"),
   };
 }
 
@@ -148,6 +193,28 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     return DEFAULT_DEV_READ;
   });
 
+  const [toolsRead, setToolsReadState] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      const stored = window.localStorage.getItem(TOOLS_READ_KEY);
+      if (!stored) return false;
+      return stored === "true";
+    } catch {
+      return false;
+    }
+  });
+
+  const [workflowRead, setWorkflowReadState] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      const stored = window.localStorage.getItem(WORKFLOW_READ_KEY);
+      if (!stored) return false;
+      return stored === "true";
+    } catch {
+      return false;
+    }
+  });
+
   const [searchQuery, setSearchQueryState] = useState("");
   const [lastUpdatedAt, setLastUpdatedAt] = useState(() => readProgressMeta());
   const lastUpdatedAtRef = useRef(lastUpdatedAt);
@@ -187,6 +254,24 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       // ignore
     }
   }, [devReadMap]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem(TOOLS_READ_KEY, toolsRead ? "true" : "false");
+    } catch {
+      // ignore
+    }
+  }, [toolsRead]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem(WORKFLOW_READ_KEY, workflowRead ? "true" : "false");
+    } catch {
+      // ignore
+    }
+  }, [workflowRead]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -235,7 +320,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     setLastUpdatedAt(Date.now());
-  }, [userName, accountItems, devReadMap]);
+  }, [userName, accountItems, devReadMap, toolsRead, workflowRead]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -281,6 +366,14 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setDevReadMap((prev) => ({ ...prev, [key]: value }));
   }, []);
 
+  const setToolsRead = useCallback((value: boolean) => {
+    setToolsReadState(value);
+  }, []);
+
+  const setWorkflowRead = useCallback((value: boolean) => {
+    setWorkflowReadState(value);
+  }, []);
+
   const setSearchQuery = useCallback((value: string) => {
     setSearchQueryState(value);
   }, []);
@@ -297,6 +390,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       devReadMap,
       setDevReadMap,
       setDevRead,
+      toolsRead,
+      setToolsRead,
+      workflowRead,
+      setWorkflowRead,
       searchQuery,
       setSearchQuery,
     }),
@@ -311,6 +408,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       devReadMap,
       setDevReadMap,
       setDevRead,
+      toolsRead,
+      setToolsRead,
+      workflowRead,
+      setWorkflowRead,
       searchQuery,
       setSearchQuery,
     ]

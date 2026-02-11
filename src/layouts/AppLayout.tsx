@@ -116,7 +116,7 @@ function clamp(n: number, min: number, max: number) {
 export default function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userName, searchQuery, setSearchQuery, accountItems, devReadMap } = useAppState();
+  const { userName, searchQuery, setSearchQuery, accountItems, devReadMap, toolsRead, workflowRead } = useAppState();
   const { takenOver: scrolledPast, isScrolling } = useScrollTakeoverContext();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -128,7 +128,10 @@ export default function AppLayout() {
   const headerCollapsed = scrolledPast;
   const globalTakenOver = isSubpage && scrolledPast;
 
-  const sections = useMemo(() => buildSections(accountItems, devReadMap), [accountItems, devReadMap]);
+  const sections = useMemo(
+    () => buildSections(accountItems, devReadMap, toolsRead, workflowRead),
+    [accountItems, devReadMap, toolsRead, workflowRead]
+  );
   const overall = useMemo(() => {
     const totals = sections.map(sectionProgress);
     const total = totals.reduce((a, b) => a + b.total, 0);

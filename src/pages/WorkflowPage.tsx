@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bell, ClipboardList, GitPullRequest } from "lucide-react";
+import { useAppState } from "@/context/AppStateContext";
 
 const steps = [
   {
@@ -37,6 +38,12 @@ const steps = [
 
 export default function WorkflowPage() {
   const navigate = useNavigate();
+  const { setWorkflowRead } = useAppState();
+
+  useEffect(() => {
+    setWorkflowRead(true);
+  }, [setWorkflowRead]);
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 space-y-4">
       <Card className="rounded-2xl shadow-sm">

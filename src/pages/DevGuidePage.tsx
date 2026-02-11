@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppState } from "@/context/AppStateContext";
+import type { DevReadMap } from "@/context/AppStateContext";
 import { useScrollTakeoverContext } from "@/context/ScrollTakeoverContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -672,6 +674,7 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
 
 export default function DevGuidePage() {
   const navigate = useNavigate();
+  const { setDevRead } = useAppState();
   const { takenOver, isScrolling } = useScrollTakeoverContext();
   const headerRef = useRef<HTMLElement | null>(null);
   const [subHeaderHeight, setSubHeaderHeight] = useState(0);
@@ -684,6 +687,13 @@ export default function DevGuidePage() {
     const next = SECTIONS[(idx + 1) % SECTIONS.length];
     setActiveSection(next.id);
   };
+
+  useEffect(() => {
+    const platformKey =
+      platform === "PC" ? "pc" : platform === "iOS" ? "ios" : "android";
+    const readKey = `${platformKey}_${activeSection}` as keyof DevReadMap;
+    setDevRead(readKey, true);
+  }, [activeSection, platform, setDevRead]);
 
   // 供顶层静态内容使用的弹窗 setter
   useEffect(() => {

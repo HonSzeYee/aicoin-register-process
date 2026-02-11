@@ -36,6 +36,8 @@ export default function AiCoinOnboardingDashboard() {
     setUserName,
     accountItems,
     devReadMap,
+    toolsRead,
+    workflowRead,
   } = useAppState();
 
   const [roleDialogOpen, setRoleDialogOpen] = useState(false);
@@ -46,7 +48,10 @@ export default function AiCoinOnboardingDashboard() {
     if (userName !== "新用户") setShowWelcome(false);
   }, [userName]);
 
-  const sections = useMemo(() => buildSections(accountItems, devReadMap), [accountItems, devReadMap]);
+  const sections = useMemo(
+    () => buildSections(accountItems, devReadMap, toolsRead, workflowRead),
+    [accountItems, devReadMap, toolsRead, workflowRead]
+  );
 
   const nextAction = useMemo(() => pickNextAction(sections), [sections]);
 

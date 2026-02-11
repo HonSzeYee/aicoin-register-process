@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import claudeIcon from "@/assets/claude-color.svg";
 import cursorIcon from "@/assets/cursor.svg";
 import figmaIcon from "@/assets/figma-color.svg";
@@ -9,6 +9,7 @@ import dockerIcon from "@/assets/docker.svg";
 import aistudioIcon from "@/assets/aistudio.svg";
 import codiaIcon from "@/assets/codia-logo.png";
 import yapiIcon from "@/assets/yapi-logo.png";
+import { useAppState } from "@/context/AppStateContext";
 
 type Skill = {
   label: string;
@@ -115,6 +116,12 @@ const SKILLS: Skill[] = [
 ];
 
 export default function ToolsPage() {
+  const { setToolsRead } = useAppState();
+
+  useEffect(() => {
+    setToolsRead(true);
+  }, [setToolsRead]);
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 space-y-6">
       <header className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
