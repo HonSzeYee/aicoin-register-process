@@ -58,7 +58,7 @@ const SAVE_DEBOUNCE_MS = 600;
 
 export const DEFAULT_ACCOUNT_ITEMS: AccountChecklistItem[] = [
   { id: "corp-email", title: "获取企业邮箱与申请版本日志推送", etaMinutes: 3, done: true },
-  { id: "vpn", title: "安装翻墙软件", etaMinutes: 8, done: false },
+  { id: "vpn", title: "安装VPN", etaMinutes: 8, done: false },
   { id: "aicoin", title: "安装 AiCoin 软件", etaMinutes: 5, done: false },
   { id: "itask", title: "注册 iTask 账号", etaMinutes: 5, done: false },
   { id: "gitlab", title: "注册 GitLab 账号", etaMinutes: 5, done: false },
@@ -84,6 +84,8 @@ function normalizeAccountItems(items?: AccountChecklistItem[]) {
       ...item,
       ...remote,
       id: item.id,
+      title: item.title,
+      etaMinutes: item.etaMinutes,
     };
   });
   const extra = items.filter((item) => !DEFAULT_ACCOUNT_ITEMS.some((d) => d.id === item.id));

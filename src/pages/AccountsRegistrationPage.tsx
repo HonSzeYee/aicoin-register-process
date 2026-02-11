@@ -198,7 +198,7 @@ export default function AccountsRegistrationPage() {
           "企业邮箱是所有内部系统的身份凭证。你需要它来接收邀请、登录软件平台、加入群与订阅通知。",
         steps: [
           "点击企业微信的右侧导航栏的「邮件」，查看自己的企业邮箱，这个邮箱用于注册后续软件平台帐号。",
-          "企业微信联系陆柏良，让他帮忙将你加入到版本日志的推送，以后 AiCoin PC 端的测试版会通过这个推送下载。",
+          "企业微信联系陆柏良，让他帮忙将你加入到版本日志的推送，以后 AiCoin PC 端的测试版会通过这个推送下更新。后续可在应用内更新最新版。",
         ],
         pitfalls: [
           "收不到邀请邮件：检查垃圾箱/拦截规则，再联系 IT/HR 重新发送。",
@@ -255,7 +255,7 @@ export default function AccountsRegistrationPage() {
             linkLabel: "登录 GitLab",
             linkHref: "https://team.applychart.com/lab/aicoin/feedback",
           },
-          "登录后会要求扫码并输入 Google 验证码，请在手机应用商店下载 Microsoft Authenticator 进行绑定。",
+          "登录后会要求扫码并输入 Google 验证码，请在手机应用商店下载身份验证器，进行绑定。例如：Microsoft Authenticator。",
         ],
         pitfalls: [
           "推送失败：检查权限与分支保护规则。",
@@ -382,15 +382,20 @@ export default function AccountsRegistrationPage() {
   function goNextUnfinished() {
     if (!items.length) return;
     const currentIndex = items.findIndex((i) => i.id === selectedId);
-    // 从当前的下一项开始向后查找第一个未锁定的步骤
+    const hasUnfinished = items.some((i) => !i.done && !i.locked);
+    if (!hasUnfinished) {
+      navigate("/dev");
+      return;
+    }
+    // 从当前的下一项开始向后查找第一个未完成且未锁定的步骤
     for (let offset = 1; offset <= items.length; offset++) {
       const next = items[(currentIndex + offset) % items.length];
-      if (!next.locked) {
+      if (!next.done && !next.locked) {
         setSelectedId(next.id);
         return;
       }
     }
-    // 如果全部被锁定，保持不变并跳到 Dev 指引
+    // 找不到未完成项时，跳到 Dev 指引
     navigate("/dev");
   }
 
