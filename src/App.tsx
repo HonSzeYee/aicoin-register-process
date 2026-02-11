@@ -8,6 +8,7 @@ import DevGuidePage from "@/pages/DevGuidePage";
 import FaqPage from "@/pages/FaqPage";
 import WorkflowPage from "@/pages/WorkflowPage";
 import ToolsPage from "@/pages/ToolsPage";
+import SoftwareGuidePage from "@/pages/SoftwareGuidePage";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
               <Route path="dev" element={<DevGuidePage />} />
               <Route path="tools" element={<ToolsPage />} />
               <Route path="workflow" element={<WorkflowPage />} />
+              <Route path="software-guide" element={<SoftwareGuidePage />} />
               <Route path="faq" element={<FaqPage />} />
             </Route>
           </Routes>

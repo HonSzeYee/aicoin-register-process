@@ -14,6 +14,7 @@ import {
   Code2,
   Wrench,
   GitPullRequest,
+  BookOpen,
   HelpCircle,
   Settings,
   Search,
@@ -106,6 +107,7 @@ const NAV = [
   { id: "dev", label: "开发指南", icon: Code2, path: "/dev" },
   { id: "tools", label: "工具集合", icon: Wrench, path: "/tools" },
   { id: "workflow", label: "工作流程", icon: GitPullRequest, path: "/workflow" },
+  { id: "software-guide", label: "软件讲解", icon: BookOpen, path: "/software-guide" },
   { id: "faq", label: "常见问题", icon: HelpCircle, path: "/faq" },
 ] as const;
 

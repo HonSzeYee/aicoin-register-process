@@ -453,9 +453,6 @@ export default function AccountsRegistrationPage() {
             <div className="rounded-2xl border p-4">
               <div className="flex flex-wrap items-center gap-2 text-sm font-medium">
                 <Users className="h-4 w-4" /> 操作步骤
-                {!isWechatChecklist && (
-                  <span className="text-xs font-normal text-muted-foreground">· 点击图片可放大</span>
-                )}
               </div>
               <ol className="mt-3 space-y-3 text-sm">
                 {(selectedDetail?.steps?.length ? selectedDetail.steps : ["（待补充）"]).map(
@@ -530,15 +527,15 @@ export default function AccountsRegistrationPage() {
                           </li>
                         )}
                         <li className="flex gap-3 text-muted-foreground">
-                          <img
-                            src={stepImageFor(selectedItem?.id ?? "", idx)}
-                            alt={`步骤 ${idx + 1}`}
-                            loading="lazy"
-                            decoding="async"
-                            className="h-24 w-40 rounded-xl border object-cover transition-transform duration-200 hover:scale-[1.02]"
-                            onClick={() => openLightbox(stepImageFor(selectedItem?.id ?? "", idx))}
-                            role="button"
-                            aria-label={`放大步骤 ${idx + 1} 图片`}
+                        <img
+                          src={stepImageFor(selectedItem?.id ?? "", idx)}
+                          alt={`步骤 ${idx + 1}`}
+                          loading="lazy"
+                          decoding="async"
+                          className="h-24 w-40 rounded-xl border object-cover transition-transform duration-200 hover:scale-[1.02] cursor-zoom-in"
+                          onClick={() => openLightbox(stepImageFor(selectedItem?.id ?? "", idx))}
+                          role="button"
+                          aria-label={`放大步骤 ${idx + 1} 图片`}
                             tabIndex={0}
                             onKeyDown={(e) => {
                               if (e.key === "Enter" || e.key === " ") {

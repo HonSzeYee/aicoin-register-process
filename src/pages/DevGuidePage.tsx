@@ -149,7 +149,7 @@ const branchContent = (
             <img
               src={gitlabMrImg}
               alt="GitLab MR 目标分支示例"
-              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
+              className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm cursor-zoom-in"
               loading="lazy"
               decoding="async"
             />
@@ -175,7 +175,7 @@ const flowContent = (
               <img
                 src={gitlabCreateImg}
                 alt="GitLab 创建开发分支示意"
-                className="w-full max-w-xl rounded-xl border shadow-sm"
+                className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -188,7 +188,7 @@ const flowContent = (
               <img
                 src={gitlabCreateBranchImg}
                 alt="GitLab 选择 source/target 分支示意"
-                className="w-full max-w-xl rounded-xl border shadow-sm"
+                className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -207,7 +207,7 @@ const flowContent = (
               <img
                 src={pullCodeImg}
                 alt="IDE 拉取并切换分支示意"
-                className="w-full max-w-lg rounded-xl border shadow-sm"
+                className="w-full max-w-lg rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -229,7 +229,7 @@ const flowContent = (
               <img
                 src={gitlabMrCreateImg}
                 alt="MR 创建示例"
-                className="w-full max-w-xl rounded-xl border shadow-sm"
+                className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -243,7 +243,7 @@ const flowContent = (
               <img
                 src={gitlabMrCreateXImg}
                 alt="MR 创建示例 2"
-                className="w-full max-w-xl rounded-xl border shadow-sm"
+                className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -257,7 +257,7 @@ const flowContent = (
               <img
                 src={gitlabMrDetailsImg}
                 alt="MR 详情示例"
-                className="w-full max-w-xl rounded-xl border shadow-sm"
+                className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -275,7 +275,7 @@ const flowContent = (
               <img
                 src={itaskNodeImg}
                 alt="iTask 节点示意"
-                className="w-full max-w-xl rounded-xl border shadow-sm"
+                className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -304,7 +304,7 @@ const flowContentIOS = (
               <img
                 src={pullCodeImg}
                 alt="IDE 拉取并切换分支示意"
-                className="w-full max-w-lg rounded-xl border shadow-sm"
+                className="w-full max-w-lg rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -324,7 +324,7 @@ const flowContentIOS = (
               <img
                 src={gitlabMrDetailsImg}
                 alt="MR 详情示例"
-                className="w-full max-w-xl rounded-xl border shadow-sm"
+                className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -361,7 +361,7 @@ const flowContentAndroid = (
               <img
                 src={appMainNameImg}
                 alt="分支创建与命名示意"
-                className="w-full max-w-xl rounded-xl border shadow-sm"
+                className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -375,7 +375,7 @@ const flowContentAndroid = (
               <img
                 src={appMainNameImg2}
                 alt="分支创建与命名示意 2"
-                className="w-full max-w-xl rounded-xl border shadow-sm"
+                className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -395,7 +395,7 @@ const flowContentAndroid = (
               <img
                 src={appMainMrImg}
                 alt="MR 创建与目标分支选择示意"
-                className="w-full max-w-xl rounded-xl border shadow-sm"
+                className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -409,7 +409,7 @@ const flowContentAndroid = (
               <img
                 src={appMainMrImg2}
                 alt="MR 创建与目标分支选择示意 2"
-                className="w-full max-w-xl rounded-xl border shadow-sm"
+                className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -423,7 +423,7 @@ const flowContentAndroid = (
               <img
                 src={gitlabMrDetailsImg}
                 alt="MR 详情示例"
-                className="w-full max-w-xl rounded-xl border shadow-sm"
+                className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -495,7 +495,7 @@ const commitContentBase = (
         <img
           src={gitlabCommitRulesImg}
           alt="GitLab Commit 规范示例"
-          className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
+          className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm cursor-zoom-in"
           loading="lazy"
           decoding="async"
         />
@@ -526,7 +526,7 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
             <img
               src={vxApplyImg}
               alt="企业微信审批入口示例"
-              className="w-full max-w-xl rounded-xl border shadow-sm"
+              className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
               loading="lazy"
               decoding="async"
             />
@@ -542,7 +542,7 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
             <img
               src={vxDetailsImg}
               alt="企业微信审批详情示例"
-              className="w-full max-w-xl rounded-xl border shadow-sm"
+              className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
               loading="lazy"
               decoding="async"
             />
@@ -566,7 +566,7 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
               <img 
                 src={pcTutorialImg} 
                 alt="PC 端开发环境搭建教程" 
-                className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
+                className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -595,7 +595,7 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
             <img
               src={vxApplyImg}
               alt="企业微信审批入口示例"
-              className="w-full max-w-xl rounded-xl border shadow-sm"
+              className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
               loading="lazy"
               decoding="async"
             />
@@ -611,7 +611,7 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
             <img
               src={vxDetailsImg}
               alt="企业微信审批详情示例"
-              className="w-full max-w-xl rounded-xl border shadow-sm"
+              className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
               loading="lazy"
               decoding="async"
             />
@@ -635,7 +635,7 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
               <img 
                 src={iOSTutorialImg} 
                 alt="iOS 开发环境搭建教程" 
-                className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
+                className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
@@ -664,7 +664,7 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
             <img
               src={vxApplyImg}
               alt="企业微信审批入口示例"
-              className="w-full max-w-xl rounded-xl border shadow-sm"
+              className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
               loading="lazy"
               decoding="async"
             />
@@ -680,7 +680,7 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
             <img
               src={vxDetailsImg}
               alt="企业微信审批详情示例"
-              className="w-full max-w-xl rounded-xl border shadow-sm"
+              className="w-full max-w-xl rounded-xl border shadow-sm cursor-zoom-in"
               loading="lazy"
               decoding="async"
             />
@@ -704,7 +704,7 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
               <img 
                 src={androidTutorialImg} 
                 alt="Android 开发环境搭建教程" 
-                className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm"
+                className="w-full max-w-2xl mx-auto rounded-xl border shadow-sm cursor-zoom-in"
                 loading="lazy"
                 decoding="async"
               />
