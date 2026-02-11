@@ -89,7 +89,7 @@ export function buildSections(
     },
     {
       id: "tools",
-      title: "软件使用",
+      title: "工具集合",
       icon: <Wrench className="h-4 w-4" />,
       items: TOOL_ITEMS.map((item) => ({ ...item, done: toolsRead })),
     },

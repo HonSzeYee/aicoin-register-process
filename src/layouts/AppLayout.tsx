@@ -104,7 +104,7 @@ const NAV = [
   { id: "dashboard", label: "入职总览", icon: LayoutDashboard, path: "/" },
   { id: "accounts", label: "账号注册", icon: KeyRound, path: "/accounts" },
   { id: "dev", label: "开发指南", icon: Code2, path: "/dev" },
-  { id: "tools", label: "软件使用", icon: Wrench, path: "/tools" },
+  { id: "tools", label: "工具集合", icon: Wrench, path: "/tools" },
   { id: "workflow", label: "工作流程", icon: GitPullRequest, path: "/workflow" },
   { id: "faq", label: "常见问题", icon: HelpCircle, path: "/faq" },
 ] as const;

@@ -9,6 +9,7 @@ import dockerIcon from "@/assets/docker.svg";
 import aistudioIcon from "@/assets/aistudio.svg";
 import codiaIcon from "@/assets/codia-logo.png";
 import yapiIcon from "@/assets/yapi-logo.png";
+import difyIcon from "@/assets/dify-color.svg";
 import { useAppState } from "@/context/AppStateContext";
 
 type Skill = {
@@ -23,6 +24,16 @@ type Skill = {
 };
 
 const SKILLS: Skill[] = [
+  {
+    label: "Dify",
+    note: "AI 工具",
+    tag: "AI",
+    icon: difyIcon,
+    desc: "Dify 是开源的 AI 应用开发平台，可快速搭建工作流与对话式应用。",
+    chips: ["AI 应用", "工作流", "开源"],
+    badge: "AI 工具",
+    url: "https://dify.ai/",
+  },
   {
     label: "Claude",
     note: "AI 工具",
@@ -126,7 +137,7 @@ export default function ToolsPage() {
     <div className="mx-auto max-w-6xl px-4 py-10 space-y-6">
       <header className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-2">
-          <h1 className="text-3xl font-semibold leading-tight text-foreground">常用软件</h1>
+          <h1 className="text-3xl font-semibold leading-tight text-foreground">常用工具</h1>
         </div>
       </header>
 
