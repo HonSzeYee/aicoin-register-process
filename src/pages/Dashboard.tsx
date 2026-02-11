@@ -216,7 +216,7 @@ export default function AiCoinOnboardingDashboard() {
                 className={`split-tree-item ${activeCoreTask === "accept" ? "is-active" : ""}`}
               >
                 <span className="split-tree-index">04</span>
-                <span>产品验收</span>
+                <span>产品验收+ 上线后持续跟进</span>
               </button>
             </div>
 
@@ -264,7 +264,7 @@ export default function AiCoinOnboardingDashboard() {
 
               {activeCoreTask === "accept" && (
                 <div className="split-tree-section">
-                  <div className="split-tree-title">产品验收</div>
+                  <div className="split-tree-title">产品验收+ 上线后持续跟进</div>
                   <p className="split-tree-paragraph">
                     视觉效果是否符合预期；交互逻辑是否有 bug
                   </p>

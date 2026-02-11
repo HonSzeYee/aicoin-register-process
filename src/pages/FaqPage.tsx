@@ -15,6 +15,10 @@ import vxDemo from "@/assets/vx-demo.png";
 import imageCopy2 from "@/assets/image-copy-2.png";
 import yapiStep1 from "@/assets/yapi-step1.png";
 import yapiStep2 from "@/assets/yapi-step2.png";
+import vxEmgTaskImg from "@/assets/vx-emg-task.png";
+import vxTaskImg from "@/assets/vx-task.png";
+import vxCommitImg from "@/assets/vx-commit.png";
+import gitlabPmImg from "@/assets/gitlab-pm.png";
 
 const FAQS = [
   {
@@ -126,12 +130,41 @@ const FAQS = [
     answer: [
       {
         text: "1）在 GitLab 的 PM 仓库中创建 issue，填好相关需求内容。（如有产品建议的 issue 需要关联，需求内容要和需求提出者沟通确认）",
+        image: gitlabPmImg,
+        alt: "GitLab PM 仓库创建 issue 示例",
       },
       {
         text: "2）打开企业微信的工作台，在「审批」类别中的「临时需求插入审批」按要求填好相关内容，并上传「GitLab 的 PM 仓库中创建 issue 需求」的截图。",
+        image: vxEmgTaskImg,
+        alt: "临时需求插入审批示例",
+        image2: vxTaskImg,
+        alt2: "临时需求审批提交示例",
       },
       {
-        text: "3）审批通过后，将审批通过的截图贴在 GitLab 的 PM 仓库的评论区。",
+        text: "3）审批通过后，将审批通过的截图贴在 GitLab 的 PM issue的评论区。",
+        image: vxCommitImg,
+        alt: "审批截图贴到 PM issue 评论区示例",
+      },
+    ],
+  },
+  {
+    id: "delay-release-flow",
+    question: "如何申请延版本流程？",
+    answer: [
+      {
+        text: "1）先和端负责人确认是否延版本（需要和端负责人确认，不是技术说延期就延期）。",
+      },
+      {
+        text: "2）确认延版本后，和端负责人确认顺延到下一版本，还是进入重新排期。",
+      },
+      {
+        text: "3）重启排期的，先将 iTask 的进度改为【挂起】，然后将需求放在 PRD 集合表最新待排期的版本等待评审会安排（或者提到产品建议待重新安排），确认排期后改 iTask 的版本号和总进度。",
+      },
+      {
+        text: "4）顺延的就将 iTask 版本号等改为下一版本号即可。",
+      },
+      {
+        text: "5）同步信息给需求提出者、测试等。",
       },
     ],
   },
@@ -251,7 +284,24 @@ export default function FaqPage() {
               <p>
                 {line.text}
               </p>
-              {line.image && (
+              {line.image && line.image2 ? (
+                <div className="mt-2 grid gap-3 sm:grid-cols-2">
+                  <img
+                    src={line.image}
+                    alt={line.alt ?? ""}
+                    className="w-full max-w-3xl rounded-xl border"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <img
+                    src={line.image2}
+                    alt={line.alt2 ?? ""}
+                    className="w-full max-w-3xl rounded-xl border"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              ) : line.image ? (
                 <img
                   src={line.image}
                   alt={line.alt ?? ""}
@@ -259,7 +309,7 @@ export default function FaqPage() {
                   loading="lazy"
                   decoding="async"
                 />
-              )}
+              ) : null}
             </React.Fragment>
           ))
         )}
