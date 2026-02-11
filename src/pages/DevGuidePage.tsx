@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppState } from "@/context/AppStateContext";
 import { useScrollTakeoverContext } from "@/context/ScrollTakeoverContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,6 @@ import {
   Terminal,
   GitBranch,
   GitCommit,
-  CheckCircle2,
   GitPullRequest,
   MessageCircle,
 } from "lucide-react";
@@ -58,14 +56,12 @@ type DevGuideHeaderProps = {
   takenOver: boolean;
   isScrolling: boolean;
   onBack: () => void;
-  done: number;
-  total: number;
   center?: React.ReactNode;
 };
 
 const DevGuideHeader = React.memo(
   React.forwardRef<HTMLElement, DevGuideHeaderProps>(function DevGuideHeader(
-    { takenOver, isScrolling, onBack, done, total, center },
+    { takenOver, isScrolling, onBack, center },
     ref
   ) {
     const compactHeader = takenOver;
@@ -110,11 +106,7 @@ const DevGuideHeader = React.memo(
             {center}
           </div>
 
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="rounded-xl">
-              {done} / {total}
-            </Badge>
-          </div>
+          <div className="flex items-center gap-2" />
         </div>
       </header>
     );
@@ -221,6 +213,9 @@ const flowContent = (
         </li>
         <li>进行代码修改。</li>
         <li>创建 MR：需要主管评审 → target 选 <span className="font-medium text-foreground">demo</span>；否则选 <span className="font-medium text-foreground">develop</span>。
+          <div className="mt-1 text-foreground/90">
+            如果是需要主管审核的需求，合并到 demo target 并通过评审后，还需要手动将该分支再次合并到 develop 分支。
+          </div>
           <div className="mt-2 grid gap-3 sm:grid-cols-2">
             <button
               type="button"
@@ -677,33 +672,18 @@ const GUIDE_CONTENT: Record<Platform, Record<string, React.ReactNode>> = {
 
 export default function DevGuidePage() {
   const navigate = useNavigate();
-  const { devReadMap, setDevReadMap } = useAppState();
   const { takenOver, isScrolling } = useScrollTakeoverContext();
   const headerRef = useRef<HTMLElement | null>(null);
   const [subHeaderHeight, setSubHeaderHeight] = useState(0);
   const [platform, setPlatform] = useState<Platform>("PC");
   const [activeSection, setActiveSection] = useState<SectionId>("pre");
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
-  const readSections = devReadMap;
-
-  const READABLE_SECTIONS: SectionId[] = ["pre", "env", "flow", "branch", "commit"];
 
   const goNextSection = () => {
     const idx = SECTIONS.findIndex((s) => s.id === activeSection);
     const next = SECTIONS[(idx + 1) % SECTIONS.length];
     setActiveSection(next.id);
   };
-
-  const markActiveRead = () => {
-    setDevReadMap((prev) => ({
-      ...prev,
-      [activeSection]: true,
-    }));
-  };
-
-  const readCount = READABLE_SECTIONS.filter((id) => readSections[id]).length;
-  const totalReadable = READABLE_SECTIONS.length;
-  const activeRead = readSections[activeSection];
 
   // 供顶层静态内容使用的弹窗 setter
   useEffect(() => {
@@ -761,8 +741,6 @@ export default function DevGuidePage() {
         takenOver={takeoverHeader}
         isScrolling={isScrolling}
         onBack={handleBack}
-        done={readCount}
-        total={totalReadable}
         center={showPlatformTabs ? platformTabs : null}
       />
       {takeoverHeader && <div aria-hidden="true" style={{ height: subHeaderHeight }} />}
@@ -776,7 +754,6 @@ export default function DevGuidePage() {
                 {SECTIONS.map((section) => {
                 const Icon = section.icon;
                 const isActive = activeSection === section.id;
-                const isRead = readSections[section.id];
                 return (
                   <Button
                     key={section.id}
@@ -791,25 +768,10 @@ export default function DevGuidePage() {
                       <Icon className="h-4 w-4" />
                       {section.title}
                     </span>
-                    {isRead && (
-                      <CheckCircle2 className="h-4 w-4 text-[#2e7d32]" />
-                    )}
                   </Button>
                 );
                 })}
               </div>
-              {READABLE_SECTIONS.includes(activeSection as any) && (
-                <div className="ml-auto flex items-center gap-3">
-                  <Button
-                    variant="default"
-                    className="rounded-full px-5"
-                    onClick={markActiveRead}
-                    disabled={!!activeRead}
-                  >
-                    {activeRead ? "已阅读" : "标记为已阅读"}
-                  </Button>
-                </div>
-              )}
             </div>
 
             <Separator />
@@ -826,9 +788,6 @@ export default function DevGuidePage() {
               <div className="prose prose-sm max-w-none leading-relaxed text-foreground/80">
                 {GUIDE_CONTENT[platform][activeSection]}
               </div>
-              {READABLE_SECTIONS.includes(activeSection as any) && (
-                <div className="flex flex-wrap items-center justify-center gap-3 pt-2" />
-              )}
               <div className="pt-4 flex justify-center">
                 <Button className="rounded-full px-5" variant="outline" onClick={goNextSection}>
                   切到下一项

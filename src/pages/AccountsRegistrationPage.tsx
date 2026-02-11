@@ -28,6 +28,8 @@ import vxVpnAppImg from "@/assets/vx-vpn-app.png";
 import vxYamlImg from "@/assets/vx-yaml.png";
 import clashpartyGlobal from "@/assets/clashparty_global.png";
 import aicoinDownload from "@/assets/aicoin-download.png";
+import aicoinPcTestImg from "@/assets/aicoin-pc-test.png";
+import aicoinAppTestImg from "@/assets/aicoin-app-test.png";
 import vxAICoinTestDownload from "@/assets/vx-aicoin-testdownload.png";
 import itaskNameImg from "@/assets/itask-name.png";
 import itaskInstructionImg from "@/assets/itask-instruction.png";
@@ -140,6 +142,8 @@ const stepImageFor = (stepId: string, index: number) => {
   if (stepId === "vpn" && index === 2) return vxYamlImg;
   if (stepId === "aicoin" && index === 0) return clashpartyGlobal;
   if (stepId === "aicoin" && index === 1) return aicoinDownload;
+  if (stepId === "aicoin" && index === 2) return aicoinPcTestImg;
+  if (stepId === "aicoin" && index === 3) return aicoinAppTestImg;
   if (stepId === "corp-email" && index === 1) return vxAICoinTestDownload;
   if (stepId === "itask" && index === 0) return itaskNameImg;
   if (stepId === "itask" && index === 1) return itaskInstructionImg;
@@ -228,6 +232,20 @@ export default function AccountsRegistrationPage() {
             linkHref: "https://www.aicoin.com/",
           },
           "根据自己的机型来选择「AiCoin 正式版」的下载版本。",
+          {
+            text: "点击 PC 端测试版下载链接，下载 AiCoin PC 测试版。后续可直接在软件内更新版本。",
+            links: [
+              {
+                label: "macOS x64 测试版",
+                href: "https://pc-package-develop-1307966650.cos.ap-guangzhou.myqcloud.com/releases/darwin-2.15.17-alpha.1-x64/AiCoinTest-2.15.17-alpha.1.dmg",
+              },
+              {
+                label: "macOS ARM 测试版",
+                href: "https://pc-package-develop-1307966650.cos.ap-guangzhou.myqcloud.com/releases/darwin-2.15.17-alpha.1-x64/AiCoinTest-2.15.17-alpha.1-arm64.dmg",
+              },
+            ],
+          },
+          "在「移动端对接群」群公告中，寻找移动端测试版的下载链接。",
         ],
         pitfalls: ["无法登录：确认企业邮箱已激活，检查网络/代理设置。"],
         owner: "业务支持/IT",
@@ -453,14 +471,30 @@ export default function AccountsRegistrationPage() {
                       return (
                         <div className="mt-1 space-y-1 text-foreground/90">
                           <div>{s.text}</div>
-                          <a
-                            href={s.linkHref}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center gap-1 rounded-full border border-input px-3 py-1 text-xs font-medium text-foreground transition hover:border-primary hover:text-primary"
-                          >
-                            {s.linkLabel} <ExternalLink className="h-3 w-3" />
-                          </a>
+                          {"links" in s && Array.isArray(s.links) ? (
+                            <div className="flex flex-wrap gap-2">
+                              {s.links.map((link) => (
+                                <a
+                                  key={link.href}
+                                  href={link.href}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-flex items-center gap-1 rounded-full border border-input px-3 py-1 text-xs font-medium text-foreground transition hover:border-primary hover:text-primary"
+                                >
+                                  {link.label} <ExternalLink className="h-3 w-3" />
+                                </a>
+                              ))}
+                            </div>
+                          ) : (
+                            <a
+                              href={s.linkHref}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-1 rounded-full border border-input px-3 py-1 text-xs font-medium text-foreground transition hover:border-primary hover:text-primary"
+                            >
+                              {s.linkLabel} <ExternalLink className="h-3 w-3" />
+                            </a>
+                          )}
                         </div>
                       );
                     };
@@ -489,30 +523,49 @@ export default function AccountsRegistrationPage() {
                       );
                     }
                     return (
-                      <li key={idx} className="flex gap-3 text-muted-foreground">
-                        <img
-                          src={stepImageFor(selectedItem?.id ?? "", idx)}
-                          alt={`步骤 ${idx + 1}`}
-                          loading="lazy"
-                          decoding="async"
-                          className="h-24 w-40 rounded-xl border object-cover transition-transform duration-200 hover:scale-[1.02]"
-                          onClick={() => openLightbox(stepImageFor(selectedItem?.id ?? "", idx))}
-                          role="button"
-                          aria-label={`放大步骤 ${idx + 1} 图片`}
-                          tabIndex={0}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              openLightbox(stepImageFor(selectedItem?.id ?? "", idx));
-                            }
-                          }}
-                        />
-                        <div className="flex-1">
-                          <div className="text-xs font-medium text-muted-foreground/80">
-                            步骤 {idx + 1}
+                      <React.Fragment key={idx}>
+                        {selectedItem?.id === "aicoin" && idx === 0 && (
+                          <li className="text-xs font-semibold text-foreground/80">
+                            正式版
+                          </li>
+                        )}
+                        <li className="flex gap-3 text-muted-foreground">
+                          <img
+                            src={stepImageFor(selectedItem?.id ?? "", idx)}
+                            alt={`步骤 ${idx + 1}`}
+                            loading="lazy"
+                            decoding="async"
+                            className="h-24 w-40 rounded-xl border object-cover transition-transform duration-200 hover:scale-[1.02]"
+                            onClick={() => openLightbox(stepImageFor(selectedItem?.id ?? "", idx))}
+                            role="button"
+                            aria-label={`放大步骤 ${idx + 1} 图片`}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                openLightbox(stepImageFor(selectedItem?.id ?? "", idx));
+                              }
+                            }}
+                          />
+                          <div className="flex-1">
+                            <div className="text-xs font-medium text-muted-foreground/80">
+                              步骤 {idx + 1}
+                            </div>
+                            {renderStepDetail()}
                           </div>
-                          {renderStepDetail()}
-                        </div>
-                      </li>
+                        </li>
+                        {selectedItem?.id === "aicoin" && idx === 1 && (
+                          <>
+                            <li
+                              aria-hidden="true"
+                              role="presentation"
+                              className="h-px w-full bg-border/70"
+                            />
+                            <li className="text-xs font-semibold text-foreground/80">
+                              测试版
+                            </li>
+                          </>
+                        )}
+                      </React.Fragment>
                     );
                   }
                 )}
