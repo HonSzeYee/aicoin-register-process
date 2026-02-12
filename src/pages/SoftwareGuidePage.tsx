@@ -22,6 +22,8 @@ import prdStep3Img from "@/assets/prd2.png";
 import prdStep4Img from "@/assets/prd3.png";
 import prdStep5Img from "@/assets/prd4.png";
 import prdStep6Img from "@/assets/prd5.png";
+import weipanStep1Img from "@/assets/vx-3.png";
+import weipanStep2Img from "@/assets/vx-4.png";
 
 type GuideStep = {
   title: string;
@@ -232,6 +234,28 @@ const GUIDE_SECTIONS: GuideSection[] = [
           {
             src: prdStep6Img,
             alt: "PRD 表格解读示意 5",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "weipan",
+    title: "微盘",
+    note: "文件上传与查看",
+    icon: FileText,
+    steps: [
+      {
+        title: "产品部门微盘",
+        desc: "产品部门相关文档的汇总，PRD文档、埋点相关文档、会议纪要、讲解会等重要文件都在产品部微盘中，入职初期可以通过学习这些文档中的内容熟悉部门工作。",
+        images: [
+          {
+            src: weipanStep2Img,
+            alt: "产品部微盘上传示意 2",
+          },
+          {
+            src: weipanStep1Img,
+            alt: "产品部微盘上传示意",
           },
         ],
       },
